@@ -224,7 +224,8 @@ nnoremap <leader>F :bro<space>ol<CR>
 nnoremap <space>a :argadd <c-r>=fnameescape(expand('%:p:h'))<cr>/*<C-d>
 nnoremap <leader>e :e **/<C-d>
 
-cnoremap <C-BS> <C-W> " remaps ctrl-backspace to erase by word in cmdline
+" remaps ctrl-backspace to erase by word in cmdline
+cnoremap <C-BS> <C-W>
 
 " Renames current file
 
@@ -267,14 +268,14 @@ endfunction
 
 " TAG JUMPING
 
-nnoremap <leader>t :tlist<CR>:tjump<space>*
+nnoremap <leader>t :tjump<space>*
 
 " stolen from sensible.vim
 if &listchars ==# 'eol:$'
   set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
 endif
 
-nnoremap <leader>l :set list? nolist : list
+nnoremap <leader>l :set list!<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " TEXT FILES TREATMENT
@@ -292,7 +293,7 @@ map <leader>dT :%s/<\_.\{-1,\}>//g<CR>
 map <Leader>R :retab<CR>
 
 " Use Windows Clipboard
-let &clipboard = has'unnamedplus') ? 'unnamedplus' : 'unnamed'
+let &clipboard = has ('unnamedplus') ? 'unnamedplus' : 'unnamed'
 
 
 " map c-x and c-v to work as they do in windows
@@ -304,12 +305,11 @@ exe 'ino <script> <C-V>' paste#paste_cmd['i']
 " map Ctrl+Backspace and Ctrl+Del to behave like windows
 :imap <C-BS> <C-W>
 :imap <C-Del> <C-O>dw
-" Ctrl-U undoes in insert mode (instead of erasing the whole line)
+" Ctrl-U saves in u register what erases (instead of just erasing the whole line)
 inoremap <C-U> <C-G>u<C-U>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Text, tab and indent related
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
 set expandtab " Use spaces instead of tabs
 set smarttab " Be smart when using tabs ;)
 set ai "Auto indent
@@ -356,6 +356,7 @@ nnoremap <Leader>* :lvimgrep /\<<C-R><C-w>\>/gj *<CR>
 nnoremap <Leader>rW :%s/\<<C-R><C-W>\>/g<LEFT><LEFT>
 " leader rW to replace WORD under cursor
 nnoremap <Leader>rW :%s/\<<C-R><C-A>\>/g<LEFT><LEFT>
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Moving around, tabs, windows and buffers
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -389,9 +390,9 @@ nnoremap <Leader>= :wincmd =<CR>
 
 " ---------- BUFFERS and whatnot  ------
 " a number based buffer list
-nnoremap <leader>B :ls<CR>:buffer<space>
+nnoremap <leader>b :ls<CR>:buffer<space>
 " a fuzzy buffer list
-nnoremap <leader>b :b <C-d>
+nnoremap <leader>b :b <C-d>*
 " jump to previous edited buffer
 nnoremap <space>bb :b#<cr>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -529,7 +530,7 @@ if exists("*plug#begin")
   Plug 'pangloss/vim-javascript' "syntax check for js
   Plug 'elzr/vim-json' "useful for json reading
   Plug 'StanAngeloff/php.vim' "provides php syntax check
-  Plug 'OmniSharp/omnisharp-vim' { 'for': 'cs' }"trying to get Unity omnicompletion in Vim
+  Plug 'OmniSharp/omnisharp-vim', { 'for': 'cs' } "trying to get Unity omnicompletion in Vim
 
   " Initialize plugin system
   call plug#end()
@@ -616,7 +617,7 @@ let g:OmniSharp_server_path = 'C:\omnisharp.http-win-x64\OmniSharp.exe'
 let g:syntastic_cs_checkers = ['code_checker']
 let g:OmniSharp_server_type = 'roslyn'
 
-augroup! omnisharp_commands
+augroup omnisharp_commands
 if exists(":OmniSharpStartServer")
   " Start the omnisharp server for the current solution
   nnoremap <Leader>sts :OmniSharpStartServer<CR>
@@ -653,4 +654,4 @@ if exists(":OmniSharpStartServer")
 endif
 
 " TODO colorschemes
-colorscheme desert
+colorscheme darkblue
