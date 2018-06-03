@@ -24,14 +24,17 @@ set autoread
 " but it won't even work if you dont
 set encoding=utf-8
 " although that means ALT won't work in windows(gvim)
-let mapleader = " "
-let g:mapleader = " "
+let mapleader = "\<Space>"
+let g:mapleader = "\<Space>"
 
 "set scroll offset to 5 lines
-set scrolloff=5 
+set scrolloff=5
 
 let $LANG='es'
 set langmenu=en
+
+" Set default omnicompletion
+set omnifunc=syntaxcomplete#Complete
 
 "Always show current position
 set ruler
@@ -47,20 +50,20 @@ set whichwrap+=<,>,h,l
 " Ignore case when searching
 set ignorecase
 
-" When searching try to be smart about cases 
+" When searching try to be smart about cases
 set smartcase
 
 " Highlight search results
 set hlsearch
 
 " Makes search act like search in modern browsers
-set incsearch 
+set incsearch
 
 " Don't redraw while executing macros (good performance config)
-set lazyredraw 
+set lazyredraw
 
 " Show matching brackets when text indicator is over them
-set showmatch 
+set showmatch
 " How many tenths of a second to blink when matching brackets
 set matchtime=2
 
@@ -90,14 +93,14 @@ if has("gui_running")
   set guitablabel=%M\ %t
   " Toggle fullscreen
   nnoremap <silent> <leader>WW :set lines=200 columns=500<CR>
-  nnoremap <silent> <leader>ww :set lines=50 columns=100<CR>
+  nnoremap <silent> <leader>ww :set lines=50 columns=90<CR>
 endif
 
 " Highlights the current line background
 set cursorline
 
 " Open VIM in big window
-set lines=50 columns=100
+set lines=50 columns=90
 
 " make a mark for column 80
 set colorcolumn=80
@@ -111,7 +114,7 @@ set ffs=unix,dos,mac
 " save up to 100 marks, enable capital marks
 set viminfo=h,'100,f1
 
-" Return to last edit position when opening files 
+" Return to last edit position when opening files
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
 " Normally, Vim messes with iskeyword when you open a shell file. This can
@@ -206,12 +209,12 @@ nnoremap <Leader>f :find<Space>*
 " a command to navigate most recent files
 nnoremap <Leader>F :bro<Space>ol<CR>
 " one to list all the tags available
-nnoremap <Leader>t :tselect<Space><C-D>
+nnoremap <Leader>ts :tselect<Space><C-D>
 " one to see the jumps done
-nnoremap <Leader>j :jumps<CR>
+nnoremap <Leader>io :jumps<CR>
 
 " lets me add files with wildcards, like **/*.md for all markdown files, very useful.
-nnoremap <Leader>aa :argadd **/*.
+nnoremap <Leader>dd :argadd **/*
 " Maps c-a to add an argdo prefix to any command
 cnoremap <C-A> <Home>argdo<Space><End>
 
@@ -247,7 +250,7 @@ nnoremap <buffer> pe <CR>:ped<CR>:cw<CR>
 
 
 " toggles quickfix window (forced)
-nnoremap <F3> :QFix<CR>
+nnoremap <Leader><Leader> :QFix<CR>
 command! -bang -nargs=? QFix call QFixToggle(<bang>0)
 function! QFixToggle(forced) abort
   if exists("g:qfix_win") && a:forced == 0
@@ -261,14 +264,12 @@ endfunction
 
 " TAG JUMPING
 
-nnoremap <leader>t :tjump<Space>*
+nnoremap <leader>tj :tjump<Space>*
 
 " stolen from sensible.vim
 if &listchars ==# 'eol:$'
   set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
 endif
-
-nnoremap <leader>l :set list!<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " TEXT FILES TREATMENT
@@ -277,17 +278,8 @@ nnoremap <leader>l :set list!<CR>
 :autocmd! BufNewFile,BufRead *.txt,*.mkd,*.md,*.tex set wrap
 :autocmd! BufNewFile,BufRead *.txt,*.mkd,*.md,*.tex set tw=0
 
-"------  Text Editing Utilities  ------
-" <Leader>U = Deletes Unwanted empty lines
-nnoremap <Leader>del :g/^\s*$/d<CR>
-" <Leader>dT Deletes all tags on all lines
-nnoremap <leader>dT :%s/<\_.\{-1,\}>//g<CR>
-" <Leader>R = Converts tabs to spaces in document
-nnoremap <Leader>R :retab<CR>
-
 " Use Windows Clipboard
 let &clipboard = has ('unnamedplus') ? 'unnamedplus' : 'unnamed'
-
 
 " map c-x and c-v to work as they do in windows
 " only in insert mode and command mode
@@ -332,19 +324,24 @@ vnoremap <silent> * "sy/<C-r>s
 vnoremap <silent> # "sy/<C-r>sNN
 
 " allow Tab and Shift+Tab to
-" tab  selection in visual mode
+" tab selection in visual mode
 vnoremap <Tab> >gv
 vnoremap <S-Tab> <gv
 
 " When you press <leader>r you can search and replace the selected text
-vnoremap <silent> <leader>r  "sy:%s/<C-r>s//g<Left><Left>
-inoremap <leader>/ :il /
+vnoremap <silent> <leader>rp  "sy:%s/<C-r>s//g<Left><Left>
+" <leader>/ lets you search and have line numbers attached
+nnoremap <Leader>/ :il /
+
+"Improved * and # to allow instant meaningful jumps
+nnoremap * [I:
+nnoremap # ]I:
 
 " select all mapping
-nnoremap <leader>a ggVG
+nnoremap <C-A> ggVG
 
 " find through files the word under cursor
-nnoremap <Leader>* :lvimgrep /\<<C-R><C-w>\>/gj *<CR>
+nnoremap <Leader>* :Search<CR><C-R><C-w>
 " leader rw to replace word under cursor
 nnoremap <Leader>rw :%s/\<<C-R><C-W>\>//g<LEFT><LEFT>
 " leader rW to replace WORD under cursor
@@ -358,7 +355,7 @@ nnoremap <Leader>rW :%s/\<<C-R><C-A>\>//g<LEFT><LEFT>
 nnoremap <leader>tn :tabnew<cr>
 nnoremap <leader>to :tabonly<cr>
 nnoremap <leader>tc :tabclose<cr>
-nnoremap <leader>tm :tabmove 
+nnoremap <leader>tm :tabmove
 nnoremap <leader>t<leader> :tabnext<CR>
 
 " Let 'tl' toggle between this and the last accessed tab
@@ -403,7 +400,7 @@ endfunction
 " if has("autocmd")
 "   autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
 " endif
-nnoremap <leader>tw :call CleanExtraSpaces()
+nnoremap <leader>tw :call CleanExtraSpaces()<CR>
 
 " -- Toggle Line Wrap
 nnoremap <Leader>wr :set wrap! wrap?<CR>
@@ -419,6 +416,15 @@ endif
 " Add a heading/subheading to current line
 nnoremap <leader>h1 yypVr=<Esc>==
 nnoremap <leader>h2 yypVr-<Esc>==
+
+" Remapping autocomplete functions to work as an IDE's
+inoremap <expr> <Esc>      pumvisible() ? "\<C-e>" : "\<Esc>"
+inoremap <expr> <CR>       pumvisible() ? "\<C-y>" : "\<CR>"
+inoremap <expr> <Down>     pumvisible() ? "\<C-n>" : "\<Down>"
+inoremap <expr> <Up>       pumvisible() ? "\<C-p>" : "\<Up>"
+inoremap <expr> <PageDown> pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<PageDown>"
+inoremap <expr> <PageUp>   pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<PageUp>"
+
 """"""""""""""""""""""""""""""""""""""
 " Other
 """"""""""""""""""""""""""""""""""""""
@@ -444,7 +450,7 @@ nnoremap J mzJ`z
 if filereadable($HOME . '/vimfiles/autoload/plug.vim') || filereadable($HOME . '/.vim/autoload/plug.vim')
   if has('win32')
     call plug#begin('$HOME/vimfiles/plugged')
-  else 
+  else
     call plug#begin('~/.vim/plugged')
   endif
 
@@ -466,7 +472,6 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim') || filereadable($HOME . '
   " ALSO personalizados:
   " ! significa ¡! y ? significa ¿?
 
-  Plug 'tpope/vim-vinegar' " netrw on steroids
   " wrapper for git and display git diff in the left gutter
   Plug 'tpope/vim-fugitive' | Plug 'airblade/vim-gitgutter'
   " easily search, substitute and abbreviate multiple version of words
@@ -502,24 +507,25 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim') || filereadable($HOME . '
   Plug 'mattn/emmet-vim' " most vital for zen-coding
   Plug 'groenewege/vim-less' " useful for understanding less-syntax
   Plug 'ap/vim-css-color' " can print colors if put an hex or rgb code
-  Plug 'hail2u/vim-css3-syntax' "useful for understanding css regular syntax
-  Plug 'othree/html5.vim' "supposed to provide a better indent
-  Plug 'pangloss/vim-javascript' "syntax check for js
-  Plug 'elzr/vim-json' "useful for json reading
-  Plug 'StanAngeloff/php.vim' "provides php syntax check
-  Plug 'OmniSharp/omnisharp-vim', { 'for': 'cs' } "trying to get Unity omnicompletion in Vim
+  Plug 'hail2u/vim-css3-syntax' " useful for understanding css regular syntax
+  Plug 'othree/html5.vim' " supposed to provide a better indent
+  Plug 'pangloss/vim-javascript' " syntax check for js
+  Plug 'elzr/vim-json' " useful for json reading
+  Plug 'shawncplus/phpcomplete.vim' " better php omnicompletion
+  Plug 'StanAngeloff/php.vim' " provides php syntax check
+  Plug 'OmniSharp/omnisharp-vim', { 'for': 'cs' } " trying to get Unity omnicompletion in Vim
 
   " Initialize plugin system
   call plug#end()
 endif
 
 " Tabular mappings
-" <SPC>a + symbol tabularizes by symbol
+" <SPC><Tab> + symbol tabularizes by symbol
 if exists(":Tabularize")
-  nnoremap <Leader>a= :Tabularize /=<CR>
-  vnoremap <Leader>a= :Tabularize /=<CR>
-  nnoremap <Leader>a: Tabularize /:\zs<CR>
-  vnoremap <Leader>a: Tabularize /:\zs<CR>
+  nnoremap <Leader><Tab>= :Tabularize /=<CR>
+  vnoremap <Leader><Tab>= :Tabularize /=<CR>
+  nnoremap <Leader><Tab>: Tabularize /:\zs<CR>
+  vnoremap <Leader><Tab>: Tabularize /:\zs<CR>
 endif
 " A Tim Pope function for tables automaticly realigning when using pipe for
 " separations:
@@ -547,10 +553,10 @@ if exists(":Gstatus")
   nnoremap <Leader>gr :Gremove<CR>
   nnoremap <Leader>gl :Glog<CR>
   nnoremap <Leader>gb :Gblame<CR>
-  nnoremap <Leader>gm :Gmove 
-  nnoremap <Leader>gp :Ggrep 
+  nnoremap <Leader>gm :Gmove
+  nnoremap <Leader>gp :Ggrep
   nnoremap <Leader>gR :Gread<CR>
-  nnoremap <Leader>gg :Git 
+  nnoremap <Leader>gg :Git
   nnoremap <Leader>gd :Gdiff<CR>
 
   "------  Git Gutter Options ------
@@ -559,10 +565,10 @@ if exists(":Gstatus")
   if executable("rg")
     let g:gitgutter_grep = 'rg'
   endif
-endif  
+endif
 
 " ---- Emmet ----
-autocmd VimEnter * if exists(":Emmet") | exe "  inoremap <C-Space> <Esc>:call emmet#expandAbbr(3,'')<CR>a" | endif
+autocmd VimEnter * if exists(":Emmet") | exe "  inoremap <C-Space> <Esc>:call emmet#expandAbbr(3,'')<CR>i" | endif
 
 " ----- NETRW file manager -----
 let g:netrw_banner=0 " disable annoying banner
@@ -587,7 +593,7 @@ function! ToggleNetrw() abort
         let i = bufnr("$")
         while (i >= 1)
             if (getbufvar(i, "&filetype") == "netrw")
-                silent exe "bwipeout " . i 
+                silent exe "bwipeout " . i
             endif
             let i-=1
         endwhile
@@ -609,7 +615,7 @@ if exists(":OmniSharpStartServer")
   " Start the omnisharp server for the current solution
   nnoremap <Leader>sts :OmniSharpStartServer<CR>
   nnoremap <Leader>sps :OmniSharpStopServer<CR>
-  
+
   augroup omnisharp_commands
     autocmd!
     " Synchronous build (blocks Vim)
@@ -640,7 +646,21 @@ if exists(":OmniSharpStartServer")
   augroup END
 endif
 
-" TODO colorschemes
-colorscheme darkblue
-
-
+" v0.1 colorschemes
+if has('gui_running')
+  colorscheme darkblue "puts something readable 
+  silent! colorscheme azuki "tries to improve it
+  augroup filetype_colors " helps identify filetypes
+    autocmd!
+    autocmd FileType php silent! colorscheme seattle
+    autocmd FileType twig silent! colorscheme seattle
+    autocmd FileType theme silent! colorscheme seattle
+    autocmd FileType js silent! colorscheme gotham
+    autocmd FileType css silent! colorscheme japanesque " not sure about this one
+    autocmd FileType mkd silent! colorscheme eink
+    autocmd FileType md silent! colorscheme eink
+  augroup END
+else
+  colorscheme default "tries default
+  silent! colorscheme noctu "tries to improve it
+endif
