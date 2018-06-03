@@ -1,13 +1,10 @@
 "STOP FUCKING BEEPING
-set noeb vb t_vb=
+set noerrorbells visualbell t_vb=
 if has('gui')
   set vb t_vb=
 endif
 
-" Enter the XXI Century
-set nocompatible
-
-" remove all existing autocmds
+" remove all existing autocmds (so as not to augroup everything)
 autocmd!
 
 " Sets how many lines of history VIM has to remember
@@ -24,13 +21,14 @@ filetype indent on
 set autoread
 
 " With a map leader it's possible to do extra key combinations
-" like <leader>w saves the current file
-let mapleader = "ç"
-let g:mapleader = "ç"
+" but it won't even work if you dont
+set encoding=utf-8
+" although that means ALT won't work in windows(gvim)
+let mapleader = " "
+let g:mapleader = " "
 
 "set scroll offset to 5 lines
-set so=5 
-
+set scrolloff=5 
 
 let $LANG='es'
 set langmenu=en
@@ -64,7 +62,7 @@ set lazyredraw
 " Show matching brackets when text indicator is over them
 set showmatch 
 " How many tenths of a second to blink when matching brackets
-set mat=2
+set matchtime=2
 
 " Enable matchit plugin to match .*ml tags
 packadd! matchit
@@ -98,13 +96,8 @@ endif
 " Highlights the current line background
 set cursorline
 
-"autocmd VimEnter * TagbarOpen
-
 " Open VIM in big window
 set lines=50 columns=100
-
-" Set utf8 as standard encoding and en_US as the standard language
-set encoding=utf8
 
 " make a mark for column 80
 set colorcolumn=80
@@ -130,23 +123,15 @@ let g:sh_noisk=1
 set nojoinspaces
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Useful Remappings for spanish keyboard
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-nnoremap ' [
-nnoremap ¡ ]
-nnoremap [ ^
-nnoremap ] $
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Files, backups and undo
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Turn backup off, since most stuff is in SVN, git et.c anyway...
 set nobackup
-set nowb
+set nowritebackup
 set noswapfile
 
 " Switch CWD to the directory of the open buffer
-map <leader>cd :cd %:p:h<cr>:pwd<cr>
+nnoremap <leader>cd :cd %:p:h<cr>:pwd<cr>
 
 " Enable recursive path search with ':find' or <C-x><C-f> autocompletion
 set path+=**
@@ -157,7 +142,8 @@ set wildmenu wildmode=list:full
 " Ignore these filenames during enhanced command line completion.
 set wildignore+=*.aux,*.out,*.toc " LaTeX intermediate files
 set wildignore+=*.luac " Lua byte code
-set wildignore+=*.o,*.obj,*.exe,*.dll,*.manifest " compiled object files
+ " compiled object files
+set wildignore+=*.o,*.obj,*.exe,*.dll,*.manifest,*.dat,*.class,*.zip,*.rar,*.7z
 set wildignore+=*.pyc " Python byte code
 set wildignore+=*.spl " compiled spelling word lists
 set wildignore+=*.sw? " Vim swap files
@@ -168,16 +154,16 @@ set wildignore+=node_modules/*,bower_components/*
 
 " File working related
 " relative path (src/foo.txt)
-nnoremap <leader>cf :let @+=expand("%")<CR>
+nnoremap <leader>pr :let @+=expand("%")<CR>
 
 " absolute path (/something/src/foo.txt)
-nnoremap <leader>cF :let @+=expand("%:p")<CR>
+nnoremap <leader>pa :let @+=expand("%:p")<CR>
 
 " filename (foo.txt)
-nnoremap <leader>ct :let @+=expand("%:t")<CR>
+nnoremap <leader>pf :let @+=expand("%:t")<CR>
 
 " directory name (/something/src)
-nnoremap <leader>ch :let @+=expand("%:p:h")<CR>
+nnoremap <leader>pF :let @+=expand("%:p:h")<CR>
 
 " {{ SET RG as grep and use it wisely to find in files
 if executable("rg")
@@ -205,7 +191,7 @@ endif
 command! Search call MySearch()
 nnoremap º :Search<CR>
 
-function! MySearch()
+function! MySearch() abort
   let grep_term = input("Enter search term: ")
   if !empty(grep_term)
     execute 'silent grep!' grep_term | copen
@@ -216,20 +202,25 @@ function! MySearch()
 endfunction
 
 " simple fuzzyfind for filenames
-nnoremap <Leader>f :find<space>*
+nnoremap <Leader>f :find<Space>*
 " a command to navigate most recent files
-nnoremap <leader>F :bro<space>ol<CR>
+nnoremap <Leader>F :bro<Space>ol<CR>
+" one to list all the tags available
+nnoremap <Leader>t :tselect<Space><C-D>
+" one to see the jumps done
+nnoremap <Leader>j :jumps<CR>
 
 " lets me add files with wildcards, like **/*.md for all markdown files, very useful.
-nnoremap <space>a :argadd <c-r>=fnameescape(expand('%:p:h'))<cr>/*<C-d>
-nnoremap <leader>e :e **/<C-d>
+nnoremap <Leader>aa :argadd **/*.
+" Maps c-a to add an argdo prefix to any command
+cnoremap <C-A> <Home>argdo<Space><End>
 
 " remaps ctrl-backspace to erase by word in cmdline
 cnoremap <C-BS> <C-W>
 
 " Renames current file
 
-function! RenameFile()
+function! RenameFile() abort
   let old_name = expand('%')
   let new_name = input('New file name: ', expand('%'), 'file')
   if new_name != '' && new_name != old_name
@@ -239,7 +230,7 @@ function! RenameFile()
   endif
 endfunction
 
-nmap <space>rn :call RenameFile()<cr>
+nnoremap <Leader>rn :call RenameFile()<cr>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " QUICKFIX WINDOW MAPPINGS
@@ -251,12 +242,14 @@ autocmd BufReadPost quickfix nnoremap <buffer>
 
 nnoremap <silent> 'q :cnext<CR>
 nnoremap <silent> 'Q :cprev<CR>
-nnoremap <buffer> gv <CR>:vs<CR><C-w>h:bn<CR>:bn<CR>
+nnoremap <buffer> vs <CR>:vs<CR>:cw<CR>
+nnoremap <buffer> pe <CR>:ped<CR>:cw<CR>
+
 
 " toggles quickfix window (forced)
 nnoremap <F3> :QFix<CR>
 command! -bang -nargs=? QFix call QFixToggle(<bang>0)
-function! QFixToggle(forced)
+function! QFixToggle(forced) abort
   if exists("g:qfix_win") && a:forced == 0
     cclose
     unlet g:qfix_win
@@ -268,7 +261,7 @@ endfunction
 
 " TAG JUMPING
 
-nnoremap <leader>t :tjump<space>*
+nnoremap <leader>t :tjump<Space>*
 
 " stolen from sensible.vim
 if &listchars ==# 'eol:$'
@@ -286,11 +279,11 @@ nnoremap <leader>l :set list!<CR>
 
 "------  Text Editing Utilities  ------
 " <Leader>U = Deletes Unwanted empty lines
-map <Leader>dU :g/^\s*$/d<CR>
+nnoremap <Leader>del :g/^\s*$/d<CR>
 " <Leader>dT Deletes all tags on all lines
-map <leader>dT :%s/<\_.\{-1,\}>//g<CR>
+nnoremap <leader>dT :%s/<\_.\{-1,\}>//g<CR>
 " <Leader>R = Converts tabs to spaces in document
-map <Leader>R :retab<CR>
+nnoremap <Leader>R :retab<CR>
 
 " Use Windows Clipboard
 let &clipboard = has ('unnamedplus') ? 'unnamedplus' : 'unnamed'
@@ -298,13 +291,13 @@ let &clipboard = has ('unnamedplus') ? 'unnamedplus' : 'unnamed'
 
 " map c-x and c-v to work as they do in windows
 " only in insert mode and command mode
-vmap <c-x> "+x
-vmap <c-c> "+y
-cno <c-v> <c-r>+
+vnoremap <c-x> "+x
+vnoremap <c-c> "+y
+cnoremap <c-v> <c-r>+
 exe 'ino <script> <C-V>' paste#paste_cmd['i']
 " map Ctrl+Backspace and Ctrl+Del to behave like windows
-:imap <C-BS> <C-W>
-:imap <C-Del> <C-O>dw
+inoremap <C-BS> <C-W>
+inoremap <C-Del> <C-O>dw
 " Ctrl-U saves in u register what erases (instead of just erasing the whole line)
 inoremap <C-U> <C-G>u<C-U>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -313,15 +306,14 @@ inoremap <C-U> <C-G>u<C-U>
 set expandtab " Use spaces instead of tabs
 set smarttab " Be smart when using tabs ;)
 set ai "Auto indent
-set si "Smart indent
 
 " 1 tab == 2 spaces
-set shiftwidth=2
-set tabstop=2
+set shiftwidth=2 softtabstop=2
+set tabstop=8
 
 " Linebreak is on, textwidth is infinite
-set lbr
-set tw=0
+set linebreak
+set textwidth=0
 
 " F2 = Paste Toggle (in insert mode, pasting indented text behavior changes)
 set pastetoggle=<F2>
@@ -341,11 +333,12 @@ vnoremap <silent> # "sy/<C-r>sNN
 
 " allow Tab and Shift+Tab to
 " tab  selection in visual mode
-vmap <Tab> >gv
-vmap <S-Tab> <gv
+vnoremap <Tab> >gv
+vnoremap <S-Tab> <gv
 
 " When you press <leader>r you can search and replace the selected text
 vnoremap <silent> <leader>r  "sy:%s/<C-r>s//g<Left><Left>
+inoremap <leader>/ :il /
 
 " select all mapping
 nnoremap <leader>a ggVG
@@ -353,24 +346,24 @@ nnoremap <leader>a ggVG
 " find through files the word under cursor
 nnoremap <Leader>* :lvimgrep /\<<C-R><C-w>\>/gj *<CR>
 " leader rw to replace word under cursor
-nnoremap <Leader>rW :%s/\<<C-R><C-W>\>/g<LEFT><LEFT>
+nnoremap <Leader>rw :%s/\<<C-R><C-W>\>//g<LEFT><LEFT>
 " leader rW to replace WORD under cursor
-nnoremap <Leader>rW :%s/\<<C-R><C-A>\>/g<LEFT><LEFT>
+nnoremap <Leader>rW :%s/\<<C-R><C-A>\>//g<LEFT><LEFT>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Moving around, tabs, windows and buffers
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Useful mappings for managing tabs
-map <leader>tn :tabnew<cr>
-map <leader>to :tabonly<cr>
-map <leader>tc :tabclose<cr>
-map <leader>tm :tabmove 
-map <leader>t<leader> :tabnext<CR>
+nnoremap <leader>tn :tabnew<cr>
+nnoremap <leader>to :tabonly<cr>
+nnoremap <leader>tc :tabclose<cr>
+nnoremap <leader>tm :tabmove 
+nnoremap <leader>t<leader> :tabnext<CR>
 
 " Let 'tl' toggle between this and the last accessed tab
 let g:lasttab = 1
-nmap <Leader>tl :exe "tabn ".g:lasttab<CR>
+nnoremap <Leader>tl :exe "tabn ".g:lasttab<CR>
 au TabLeave * let g:lasttab = tabpagenr()
 
 "------  Window Navigation  ------
@@ -384,28 +377,28 @@ nnoremap <Leader>H <C-w>H
 nnoremap <Leader>L <C-w>L
 nnoremap <Leader>J <C-w>J
 nnoremap <Leader>K <C-w>K
+nnoremap <Leader>O <C-w>o
+nnoremap <Leader>q <C-w>q
 
 "<Leader>= = Normalize window widths
 nnoremap <Leader>= :wincmd =<CR>
 
 " ---------- BUFFERS and whatnot  ------
 " a number based buffer list
-nnoremap <leader>b :ls<CR>:buffer<space>
-" a fuzzy buffer list
-nnoremap <leader>b :b <C-d>*
+nnoremap <Leader>b :ls<CR>:buffer<Space>
 " jump to previous edited buffer
-nnoremap <space>bb :b#<cr>
+nnoremap <Leader>B :b#<cr>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Functions for editing
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Clean trailing whitespace
-fun! CleanExtraSpaces()
+function! CleanExtraSpaces() abort
   let save_cursor = getpos(".")
   let old_query = getreg('/')
   silent! %s/\s\+$//e
   call setpos('.', save_cursor)
   call setreg('/', old_query)
-endfun
+endfunction
 
 " if has("autocmd")
 "   autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
@@ -416,27 +409,12 @@ nnoremap <leader>tw :call CleanExtraSpaces()
 nnoremap <Leader>wr :set wrap! wrap?<CR>
 
 if has('win32')
-  set guifont=ProggyCleanTT:h12,Lucida\ Console:h11
+  set guifont=Hermit:h12,Lucida\ Console:h11
 elseif has('mac')
-  set guifont=ProggyCleanTT:h12,Menlo:h14
+  set guifont=Hermit:h12,Menlo:h14
 else
-  set guifont=ProggyCleanTT:h12,Source\ Code\ Pro:h12,Ubuntu\ Mono:h12
+  set guifont=Hermit:h12,Source\ Code\ Pro:h12,Ubuntu\ Mono:h12
 endif
-
-" A Tim Pope function for tables automaticly realigning when using pipe for
-" separations:
-inoremap <silent> <Bar>   <Bar><Esc>:call <SID>align()<CR>a
-
-function! s:align()
-  let p = '^\s*|\s.*\s|\s*$'
-  if exists(':Tabularize') && getline('.') =~# '^\s*|' && (getline(line('.')-1) =~# p || getline(line('.')+1) =~# p)
-    let column = strlen(substitute(getline('.')[0:col('.')],'[^|]','','g'))
-    let position = strlen(matchstr(getline('.')[0:col('.')],'.*|\s*\zs.*'))
-    Tabularize/|/l1
-    normal! 0
-    call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
-  endif
-endfunction
 
 " Add a heading/subheading to current line
 nnoremap <leader>h1 yypVr=<Esc>==
@@ -460,11 +438,10 @@ nnoremap x "_x
 nnoremap c "_c
 " Keep the cursor in place while joining lines
 nnoremap J mzJ`z
-
 """"""""""""""""""""""""""""""""""""""
 " Vim-Plug Section
 """"""""""""""""""""""""""""""""""""""
-if exists("*plug#begin")
+if filereadable($HOME . '/vimfiles/autoload/plug.vim') || filereadable($HOME . '/.vim/autoload/plug.vim')
   if has('win32')
     call plug#begin('$HOME/vimfiles/plugged')
   else 
@@ -487,8 +464,7 @@ if exists("*plug#begin")
   " S en visual mode permite rodear con cualquier
   " input.
   " ALSO personalizados:
-  " * significa /* */ comments
-  " ! significa <!-- --> comments
+  " ! significa ¡! y ? significa ¿?
 
   Plug 'tpope/vim-vinegar' " netrw on steroids
   " wrapper for git and display git diff in the left gutter
@@ -512,6 +488,7 @@ if exists("*plug#begin")
   Plug 'whatyouhide/vim-gotham'
   Plug 'mbbill/vim-seattle'
   Plug 'clinstid/eink.vim'
+  Plug 'nightsense/carbonized'
 
   " Vim Autoclose for parenthesis and quotation
   Plug 'jiangmiao/auto-pairs'
@@ -534,23 +511,35 @@ if exists("*plug#begin")
 
   " Initialize plugin system
   call plug#end()
-
 endif
 
 " Tabular mappings
 " <SPC>a + symbol tabularizes by symbol
 if exists(":Tabularize")
-  nmap <space>a= :Tabularize /=<CR>
-  vmap <space>a= :Tabularize /=<CR>
-  nmap <space>a: Tabularize /:\zs<CR>
-  vmap <space>a: Tabularize /:\zs<CR>
+  nnoremap <Leader>a= :Tabularize /=<CR>
+  vnoremap <Leader>a= :Tabularize /=<CR>
+  nnoremap <Leader>a: Tabularize /:\zs<CR>
+  vnoremap <Leader>a: Tabularize /:\zs<CR>
 endif
-" --------- Surround Options -----
-"  let ! make a <!-- --> comment surrounding
-let g:surround_{char2nr("!")} = "<!-- \r -->"
+" A Tim Pope function for tables automaticly realigning when using pipe for
+" separations:
+inoremap <silent> <Bar>   <Bar><Esc>:call <SID>align()<CR>a
 
-"  let * make a /* */ comment surrounding
-let g:surround_{char2nr("*")} = "/* \r */"
+function! s:align() abort
+  let p = '^\s*|\s.*\s|\s*$'
+  if exists(':Tabularize') && getline('.') =~# '^\s*|' && (getline(line('.')-1) =~# p || getline(line('.')+1) =~# p)
+    let column = strlen(substitute(getline('.')[0:col('.')],'[^|]','','g'))
+    let position = strlen(matchstr(getline('.')[0:col('.')],'.*|\s*\zs.*'))
+    Tabularize/|/l1
+    normal! 0
+    call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
+  endif
+endfunction
+
+" --------- Surround Options -----
+"  let ! make a ¡! and ¿? surrounding for writing
+let g:surround_{char2nr("!")} = "¡\r!"
+let g:surround_{char2nr("?")} = "¿\r?"
 
 " --------- fuGITive -----
 if exists(":Gstatus")
@@ -573,9 +562,7 @@ if exists(":Gstatus")
 endif  
 
 " ---- Emmet ----
-if exists(":emmet#expandAbbr()")
-  imap   <C-space>   <Esc>:call emmet#expandAbbr(3,"")<CR>i
-endif  
+autocmd VimEnter * if exists(":Emmet") | exe "  inoremap <C-Space> <Esc>:call emmet#expandAbbr(3,'')<CR>a" | endif
 
 " ----- NETRW file manager -----
 let g:netrw_banner=0 " disable annoying banner
@@ -588,14 +575,14 @@ let g:netrw_winsize = 35
 let g:netrw_localrmdir='rm -r' " permite borrar directorios no-vacíos
 
 " Toggle netrw with <Leader>nt
-nmap <Leader>nt :call ToggleNetrw()<CR>
+nnoremap <Leader>nt :call ToggleNetrw()<CR>
 " Make sure netrw buffers dont remain hidden
 autocmd FileType netrw setl bufhidden=wipe
 
 " a function to avoid opening Netrw another time when it is already open
 let g:NetrwIsOpen=0
 
-function! ToggleNetrw()
+function! ToggleNetrw() abort
     if g:NetrwIsOpen
         let i = bufnr("$")
         while (i >= 1)
@@ -655,3 +642,5 @@ endif
 
 " TODO colorschemes
 colorscheme darkblue
+
+
