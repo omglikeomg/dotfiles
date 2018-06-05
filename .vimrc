@@ -72,6 +72,7 @@ packadd! matchit
 
 " Enable syntax highlighting
 syntax enable
+autocmd! Filetype twig set ft=html.twig
 
 " Do not show what mode you're in because statusbar already does it
 set noshowmode
@@ -338,7 +339,7 @@ nnoremap * [I:
 nnoremap # ]I:
 
 " select all mapping
-nnoremap <C-A> ggVG
+nnoremap <leader>a ggVG
 
 " find through files the word under cursor
 nnoremap <Leader>* :Search<CR><C-R><C-w>
@@ -408,7 +409,7 @@ nnoremap <Leader>wr :set wrap! wrap?<CR>
 if has('win32')
   set guifont=Hermit:h12,Lucida\ Console:h11
 elseif has('mac')
-  set guifont=Hermit:h12,Menlo:h14
+  set guifont=Hermit:h14,Menlo:h14
 else
   set guifont=Hermit:h12,Source\ Code\ Pro:h12,Ubuntu\ Mono:h12
 endif
@@ -652,13 +653,14 @@ if has('gui_running')
   silent! colorscheme azuki "tries to improve it
   augroup filetype_colors " helps identify filetypes
     autocmd!
-    autocmd FileType php silent! colorscheme seattle
-    autocmd FileType twig silent! colorscheme seattle
-    autocmd FileType theme silent! colorscheme seattle
-    autocmd FileType js silent! colorscheme gotham
-    autocmd FileType css silent! colorscheme japanesque " not sure about this one
-    autocmd FileType mkd silent! colorscheme eink
-    autocmd FileType md silent! colorscheme eink
+    autocmd BufEnter,BufRead * silent! colorscheme azuki
+    autocmd BufEnter,BufRead *.php silent! colorscheme seattle
+    autocmd BufEnter,BufRead *.twig silent! colorscheme seattle
+    autocmd BufEnter,BufRead *.theme silent! colorscheme seattle
+    autocmd BufEnter,BufRead *.js silent! colorscheme gotham
+    autocmd BufEnter,BufRead *.css silent! colorscheme japanesque " not sure about this one
+    autocmd BufEnter,BufRead *.mkd silent! colorscheme eink
+    autocmd BufEnter,BufRead *.md silent! colorscheme eink
   augroup END
 else
   colorscheme default "tries default
