@@ -445,6 +445,11 @@ nnoremap x "_x
 nnoremap c "_c
 " Keep the cursor in place while joining lines
 nnoremap J mzJ`z
+
+" Remap j and k to behave as they should on text-wrapping
+nnoremap j gj
+nnoremap k gk
+
 """"""""""""""""""""""""""""""""""""""
 " Vim-Plug Section
 """"""""""""""""""""""""""""""""""""""
@@ -515,7 +520,7 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim') || filereadable($HOME . '
   Plug 'shawncplus/phpcomplete.vim' " better php omnicompletion
   Plug 'StanAngeloff/php.vim' " provides php syntax check
   Plug 'OmniSharp/omnisharp-vim', { 'for': 'cs' } " trying to get Unity omnicompletion in Vim
-
+  Plug 'lumiliet/vim-twig'
   " Initialize plugin system
   call plug#end()
 endif
@@ -650,19 +655,20 @@ endif
 " v0.1 colorschemes
 if has('gui_running')
   colorscheme darkblue "puts something readable 
-  silent! colorscheme azuki "tries to improve it
-  augroup filetype_colors " helps identify filetypes
-    autocmd!
-    autocmd BufEnter,BufRead * silent! colorscheme azuki
-    autocmd BufEnter,BufRead *.php silent! colorscheme seattle
-    autocmd BufEnter,BufRead *.twig silent! colorscheme seattle
-    autocmd BufEnter,BufRead *.theme silent! colorscheme seattle
-    autocmd BufEnter,BufRead *.js silent! colorscheme gotham
-    autocmd BufEnter,BufRead *.css silent! colorscheme japanesque " not sure about this one
-    autocmd BufEnter,BufRead *.mkd silent! colorscheme eink
-    autocmd BufEnter,BufRead *.md silent! colorscheme eink
-  augroup END
+  silent! colorscheme seattle "tries to improve it
+  " augroup filetype_colors " helps identify filetypes
+  "   autocmd!
+  "   autocmd BufEnter,BufRead * silent! colorscheme azuki
+  "   autocmd BufEnter,BufRead *.php silent! colorscheme seattle
+  "   autocmd BufEnter,BufRead *.twig silent! colorscheme seattle
+  "   autocmd BufEnter,BufRead *.theme silent! colorscheme seattle
+  "   autocmd BufEnter,BufRead *.js silent! colorscheme gotham
+  "   autocmd BufEnter,BufRead *.css silent! colorscheme japanesque " not sure about this one
+  "   autocmd BufEnter,BufRead *.mkd silent! colorscheme eink
+  "   autocmd BufEnter,BufRead *.md silent! colorscheme eink
+  " augroup END
 else
   colorscheme default "tries default
   silent! colorscheme noctu "tries to improve it
+  set background=dark
 endif
