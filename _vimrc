@@ -386,6 +386,8 @@ nnoremap <Leader>= :wincmd =<CR>
 nnoremap <Leader>b :ls<CR>:buffer<Space>
 " jump to previous edited buffer
 nnoremap <Leader>B :b#<cr>
+" buffer list to open in vsplit
+nnoremap <Leader>vb :ls<CR>:vertical sb<Space>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Functions for editing
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -425,6 +427,10 @@ inoremap <expr> <Down>     pumvisible() ? "\<C-n>" : "\<Down>"
 inoremap <expr> <Up>       pumvisible() ? "\<C-p>" : "\<Up>"
 inoremap <expr> <PageDown> pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<PageDown>"
 inoremap <expr> <PageUp>   pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<PageUp>"
+
+" remapping shift-enter to insert a new line and ctrl-enter to append at the end
+inoremap <C-CR> <Esc>o
+inoremap <S-CR> <Esc>A
 
 """"""""""""""""""""""""""""""""""""""
 " Other
