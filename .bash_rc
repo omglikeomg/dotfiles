@@ -1,3 +1,0 @@
-loadkeys es
-export VISUAL=vim
-export EDITOR="$VISUAL"

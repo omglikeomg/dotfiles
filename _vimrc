@@ -28,7 +28,7 @@ let mapleader = "\<Space>"
 let g:mapleader = "\<Space>"
 
 "set scroll offset to 5 lines
-set scrolloff=5
+set scrolloff=3
 
 let $LANG='es'
 set langmenu=en
@@ -100,7 +100,7 @@ endif
 " Highlights the current line background
 set cursorline
 
-" Open VIM in big window
+" Open VIM in a decent window
 set lines=50 columns=90
 
 " make a mark for column 80
@@ -156,7 +156,9 @@ set wildignore+=*.bmp,*.gif,*.ico,*.jpg,*.png,*.ico
 set wildignore+=*.pdf,*.psd
 set wildignore+=node_modules/*,bower_components/*
 
-" File working related
+
+nnoremap 0 ^
+" ---- FILE WORKING RELATED ----
 " relative path (src/foo.txt)
 nnoremap <leader>pr :let @+=expand("%")<CR>
 
@@ -498,6 +500,10 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim') || filereadable($HOME . '
   " :S /{insert,visual,command}_mode
   " matches INSERT_MODE, visual_mode & CommandMode
 
+  " testing fzf and fzf.vim to replace the regular grepping with rg
+  Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+  Plug 'junegunn/fzf.vim'
+
   " Extra Colorschemes ¿?
   Plug 'noahfrederick/vim-noctu'
   Plug 'dennougorilla/azuki.vim'
@@ -676,5 +682,72 @@ if has('gui_running')
 else
   colorscheme default "tries default
   silent! colorscheme noctu "tries to improve it
-  set background=dark
+  set background=light
 endif
+
+" test: make an access to fast read vimtips.txt for search tips
+if has('win32')
+  let $VIMHOME = $VIM."/vimfiles"
+else
+  let $VIMHOME = $HOME."/.vim"
+endif
+nnoremap <leader>hs :vs $VIMHOME/vimtips.txt<CR>
+
+" Fzf {{{  TAKEN FROM github.com/SidOfc
+  " use bottom positioned 20% height bottom split
+  let g:fzf_layout = { 'down': '~20%' }
+  let g:fzf_colors =
+  \ { 'fg':      ['fg', 'Normal'],
+    \ 'bg':      ['bg', 'Clear'],
+    \ 'hl':      ['fg', 'String'],
+    \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+    \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+    \ 'hl+':     ['fg', 'Statement'],
+    \ 'info':    ['fg', 'PreProc'],
+    \ 'prompt':  ['fg', 'Conditional'],
+    \ 'pointer': ['fg', 'Exception'],
+    \ 'marker':  ['fg', 'Keyword'],
+    \ 'spinner': ['fg', 'Label'],
+    \ 'header':  ['fg', 'Comment'] }
+
+  " simple notes bindings using fzf wrapper
+  nnoremap <silent> <Leader>n :call fzf#run(fzf#wrap({'source': 'rg --files ~/notes', 'options': '--header="[notes:search]" --preview="cat {}"'}))<Cr>
+  nnoremap <silent> <Leader>N :call <SID>NewNote()<Cr>
+  nnoremap <silent> <Leader>nd :call fzf#run(fzf#wrap({'source': 'rg --files ~/notes', 'options': '--header="[notes:delete]" --preview="cat {}"', 'sink': function('<SID>DeleteNote')}))<Cr>
+
+  fun! s:MkdxGoToHeader(header)
+    call cursor(str2nr(get(matchlist(a:header, ' *\([0-9]\+\)'), 1, '')), 1)
+  endfun
+
+  fun! s:MkdxFormatHeader(key, val)
+    let text = get(a:val, 'text', '')
+    let lnum = get(a:val, 'lnum', '')
+    if (empty(text) || empty(lnum)) | return text | endif
+
+    return repeat(' ', 4 - strlen(lnum)) . lnum . ': ' . text
+  endfun
+
+  fun! s:MkdxFzfQuickfixHeaders()
+    let headers = filter(map(mkdx#QuickfixHeaders(0), function('<SID>MkdxFormatHeader')), 'v:val != ""')
+    call fzf#run(fzf#wrap(
+            \ {'source': headers, 'sink': function('<SID>MkdxGoToHeader') }
+          \ ))
+  endfun
+
+  if (!$VIM_DEV)
+    nnoremap <silent> <Leader>I :call <SID>MkdxFzfQuickfixHeaders()<Cr>
+  endif
+
+  command! -bang -nargs=* Rg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --hidden --ignore-case --no-heading --color=always '.shellescape(<q-args>), 1,
+  \   <bang>0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'up:60%')
+  \           : fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'right:50%:hidden', '?'),
+  \   <bang>0)
+
+  " only use FZF shortcuts in non diff-mode
+  if !&diff
+    nnoremap <C-p> :Files<Cr>
+    nnoremap <C-g> :Rg<Cr>
+  endif
+" }}}
