@@ -8,8 +8,8 @@
 loadkeys es
 export VISUAL=vim
 export EDITOR="$VISUAL"
-alias ls='ls --color=auto'
-alias ll='ls -l'
+alias ls='ls -GH'
+alias ll='ls -lGH'
 alias v='vim --remote-silent'
 alias g='gvim --remote-silent'
 
