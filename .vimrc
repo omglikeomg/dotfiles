@@ -74,9 +74,6 @@ packadd! matchit
 syntax enable
 autocmd! Filetype twig set ft=html.twig
 
-" Do not show what mode you're in because statusbar already does it
-set noshowmode
-
 set background=dark
 
 " Always show the status line
@@ -681,7 +678,7 @@ if has('gui_running')
   " augroup END
 else
   colorscheme default "tries default
-  silent! colorscheme noctu "tries to improve it
+  " silent! colorscheme noctu "tries to improve it
   set background=light
 endif
 
@@ -710,33 +707,6 @@ nnoremap <leader>hs :vs $VIMHOME/vimtips.txt<CR>
     \ 'spinner': ['fg', 'Label'],
     \ 'header':  ['fg', 'Comment'] }
 
-  " simple notes bindings using fzf wrapper
-  nnoremap <silent> <Leader>n :call fzf#run(fzf#wrap({'source': 'rg --files ~/notes', 'options': '--header="[notes:search]" --preview="cat {}"'}))<Cr>
-  nnoremap <silent> <Leader>N :call <SID>NewNote()<Cr>
-  nnoremap <silent> <Leader>nd :call fzf#run(fzf#wrap({'source': 'rg --files ~/notes', 'options': '--header="[notes:delete]" --preview="cat {}"', 'sink': function('<SID>DeleteNote')}))<Cr>
-
-  fun! s:MkdxGoToHeader(header)
-    call cursor(str2nr(get(matchlist(a:header, ' *\([0-9]\+\)'), 1, '')), 1)
-  endfun
-
-  fun! s:MkdxFormatHeader(key, val)
-    let text = get(a:val, 'text', '')
-    let lnum = get(a:val, 'lnum', '')
-    if (empty(text) || empty(lnum)) | return text | endif
-
-    return repeat(' ', 4 - strlen(lnum)) . lnum . ': ' . text
-  endfun
-
-  fun! s:MkdxFzfQuickfixHeaders()
-    let headers = filter(map(mkdx#QuickfixHeaders(0), function('<SID>MkdxFormatHeader')), 'v:val != ""')
-    call fzf#run(fzf#wrap(
-            \ {'source': headers, 'sink': function('<SID>MkdxGoToHeader') }
-          \ ))
-  endfun
-
-  if (!$VIM_DEV)
-    nnoremap <silent> <Leader>I :call <SID>MkdxFzfQuickfixHeaders()<Cr>
-  endif
 
   command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
@@ -747,7 +717,10 @@ nnoremap <leader>hs :vs $VIMHOME/vimtips.txt<CR>
 
   " only use FZF shortcuts in non diff-mode
   if !&diff
-    nnoremap <C-p> :Files<Cr>
-    nnoremap <C-g> :Rg<Cr>
+    nnoremap <leader>f :Files<Cr>
+    nnoremap º :Rg<Cr>
+    nnoremap <leader><leader>h :Maps
+    nnoremap <leader><leader>c :Commands
+    nnoremap <leader><leader>ft :Filetypes
   endif
 " }}}
