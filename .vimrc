@@ -98,7 +98,7 @@ endif
 set cursorline
 
 " Open VIM in a decent window
-set lines=50 columns=90
+set lines=90 columns=200
 
 " make a mark for column 80
 set colorcolumn=80
@@ -154,8 +154,11 @@ set wildignore+=*.pdf,*.psd
 set wildignore+=node_modules/*,bower_components/*
 
 
-nnoremap 0 ^
+" remap - and _ to have a more accessible search as in english keyboard
+nnoremap - /
+nnoremap _ ?
 " ---- FILE WORKING RELATED ----
+" YANK PATHS TO CLIPBOARD
 " relative path (src/foo.txt)
 nnoremap <leader>pr :let @+=expand("%")<CR>
 
@@ -170,7 +173,7 @@ nnoremap <leader>pF :let @+=expand("%:p:h")<CR>
 
 " {{ SET RG as grep and use it wisely to find in files
 if executable("rg")
-  set grepprg=rg\ --vimgrep\ --no-heading\ --ignore-case
+  set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
 
   " --column: Show column number
   " --line-number: Show line number
@@ -185,7 +188,7 @@ if executable("rg")
 
   set grepformat=%f:%l:%c:%m,%f:%l:%m
 elseif executable("ag")
-  set grepprg=ag\ --nogroup\ --nocolor\ --ignore-case\ --column
+  set grepprg=ag\ --nogroup\ --nocolor\ --smart-case\ --column
   set grepformat=%f:%l:%c:%m,%f:%l:%m
 endif
 " }}
@@ -205,11 +208,11 @@ function! MySearch() abort
 endfunction
 
 " simple fuzzyfind for filenames
-nnoremap <Leader>f :find<Space>*
+" nnoremap <Leader>f :find<Space>*
 " a command to navigate most recent files
-nnoremap <Leader>F :bro<Space>ol<CR>
+" nnoremap <Leader>F :bro<Space>ol<CR>
 " one to list all the tags available
-nnoremap <Leader>ts :tselect<Space><C-D>
+" nnoremap <Leader>ts :tselect<Space><C-D>
 " one to see the jumps done
 nnoremap <Leader>io :jumps<CR>
 
@@ -250,7 +253,7 @@ nnoremap <buffer> pe <CR>:ped<CR>:cw<CR>
 
 
 " toggles quickfix window (forced)
-nnoremap <Leader><Leader> :QFix<CR>
+" nnoremap <Leader><Leader> :QFix<CR>
 command! -bang -nargs=? QFix call QFixToggle(<bang>0)
 function! QFixToggle(forced) abort
   if exists("g:qfix_win") && a:forced == 0
@@ -265,11 +268,6 @@ endfunction
 " TAG JUMPING
 
 nnoremap <leader>tj :tjump<Space>*
-
-" stolen from sensible.vim
-if &listchars ==# 'eol:$'
-  set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
-endif
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " TEXT FILES TREATMENT
@@ -317,7 +315,7 @@ set pastetoggle=<F2>
 nnoremap yy 0y$
 
 " Disable highlight when pressing ESC
-nnoremap <Esc> :noh<CR>
+nnoremap <leader><leader><leader> :noh<CR>
 
 " Visual mode pressing * or # searches for the current selection
 vnoremap <silent> * "sy/<C-r>s
@@ -334,14 +332,14 @@ vnoremap <silent> <leader>rp  "sy:%s/<C-r>s//g<Left><Left>
 nnoremap <Leader>/ :il /
 
 "Improved * and # to allow instant meaningful jumps
-nnoremap * [I:
-nnoremap # ]I:
+nnoremap <leader>* [I:
+nnoremap <leader># ]I:
 
 " select all mapping
 nnoremap <leader>a ggVG
 
 " find through files the word under cursor
-nnoremap <Leader>* :Search<CR><C-R><C-w>
+" nnoremap <Leader>* :Search<CR><C-R><C-w>
 " leader rw to replace word under cursor
 nnoremap <Leader>rw :%s/\<<C-R><C-W>\>//g<LEFT><LEFT>
 " leader rW to replace WORD under cursor
@@ -410,9 +408,9 @@ nnoremap <Leader>wr :set wrap! wrap?<CR>
 if has('win32')
   set guifont=Hermit:h12,Lucida\ Console:h11
 elseif has('mac')
-  set guifont=Hermit:h14,Menlo:h14
+  set guifont=Courier\ Prime\ Pro:h14,Menlo:h14
 else
-  set guifont=Hermit:h12,Source\ Code\ Pro:h12,Ubuntu\ Mono:h12
+  set guifont=Hermit\ 12,Source\ Code\ Pro\ 12,Ubuntu\ Mono\ 12
 endif
 
 " Add a heading/subheading to current line
@@ -665,21 +663,8 @@ endif
 if has('gui_running')
   colorscheme darkblue "puts something readable 
   silent! colorscheme seattle "tries to improve it
-  " augroup filetype_colors " helps identify filetypes
-  "   autocmd!
-  "   autocmd BufEnter,BufRead * silent! colorscheme azuki
-  "   autocmd BufEnter,BufRead *.php silent! colorscheme seattle
-  "   autocmd BufEnter,BufRead *.twig silent! colorscheme seattle
-  "   autocmd BufEnter,BufRead *.theme silent! colorscheme seattle
-  "   autocmd BufEnter,BufRead *.js silent! colorscheme gotham
-  "   autocmd BufEnter,BufRead *.css silent! colorscheme japanesque " not sure about this one
-  "   autocmd BufEnter,BufRead *.mkd silent! colorscheme eink
-  "   autocmd BufEnter,BufRead *.md silent! colorscheme eink
-  " augroup END
 else
-  colorscheme default "tries default
-  " silent! colorscheme noctu "tries to improve it
-  set background=light
+  colorscheme default " best is default
 endif
 
 " test: make an access to fast read vimtips.txt for search tips
@@ -710,7 +695,7 @@ nnoremap <leader>hs :vs $VIMHOME/vimtips.txt<CR>
 
   command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
-  \   'rg --column --line-number --hidden --ignore-case --no-heading --color=always '.shellescape(<q-args>), 1,
+  \   'rg --column --line-number --hidden --smart-case --no-heading --color=always '.shellescape(<q-args>), 1,
   \   <bang>0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'up:60%')
   \           : fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'right:50%:hidden', '?'),
   \   <bang>0)
@@ -718,9 +703,11 @@ nnoremap <leader>hs :vs $VIMHOME/vimtips.txt<CR>
   " only use FZF shortcuts in non diff-mode
   if !&diff
     nnoremap <leader>f :Files<Cr>
-    nnoremap º :Rg<Cr>
-    nnoremap <leader><leader>h :Maps
-    nnoremap <leader><leader>c :Commands
-    nnoremap <leader><leader>ft :Filetypes
+    nnoremap º :Rg
+    nnoremap <leader><leader>h :Maps<CR>
+    nnoremap <leader><leader>c :Commands<CR>
+    nnoremap <leader><leader>ft :Filetypes<CR>
+    nnoremap <leader>F :History<CR>
+    nnoremap <leader>ts :Tags<CR>
   endif
 " }}}
