@@ -1,37 +1,56 @@
 " Configuración VIM
 " 2018 Demian Molinari - demianmolinari@yahoo.com
-" ( vim: set fmd=marker )
+
 " INDICE
 " ======
 "
 " (utilice el número seguido de G, gg o bien haga :<numero>)
 "
-" 1. SENTIDO COMÚN
-" 2. RELACIONADO CON LA BÚSQUEDA
-" 3. PARA MAYOR COMODIDAD
-" 4. RELACIONADOS CON LA PROGRAMACIÓN
-" 5. VIM ES UN MUNDO!
+" 0. NOTA.....................................17
+" 1. SENTIDO COMÚN............................40
+" 2. RELACIONADO CON LA BÚSQUEDA..............98
+" 3. PARA MAYOR COMODIDAD.....................117
+" 4. RELACIONADOS CON LA PROGRAMACIÓN.........316
+" 5. VIM ES UN MUNDO!.........................507
+" 6. BUSCANDO ARCHIVOS, LINEAS, PALABRAS......903
+" 7. BUSCAR, SUBSTITUIR.......................1204
+" 8. PLUGINS MÍNIMOS..........................1371
+" 9. EXTRA PLUGINS............................1596
+" 10 DICCIONARIOS DE SINTAXIS.................1680
 
-"
-" - NOTA -
+" 0 - NOTA -{{{
 "
 " Este fichero puede parecer un archivo de configuración, mas no lo es, al
-" menos, no uno al uso. Fallan dos elementos clave para ello:
+" menos, no uno al uso.
 "
-"   - Que las opciones estén encapsuladas en condicionales para asegurar
-"     compatibilidad
-"   - Hay mappeos repetidos, funciones que luego son mejoradas por otras,
-"     etc.  - en definitiva, demasiada redundancia
+" Sin embargo, puede usarse como tal, puesto que, si bien es muchísimo más
+" largo que un archivo vimrc tradicional, es básicamente por estar lleno de
+" comentarios. Es un archivo que intenta valer para todo sistema operativo
+" (TODO: testearlo en más) y asegurar máxima compatibilidad en la medida de lo
+" posible.
+"
+" No estaría de más, sin embargo, que si alguien quiere usar esta configuración
+" como guía, lo haga pensando que quizá sea mejor leer el archivo, copiar las
+" configuraciones que parezcan interesantes y evitarse tener líneas y líneas
+" explicación redundate y que no pinta nada en un vimscript como este
 "
 " El objetivo de este archivo es que sirva más como una guía que como un
-" verdadero archivo de configuración...
-" Sin embargo, para los más vagos, probablemente con comentar un par de líneas
-" y asegurarse de tener una versión 'Huge' de Vim tengan suficiente.
-" Eso sí, para saber qué comentar, supongo que habrá que leérselo.
+" verdadero archivo de configuración... Sin embargo también es, de momento, mi
+" configuración más actualizada. No soy un genio de Vim, de hecho llevo poco
+" más de un año con él y si bien me muevo con bastante soltura, no hace
+" demasiado que realmente me propuse conocer a fondo sus posibilidades e
+" intentar adentrarme más en la configuración. Lo que he aprendido me ha
+" sorprendido más a mí mismo que a nadie, pues básicamente viene a decir que un
+" programa con casi 30 años encima ha ido evolucionando hasta incluir la
+" mayoría de funcionalidades que encontramos en IDEs modernos y por las que o
+" bien se nos cobra o se nos roba la mitad de los recursos del sistema.
 "
-"
+"}}}
+
 " {{{ 1. SENTIDO COMÚN
 """""""""""""""""""""
+" Configuraciones básicas de Vim en las que las mayoría de usuarios están de
+" acuerdo o bien tienen leves discrepancias.
 
 " IGNORAR LOS ERRORS CUANDO SE CAMBIA DE BUFFER SIN GUARDAR
 set hidden
@@ -67,6 +86,8 @@ set backspace=eol,start,indent
 
 " también las flechas (o no?)
 set whichwrap+=<,>,[,] " ver :h whichwrap para más opciones
+" pero no a la h y la l
+set whichwrap-=h,l
 
 " mostrar siempre statusline (con ruler)
 set ruler
@@ -81,9 +102,9 @@ let g:omni_sql_no_default_maps = 1
 
 " Van a haber muchas configuraciones, así que es mejor tener a mano la carpeta donde estas se guardan:
 if has('win32') " la carpeta se llama distinto en Windows
-  let $VIMHOME = $USERPROFILE."/vimfiles"
+  let g:vim_at_user_home = $USERPROFILE."/vimfiles"
 else
-  let $VIMHOME = $HOME."/.vim"
+  let g:vim_at_user_home = $HOME."/.vim"
 endif
 
 "}}}
@@ -91,15 +112,15 @@ endif
 " {{{ 2. RELACIONADO CON LA BÚSQUEDA
 """""""""""""""""""""""""""""""""""
 
-" incremental para que nos desplace a medida que buscamos
+" INCREMENTAL para que nos desplace a medida que buscamos
 set incsearch
 
-" smartcase para que casen minúsculas con todo y mayúsculas con mayúsculas
+" SMARTCASE para que casen minúsculas con todo y mayúsculas con mayúsculas
 set ignorecase
 set smartcase
 
-" para resaltar mejor la palabra, márcala - incluso así hay veces que no es
-" suficiente
+" HIGHLGHT --> para resaltar mejor la palabra: márcala - incluso así hay veces
+" que no es suficiente
 set hlsearch
 
 " un atajo de teclado para desmarcarla, más usado de lo que uno se piensa:
@@ -109,6 +130,19 @@ nnoremap <leader><leader><leader> :noh<CR>
 
 " {{{ 3. PARA MAYOR COMODIDAD
 """"""""""""""""""""""""""""
+" FOLLOW THE LEADER
+" Vim ofrece una tecla a la que llama leader, que sirve básicamente para crear
+" atajos de teclado. La tecla <leader> precede a la mayoría de atajos de
+" teclado configurados por el usuario. Vim recomienda trabajar de esta manera y
+" no encuentro realmente motivos para discrepar. Lo único que hace falta es
+" situarla en una posición accesible. Para mí, esta posición es el espacio.
+" Espacio, en modo normal, hace lo mismo que la l o la flecha a la derecha.
+" Completamente reemplazable. Además, la tecla por defecto para el <leader> en
+" Vim es \ ... prácticamente imposible de alcanzar.
+
+let mapleader = "\<Space>"
+let g:mapleader = "\<Space>"
+
 " Una herramienta típica para organizar contenidos es el pliegue de texto.
 " Poder plegar fragmentos del texto y comprimirlos a una línea permite la
 " navegación más rápida por un documento. Además, nos aportará ciertas
@@ -166,6 +200,9 @@ nnoremap <Leader>rc :tabnew $MYVIMRC<CR>
 " UTILIZAR EL PORTAPAPELES POR DEFECTO DEL SISTEMA OPERATIVO (REGISTRO POR
 " DEFECTO * MENOS EN TERMINALES, QUE ES +)
 let &clipboard = has ('unnamedplus') ? 'unnamedplus' : 'unnamed'
+" en cualquier caso, al tener el portapapeles 'plus' vim sigue guardando la
+" copia en ambos registros: si algo está en * también está en +, sin embargo,
+" esto no funciona a la inversa.
 
 " DEJA 3 LÍNEAS DE MARGEN AL HACER AVANZAR LA PANTALLA
 if !&scrolloff
@@ -207,21 +244,30 @@ set langmenu=es
 " se llene de basura
 
 if has('persistent_undo')
-  if !isdirectory($VIMHOME.'/undo')
-    call mkdir($VIMHOME . '/undo', 'p', 0700)
+  if !isdirectory(g:vim_at_user_home.'/undo')
+    call mkdir(g:vim_at_user_home . '/undo', 'p', 0700)
   endif
-  set undodir=$VIMHOME/undo
+  set undodir=g:vim_at_user_home/undo
   set undofile
 endif
-if !isdirectory($VIMHOME.'/bks')
-  call mkdir($VIMHOME . '/bks', 'p', 0700)
+if !isdirectory(g:vim_at_user_home.'/bks')
+  call mkdir(g:vim_at_user_home . '/bks', 'p', 0700)
 endif
-set backupdir=$VIMHOME/bks
+set backupdir=g:vim_at_user_home/bks
 
-if !isdirectory($VIMHOME.'/swap')
-  call mkdir($VIMHOME . '/swap', 'p', 0700)
+if !isdirectory(g:vim_at_user_home.'/swap')
+  call mkdir(g:vim_at_user_home . '/swap', 'p', 0700)
 endif
-set directory=$VIMNHOME/swap
+set directory=g:vim_at_user_home/swap
+
+" Uno más para hacer de los pliegues de nuestros archivos algo persistente
+if has('mksession')
+  if !isdirectory(g:vim_at_user_home.'/views')
+    call mkdir(g:vim_at_user_home . '/views', 'p', 0700)
+  endif
+  set viewdir=g:vim_at_user_home/views
+  " para guardar la configuración de pliegues, teclear :mkview
+endif
 
 " Realmente estos archivos me molestaban y terminé por desactivarlos: total la
 " mayoría de cosas están en un control de versiones o bien son archivos de
@@ -251,19 +297,21 @@ if has("gui_running")
   " manera en que se pintan las tabs
   set guitablabel=%M\ %t
   " colores
-  colorscheme koehler " creo que es la más potable de serie -
+  colorscheme desert " creo que es la más potable de serie -
                 " alternativas son:
-                " 'darkblue' y 'desert'  ...quizá 'peachpuff' en colores claros
+                " 'darkblue' y 'koehler'  ...quizá 'peachpuff' en colores claros
   " tamaño de ventana
   set columns=200
   set lines=60
   " arreglaremos la fuente según sistema operativo
   if has('win32')
+    " en windows es especialmente horrible FixedSys, así que pongo una segunda
+    " fuente por si acaso no tengo instalada la mía:
     set guifont=Courier\ Prime\ Code:h14,Lucida\ Console:h11
   elseif has('mac')
-    set guifont=Courier\ Prime\ Code
+    set guifont=Courier\ Prime\ Code " la de sistema es una buena alternativa
   else
-    set guifont=Courier\ Prime\ Code\ 12,Liberation\ Mono\ 12
+    set guifont=Courier\ Prime\ Code\ 12 " la de sistema es suficiente sino
   endif
 endif
 
@@ -291,7 +339,7 @@ inoremap <C-U> <C-G>u<C-U>
 
 " MAPPINGS ADICIONALES ÚTILES:
 "
-" SELECCIONAR TODO
+" SELECCIONAR TODAS LAS LINEAS
 nnoremap <leader>a ggVG
 " EN MODO VISUAL, CON TABULADOR PODER AUMENTAR O BAJAR LA INDENTACIÓN:
 vnoremap <Tab> >gv
@@ -348,6 +396,25 @@ augroup end
 " tiene que ser la misma que la mía: utilizar siempre tabs y que la medida
 " siempre sea la misma en tabstop, softtabstop y shiftwidth (en mi caso, 2)
 
+" El motivo por el cual me gusta usar los tabuladores es porque Vim puede
+" mostrarlos y así servirnos de guía visual para la indentación correcta
+
+" un atajo para mostrar/ocultar los caracteres invisibles:
+nnoremap çli :set list! list?<CR>
+" y de paso, los maquetamos el caracter '…' requiere utf-8, así que puede ser
+" que no se muestre correctamente en algunos entornos (substituir por '>')
+
+set listchars=tab:\|\ ,eol:¬,extends:…,precedes:…,trail:.,nbsp:·
+              " ^        ^     ^         ^          ^       ^
+              " |        |     |         |          |     espacio que no admite
+              " |        |     |         |          |       quiebro de línea.
+              " |        |     |_________|  espacio en blanco
+              " |        |          |
+              " |        |        marca que una línea sigue fuera de la pantalla
+              " |        |
+              " |      final de línea
+          " tabulaciones
+
 " habilitar syntaxis
 if has('syntax') && !exists('g:syntax_on')
   syntax enable
@@ -373,7 +440,8 @@ set linebreak " y de paso que si hay que romper el texto, que sea por palabras
 " activar-desactivar 'wrap' para el texto
 " empieza desactivado
 set nowrap
-" los caracteres invisibles tienen que estar desactivados.
+" los caracteres invisibles tienen que estar desactivados para que wrap
+" funcione, pero por defecto los dejaremos activados.
 set nolist
 
 " de normal no utilizaremos wrap, pero para archivos de texto, es mejor
@@ -384,21 +452,6 @@ set nolist
 " en cualquier caso, este comando activa y desactiva {wr}ap y list, ya que wrap
 " y list no funcionan juntos
 nnoremap <Leader>wr :set wrap!<CR>:set list! wrap?<CR>
-" y este los caracteres invisibles
-nnoremap çli :set list! list?<CR>
-" y de paso, los maquetamos el caracter … requiere utf-8, así que puede ser
-" que no se muestre correctamente en algunos entornos
-
-set listchars=tab:\|\ ,eol:¬,extends:…,precedes:…,trail:.,nbsp:·
-              " ^        ^     ^         ^          ^       ^
-              " |        |     |         |          |     espacio que no admite
-              " |        |     |         |          |       quiebro de línea.
-              " |        |     |_________|  espacio en blanco
-              " |        |          |
-              " |        |        marca que una línea sigue fuera de la pantalla
-              " |        |
-              " |      final de línea
-          " tabulaciones
 
 " también modifico los mapeos básicos de movimiento de arriba-abajo e
 " inicio-fin pues con el wrap puesto los comandos de serie me confunden mucho
@@ -440,6 +493,7 @@ set omnifunc=syntaxcomplete#Complete
 " palabras que estén en el documento actual y la función de autocompletado
 " 'omni' se llama con <C-X><C-O>
 " <C-X><C-O> es harto complicado para una función que deberíamos usar bastante:
+" F2 es autocompletar o bien <C-L>
 inoremap <F2> <C-X><C-O>
 inoremap <C-L> <C-X><C-O>
 
@@ -470,22 +524,22 @@ inoremap <S-CR> <Esc>mmA
 
 " con el comando establezco una marca en la posición en la que estaba antes de
 " saltar, así puedo volver atrás si quisiera, algo que también mappearé en
-" <C-M>
+" <C-B>
 
-inoremap <C-M> <Esc>'mi
+inoremap <C-B> <Esc>'mi
 
-"por defecto <C-M> equivale a hacer Enter. De ahí que tampoco lo considere un
-"atajo de teclado vital. Muchas veces en Vim queremos cambiar la configuración
-"a algo que sea más de nuestro agrado, pero sin saberlo estamos perdiendo otros
-"comandos muy interesantes. Es importante tenerlo en cuenta.
-" Toda esta configuración permite ser un poco más versátil editando, aunque
-" no funciona en terminales, imagino que a causa de que estas teclas las debe
-" usar el sistema para otras cosas... (razón de más para apostar por guimode)
-" esto es una alternativa a utilizar <C-O> (ejecuta un comando normal desde
-" insert mode) y luego 'o' o 'A'.
-" Utilizo estos mappeos por comodidad pero están lejos de ser obligatorios...
-" muchas veces me encuentro haciendo <C-O>x para borrar un paréntesis
-" autoinsertado que cierra... y encuentro <C-O>o mucho más ergonómico que <C-O>x
+"por defecto <C-B> equivale a hacer que el texto fluya de derecha a izquiera.
+"De ahí que tampoco lo considere un atajo de teclado vital. Muchas veces en Vim
+"queremos cambiar la configuración a algo que sea más de nuestro agrado, pero
+"sin saberlo estamos perdiendo otros comandos muy interesantes. Es importante
+"tenerlo en cuenta. Toda esta configuración permite ser un poco más versátil
+"editando, aunque no funciona en terminales, imagino que a causa de que estas
+"teclas las debe usar el sistema para otras cosas... (razón de más para apostar
+"por guimode) esto es una alternativa a utilizar <C-O> (ejecuta un comando
+"normal desde insert mode) y luego 'o' o 'A'. Utilizo estos mappeos por
+"comodidad pero están lejos de ser obligatorios... muchas veces me encuentro
+"haciendo <C-O>x para borrar un paréntesis autoinsertado que cierra... y
+"encuentro <C-O>o mucho más ergonómico que <C-O>x
 " }}}
 
 " {{{ 5. VIM ES UN MUNDO!
@@ -517,6 +571,10 @@ inoremap <C-M> <Esc>'mi
 " > y sobre todo, aprender a usar 'f' y 't' y sus repetidores ';' y ','
 " > (adelante y atrás)
 
+" Un movimiento que está muy mal mapeado en un teclado español es el de 'follow tag', que sirve, sin ir más lejos, para moverse en los archivos de ayuda. Pero también para saltar a las definiciones y usos de una función de programación. Por defecto es <C-]> y es horrible, así que prefiero cambiarlo a <C-,>
+
+nnoremap <C-,> <C-]>
+
 " Saltos:
 " Interesante también es como, de los movimientos anteriores, los 3 primeros
 " cuentan como un 'salto' mientras que los otros no...
@@ -530,9 +588,23 @@ inoremap <C-M> <Esc>'mi
 " un salto.
 
 " LA BARRA DE ESTADO
-" TODO: Explicación
-set statusline=%F%m%r%h%w[%L]%=(%{&ff})%y[%04l,%04v]
+" La barra de estado de Vim contiene una información un tanto pobre. He visto a
+" personas que han hecho realmente barras de estado geniales, obras de arte,
+" pero yo apuesto por un diseño bastante más minimalista y que tan solo incluya
+" unos cuantos datos más que no el nombre de archivo y la posición en la que
+" estamos...
 
+set statusline=%<\  " clear the statusline for when vimrc is reloaded
+set statusline+=%-3.3n\                       " número de buffer
+set statusline+=%40F\                         " archivo y ruta (hasta 40 caracteres)
+set statusline+=%h%m%r%w                      " flags(mod,ro,etc)
+set statusline+=[%{strlen(&ft)?&ft:'none'},   " filetype
+set statusline+=%{strlen(&fenc)?&fenc:&enc},  " encoding
+set statusline+=%{&fileformat}]               " format (unix,dos)
+set statusline+=%=                            " a la derecha
+                                              " lee sobre qué esta el cursor
+set statusline+=%{synIDattr(synID(line('.'),col('.'),1),'name')}\ 
+set statusline+=[%04l,%04v]\                  " linea, columna
 "
 " MOVERSE POR MARCAS
 " ------------------
@@ -583,7 +655,7 @@ set lazyredraw
 " -------------
 " Tener ctags instalado en la máquina debería ser una prioridad... y si es
 " así, podemos generar archivos tags y navegar a través de ellos con vim como
-" si se tratara de un super id...
+" si se tratara de un super IDE...
 " :ts{elect} permite saltar a la tag que queramos, completa con tabulador...
 " :tnext y :tprev nos permite movernos...
 nnoremap <Leader>ts :tselect<Space><C-D> nos permite llamar tSelect y
@@ -609,6 +681,7 @@ nnoremap <leader>mkt :maketags<CR>
 " Existen pocos atajos de teclado para las tags
 " pero básicamente utilizaremos este:
 " <C-]> go to definition (incluso a otro archivo)
+" que hemos substituido por <C-,>
 " también es útil el comentado anteriormente que lista todas las tags
 "
 " he hecho este comando para saltar rápido a tags tras escribir un par de
@@ -1165,7 +1238,6 @@ nnoremap <leader>F :MostRecent<CR>
 "
 " }}}
 
-
 " {{{ 7. BUSCAR, SUBSTITUIR
 """""""""""""""""""""""
 "
@@ -1219,7 +1291,7 @@ nnoremap _ ?\v
 " carpeta de vim, para poder cargarlo en memoria y buscar algún patrón:
 
 " help-search:
-nnoremap <leader>hs :vs $VIMHOME/vimtips.txt<CR>
+nnoremap <leader>hs :vs g:vim_at_user_home/vimtips.txt<CR>
 
 " REEMPLAZAR
 "
@@ -1333,7 +1405,7 @@ command! -nargs=1 Tilist exec printf('call Turbo_il(%s)', string(<q-args>))
 nnoremap <leader>/ :Tilist<space>
 " }}}
 
-" {{{ 9. PLUGINS MINIMALISTAS Y VALIOSOS
+" {{{ 8. PLUGINS MINIMALISTAS Y VALIOSOS
 """"""""""""""""""""""""""""""""""""
 "
 " Hasta ahora hemos explorado lo que Vim puede hacer por sí solo y sin
@@ -1366,6 +1438,9 @@ nnoremap <leader>/ :Tilist<space>
 " muy útiles y ligeros. Me gustaría dejar claro que esta preferencia es
 " subjetiva.
 "
+" Toda la instalación de Vim-Plug está cubierta en este mismo archivo, solo
+" hace falta tener curl instalado. Si no se tiene curl, entonces mejor
+" descargarlo y colocarlo manualmente.
 " Instalación de Vim-Plug >> mirar en https://github.com/junegunn/vim-plug
 
 " Si plug no está, instálalo (antes que hacerlo automático, dejarlo en un
@@ -1501,11 +1576,11 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim') || filereadable($HOME . '
   " comillas o los paréntesis y convertir en inútil este plugin.
   " Para arreglarlo, me preparo un mapping para activar o desactivar el plugin
 
-  let g:AutoPairsShortcutToggle='<C-ç>'
-  let g:AutoPairsFlyMode=1 " este segundo comando lo hace más inteligente cuando
-                           " anidamos paréntesis
-
-
+  " Por lo visto autopairs contiene una variable para marcar con qué tecla se
+  " activa o desactiva el plugin...
+  " let g:AutoPairsShortcutToggle='tecla'
+  " esto parece no estar funcionando o no funcionar siempre, así que por si acaso:
+  nnoremap <C-ç> :call AutoPairsToggle()
 
   Plug 'justinmk/vim-sneak'
   " Este plugin es quizá el más pesado que cargo y es bastante ligero en
@@ -1522,7 +1597,7 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim') || filereadable($HOME . '
   "  > sca
   "
   " me movería hacia 'cardillo'
-  " y apretando ; avanzaría hasta 'paja.'
+  " y apretando ; avanzaría hasta 'tocaba.'
   " con , volvería a 'cardillo'
   "
   " Existen alternativas, para o bien hacer más potentes la t y la f que ya
@@ -1536,6 +1611,10 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim') || filereadable($HOME . '
   " personalización. Este se basa en comandos de buscar
   " Me remito a otro VimCast para verlo en acción:
   " http://vimcasts.org/episodes/aligning-text-with-tabular-vim/
+  "
+  " Básicamente llamamos al comando :Tab y le pasamos el caracter por el que
+  " queremos indentar de manera ordenada... o bien le pasamos una expresión
+  " regular entre /barras/
   "
   " Y engancho esta genialidad:
   " A Tim Pope function for tables automatically realigning when using pipe for
@@ -1623,8 +1702,9 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim') || filereadable($HOME . '
   " En el caso de no tener disponible fzf, nada de esto debería ser mappeado,
   " para que perduren las configuraciones anteriores:
 
-  if !&diff && !exists(':FZF')
+  if !&diff && exists(':FZF')
     " NOTA: con <C-V> abrimos cualquier archivo o tag en un vsplit
+    nnoremap <leader>b :Buffers<CR>
     nnoremap <leader>f :Files<CR>
     nnoremap º :Rg
     nnoremap <leader>F :History
@@ -1640,9 +1720,23 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim') || filereadable($HOME . '
 " ----
 "  TODO: Aún no lo he probado
 "
+
+" }}}
+
+" {{{ 10. DICCIONARIOS DE SINTAXIS
+" El último apartado a tratar tiene que ver con los diccionarios de sintaxis
+" que pueden ampliar las funciones de autocompletado de Vim. Existen realmente
+" un enorme número de plugins que evalúan la sintaxis o que amplían el
+" diccionario interno de Vim con mayor número de comandos. Podemos intentar
+" escoger tan solo aquellos que necesitemos, pues generalmente un programador
+" no trabaja en demasiados lenguajes distintos. No obstante, existe un
+" empaquetado creado a partir de gran parte de los plugins de sintaxis que, si
+" bien ocupa un poco de espacio en disco, es realmente impecable en su
+" funcionamiento y no carga todos los plugins sino solo los que se necesiten
+" según el tipo de archivo.
+  Plug 'https://github.com/sheerun/vim-polyglot'"
+
 " Al final de esta sección, cerramos el condicional que protege de errores por
 " no poder instalar plugins:
 endif
-
 " }}}
-" 10. diccionarios de sintaxis
