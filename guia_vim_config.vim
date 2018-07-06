@@ -309,7 +309,7 @@ if has("gui_running")
     " fuente por si acaso no tengo instalada la mía:
     set guifont=Courier\ Prime\ Code:h14,Lucida\ Console:h11
   elseif has('mac')
-    set guifont=Courier\ Prime\ Code " la de sistema es una buena alternativa
+    set guifont=Courier\ Prime\ Code:h16 " la de sistema es una buena alternativa
   else
     set guifont=Courier\ Prime\ Code\ 12 " la de sistema es suficiente sino
   endif
@@ -934,8 +934,11 @@ cnoremap <C-S> <Home>vertical s<End>
 " Creo que uno de los que más uso es el alternar entre un buffer y el
 " anterior, así que también le he hecho un mappeo rápido pues :b# es bastante
 " horrible:
-"
+
 nnoremap <leader>B :b#<CR>
+
+" SNIPPETS CON EL COMANDO :read TODO
+"
 "}}}
 
 " {{{ 6. BUSCANDO ARCHIVOS, LINEAS, PALABRAS...
@@ -1528,6 +1531,7 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim') || filereadable($HOME . '
     "------  Git Gutter Options ------
     "Disable <Leader>h* commands as they slow down movement
     let g:gitgutter_map_keys = 0
+    let g:gitgutter_max_signs = 999
     if executable("rg")
       let g:gitgutter_grep = 'rg'
     endif
@@ -1580,7 +1584,9 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim') || filereadable($HOME . '
   " activa o desactiva el plugin...
   " let g:AutoPairsShortcutToggle='tecla'
   " esto parece no estar funcionando o no funcionar siempre, así que por si acaso:
-  nnoremap <C-ç> :call AutoPairsToggle()
+  nnoremap <C-ç> :call AutoPairsToggle()<CR>  
+  " si este mapeo no funciona, podemos substituirlo por su código máquina, el cual podemos insertar a través de CTRL-V:
+  nnoremap  :call AutoPairsToggle()<CR>
 
   Plug 'justinmk/vim-sneak'
   " Este plugin es quizá el más pesado que cargo y es bastante ligero en
