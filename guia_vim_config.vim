@@ -1467,7 +1467,8 @@ endfunction
 command! InstallPlug call InstallPlug(has('win32'))
 
 " Se establece la carpeta de los plugins según si es windows o unix:
-if filereadable($HOME . '/vimfiles/autoload/plug.vim') || filereadable($HOME . '/.vim/autoload/plug.vim')
+if filereadable($HOME . '/vimfiles/autoload/plug.vim') 
+      \|| filereadable($HOME . '/.vim/autoload/plug.vim')
   if has('win32')
     call plug#begin('$HOME/vimfiles/plugged')
   else
@@ -1506,6 +1507,10 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim') || filereadable($HOME . '
     "
   " También remarcar que se pueden usar objetos textuales más grandes que iw
   " como el párrafo, las comillas ('ysi")') o incluso la t de tags para xml...
+  "
+  " Estos comandos también se pueden usar para cambiar texto o borrar (diw, cib)
+  " Y no hace falta estar 'dentro' del objeto textual, si no estamos dentro,
+  " Vim avanzará hasta el primer objeto a la derecha
   "
   " añado a los caracteres de serie ¡ y ¿ para escribir preguntas y
   " exclamaciones gramaticalmente correctos
@@ -1570,7 +1575,7 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim') || filereadable($HOME . '
   "
   " are all just 3 keystrokes away. These commands support repeat.vim.
 
-  Plug 'jianmiao/auto-pairs'
+  Plug 'jiangmiao/auto-pairs'
   " Para cerrar automáticamente paréntesis, comillas y similares... es un
   " plugin ligero y que permite trabajar con una cierta mejora de velocidad...
   " Sin embargo creo que no es necesario utilizarlo en muchos casos, ya que
