@@ -89,6 +89,9 @@ set whichwrap+=<,>,[,] " ver :h whichwrap para más opciones
 " pero no a la h y la l
 set whichwrap-=h,l
 
+" Activar el ratón en la consola:
+set mouse=a
+
 " mostrar siempre statusline (con ruler)
 set ruler
 set laststatus=2
