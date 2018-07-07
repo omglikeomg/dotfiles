@@ -312,7 +312,7 @@ if has("gui_running")
     " fuente por si acaso no tengo instalada la mía:
     set guifont=Courier\ Prime\ Code:h14,Lucida\ Console:h11
   elseif has('mac')
-    set guifont=Courier\ Prime\ Code " la de sistema es una buena alternativa
+    set guifont=Courier\ Prime\ Code:h16 " la de sistema es una buena alternativa
   else
     set guifont=Courier\ Prime\ Code\ 12 " la de sistema es suficiente sino
   endif
@@ -937,8 +937,11 @@ cnoremap <C-S> <Home>vertical s<End>
 " Creo que uno de los que más uso es el alternar entre un buffer y el
 " anterior, así que también le he hecho un mappeo rápido pues :b# es bastante
 " horrible:
-"
+
 nnoremap <leader>B :b#<CR>
+
+" SNIPPETS CON EL COMANDO :read TODO
+"
 "}}}
 
 " {{{ 6. BUSCANDO ARCHIVOS, LINEAS, PALABRAS...
@@ -1467,7 +1470,8 @@ endfunction
 command! InstallPlug call InstallPlug(has('win32'))
 
 " Se establece la carpeta de los plugins según si es windows o unix:
-if filereadable($HOME . '/vimfiles/autoload/plug.vim') || filereadable($HOME . '/.vim/autoload/plug.vim')
+if filereadable($HOME . '/vimfiles/autoload/plug.vim') 
+      \|| filereadable($HOME . '/.vim/autoload/plug.vim')
   if has('win32')
     call plug#begin('$HOME/vimfiles/plugged')
   else
@@ -1507,6 +1511,10 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim') || filereadable($HOME . '
   " También remarcar que se pueden usar objetos textuales más grandes que iw
   " como el párrafo, las comillas ('ysi")') o incluso la t de tags para xml...
   "
+  " Estos comandos también se pueden usar para cambiar texto o borrar (diw, cib)
+  " Y no hace falta estar 'dentro' del objeto textual, si no estamos dentro,
+  " Vim avanzará hasta el primer objeto a la derecha
+  "
   " añado a los caracteres de serie ¡ y ¿ para escribir preguntas y
   " exclamaciones gramaticalmente correctos
   let g:surround_{char2nr("¡")} = "¡\r!"
@@ -1531,6 +1539,7 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim') || filereadable($HOME . '
     "------  Git Gutter Options ------
     "Disable <Leader>h* commands as they slow down movement
     let g:gitgutter_map_keys = 0
+    let g:gitgutter_max_signs = 999
     if executable("rg")
       let g:gitgutter_grep = 'rg'
     endif
@@ -1569,7 +1578,7 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim') || filereadable($HOME . '
   "
   " are all just 3 keystrokes away. These commands support repeat.vim.
 
-  Plug 'jianmiao/auto-pairs'
+  Plug 'jiangmiao/auto-pairs'
   " Para cerrar automáticamente paréntesis, comillas y similares... es un
   " plugin ligero y que permite trabajar con una cierta mejora de velocidad...
   " Sin embargo creo que no es necesario utilizarlo en muchos casos, ya que
@@ -1583,7 +1592,9 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim') || filereadable($HOME . '
   " activa o desactiva el plugin...
   " let g:AutoPairsShortcutToggle='tecla'
   " esto parece no estar funcionando o no funcionar siempre, así que por si acaso:
-  nnoremap <C-ç> :call AutoPairsToggle()
+  nnoremap <C-ç> :call AutoPairsToggle()<CR>  
+  " si este mapeo no funciona, podemos substituirlo por su código máquina, el cual podemos insertar a través de CTRL-V:
+  nnoremap  :call AutoPairsToggle()<CR>
 
   Plug 'justinmk/vim-sneak'
   " Este plugin es quizá el más pesado que cargo y es bastante ligero en
