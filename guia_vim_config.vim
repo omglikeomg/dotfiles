@@ -1,5 +1,8 @@
 " Configuración VIM
 " 2018 Demian Molinari - demianmolinari@yahoo.com
+" TODO:
+" - config de plugins, después de plug#end()
+" - cambiar CTRL+ARROWS para mac a META+ARROWS
 
 " INDICE
 " ======
@@ -298,8 +301,8 @@ if has("gui_running")
   set guitablabel=%M\ %t
   " colores
   colorscheme desert " creo que es la más potable de serie -
-                " alternativas son:
-                " 'darkblue' y 'koehler'  ...quizá 'peachpuff' en colores claros
+  " alternativas son:
+  " 'darkblue' y 'koehler'  ...quizá 'peachpuff' en colores claros
   " tamaño de ventana
   set columns=200
   set lines=60
@@ -309,7 +312,7 @@ if has("gui_running")
     " fuente por si acaso no tengo instalada la mía:
     set guifont=Courier\ Prime\ Code:h14,Lucida\ Console:h11
   elseif has('mac')
-    set guifont=Courier\ Prime\ Code:h16 " la de sistema es una buena alternativa
+    set guifont=Hermit:h16,Courier\ Prime\ Code:h16 " la de sistema es una buena alternativa
   else
     set guifont=Courier\ Prime\ Code\ 12 " la de sistema es suficiente sino
   endif
@@ -352,7 +355,7 @@ vnoremap <S-Tab> <gv
 " DEFINE LAS TABULACIONES MÁS À LA MOD
 set shiftwidth=2 softtabstop=2
 set tabstop=2 " algunos programadores no recomiendan cambiarlo,
-              " sin embargo tengo mis motivos como veremos
+" sin embargo tengo mis motivos como veremos
 set smarttab " para aumentarle el IQ
 set autoindent " auto indentación
 " Mucha gente substituye tabulaciones por espacios para evitar problemas en el
@@ -405,15 +408,15 @@ nnoremap çli :set list! list?<CR>
 " que no se muestre correctamente en algunos entornos (substituir por '>')
 
 set listchars=tab:\|\ ,eol:¬,extends:…,precedes:…,trail:.,nbsp:·
-              " ^        ^     ^         ^          ^       ^
-              " |        |     |         |          |     espacio que no admite
-              " |        |     |         |          |       quiebro de línea.
-              " |        |     |_________|  espacio en blanco
-              " |        |          |
-              " |        |        marca que una línea sigue fuera de la pantalla
-              " |        |
-              " |      final de línea
-          " tabulaciones
+" ^        ^     ^         ^          ^       ^
+" |        |     |         |          |     espacio que no admite
+" |        |     |         |          |       quiebro de línea.
+" |        |     |_________|  espacio en blanco
+" |        |          |
+" |        |        marca que una línea sigue fuera de la pantalla
+" |        |
+" |      final de línea
+" tabulaciones
 
 " habilitar syntaxis
 if has('syntax') && !exists('g:syntax_on')
@@ -431,9 +434,9 @@ set colorcolumn=80
 
 " máximo ancho de texto ??
 set textwidth=0 " tener un texto que se corta solo y se reformatea a 80
-                " caracteres puede parecer una buena idea, pero molesta la mayor
-                " parte del tiempo cuando uno hace php o html...
-                " con la columna de color es más que suficiente
+" caracteres puede parecer una buena idea, pero molesta la mayor
+" parte del tiempo cuando uno hace php o html...
+" con la columna de color es más que suficiente
 
 set linebreak " y de paso que si hay que romper el texto, que sea por palabras
 
@@ -472,8 +475,8 @@ nnoremap <expr>$ expand(&l:wrap) == 1 ? "g$" : "$"
 
 " MATCHIT PLUGIN
 packadd! matchit " este plugin viene de serie con vim, pero desactivado y
-                 " le permite moverse con '%' no sólo entre paréntesis y
-                 " similares sino también entre tags de html/xml
+" le permite moverse con '%' no sólo entre paréntesis y
+" similares sino también entre tags de html/xml
 
 " formato de archivo unix por defecto y preferencias para segundas opciones
 set fileformat=unix
@@ -602,7 +605,7 @@ set statusline+=[%{strlen(&ft)?&ft:'none'},   " filetype
 set statusline+=%{strlen(&fenc)?&fenc:&enc},  " encoding
 set statusline+=%{&fileformat}]               " format (unix,dos)
 set statusline+=%=                            " a la derecha
-                                              " lee sobre qué esta el cursor
+" lee sobre qué esta el cursor
 set statusline+=%{synIDattr(synID(line('.'),col('.'),1),'name')}\ 
 set statusline+=[%04l,%04v]\                  " linea, columna
 "
@@ -888,7 +891,7 @@ nnoremap <leader>tm :tabmove
 let g:lasttab = 1 "crea una variable con un valor por defecto
 nnoremap <Leader>t<Leader> :exe "tabn ".g:lasttab<CR>
 au! TabLeave * let g:lasttab = tabpagenr() " al irse de una tab, actualiza el
-                                           " valor de la variable
+" valor de la variable
 
 " BUFFERS
 " -------
@@ -995,6 +998,7 @@ let g:netrw_banner=0 " desactivar el 'banner' informativo de la parte superior
 let g:netrw_browse_split=4 "abrirse siempre en split vertical
 let g:netrw_altv=1 " abrir los splits a la derecha siempre
 let g:netrw_liststyle=3 " tipo de vista por defecto -> Tree
+let g:netrw_list_hide=netrw_gitignore#Hide()
 let g:netrw_list_hide.=',\(^\\s\s\)\zs\.\S\+' "evitar archivos ocultos
 let g:netrw_winsize = 35 " ancho de ventana
 let g:netrw_localrmdir='rm -r' " permite borrar directorios no-vacíos
@@ -1008,19 +1012,19 @@ autocmd FileType netrw setl bufhidden=wipe
 let g:NetrwIsOpen=0
 
 function! ToggleNetrw() abort
-    if g:NetrwIsOpen
-        let i = bufnr("$")
-        while (i >= 1)
-            if (getbufvar(i, "&filetype") == "netrw")
-                silent exe "bwipeout " . i
-            endif
-            let i-=1
-        endwhile
-        let g:NetrwIsOpen=0
-    else
-        let g:NetrwIsOpen=1
-        silent Lexplore
-    endif
+  if g:NetrwIsOpen
+    let i = bufnr("$")
+    while (i >= 1)
+      if (getbufvar(i, "&filetype") == "netrw")
+        silent exe "bwipeout " . i
+      endif
+      let i-=1
+    endwhile
+    let g:NetrwIsOpen=0
+  else
+    let g:NetrwIsOpen=1
+    silent Lexplore
+  endif
 endfunction
 
 " Y entonces, activar netrw con <Leader>ex
@@ -1035,11 +1039,16 @@ nnoremap <Leader>ex :call ToggleNetrw()<CR>
 " para hacer este tipo de cosas, pero nada más lejos de la verdad:
 
 set path+=**/* " con este parámetro de configuración, añadimos a la variable
-               " path el valor recursivo desde la posición actual. Esto quiere
-               " decir que si estamos situados en la raíz de un árbol de
-               " directorios, buscaremos en todo lo que haya en su interior...
-               " Cuidado con intentar después buscar estando en la carpeta
-               " home y similares!!!
+" path el valor recursivo desde la posición actual. Esto quiere
+" decir que si estamos situados en la raíz de un árbol de
+" directorios, buscaremos en todo lo que haya en su interior...
+" Cuidado con intentar después buscar estando en la carpeta
+" home y similares!!!
+" TODO: <leader>f ...
+
+
+" comando para buscar archivos, con <Tab> completion:
+nnoremap <leader>f :find *
 
 " A continuación, preparamos el menú de autocompletado a la mejor función
 " posible, Vim llama este menú wildmenu, supongo porque acepta comodines
@@ -1058,7 +1067,7 @@ set wildmenu wildmode=list:longest
 " acelerar el proceso:
 set wildignore+=*.aux,*.out,*.toc " LaTeX intermediate files
 set wildignore+=*.luac " Lua byte code
- " compiled object files
+" compiled object files
 set wildignore+=*.o,*.obj,*.exe,*.dll,*.manifest,*.dat,*.class,*.zip,*.rar,*.7z
 set wildignore+=*.pyc " Python byte code
 set wildignore+=*.spl " compiled spelling word lists
@@ -1370,7 +1379,7 @@ function! Turbo_asterisk()
         \ 'lnum': split(v:val)[1],
         \ 'text': getline(split(v:val)[1])
         \ }"
-    \ )
+        \ )
   let win_number = winnr()
   call setloclist(win_number, loclist_entries)
   lwindow
@@ -1382,7 +1391,7 @@ nnoremap <leader>* :call Turbo_asterisk()<CR>"
 
 function! Turbo_il(pattern)
   redir => output
-    silent! exec join(['ilist', a:pattern], ' ')
+  silent! exec join(['ilist', a:pattern], ' ')
   redir END
   let lines = split(output, '\n')
   if lines[0] =~ '^Error detected'
@@ -1391,11 +1400,11 @@ function! Turbo_il(pattern)
   endif
   let [filename, line_info] = [lines[0], lines[1:-1]]
   let loclist_entries = map(line_info, "{
-     \ 'filename': filename,
-     \ 'lnum': split(v:val)[1],
-     \ 'text': getline(split(v:val)[1])
-     \}"
-   \)
+        \ 'filename': filename,
+        \ 'lnum': split(v:val)[1],
+        \ 'text': getline(split(v:val)[1])
+        \}"
+        \)
   let win_number = winnr()
   call setloclist(win_number, loclist_entries)
   lwindow
@@ -1450,18 +1459,19 @@ nnoremap <leader>/ :Tilist<space>
 " comando está bien por si tenemos problemas de permisos)
 "
 function! InstallPlug(win)
- if a:win == 1
-   if empty(glob($HOME . '/vimfiles/autoload/plug.vim'))
-   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs " importante tener curl
-     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-   exec PlugInstall --sync | source $MYVIMRC
-   return
- endif
- if empty(glob('~/.vim/autoload/plug.vim'))
-   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-   exec PlugInstall --sync | source $MYVIMRC
- endif
+  if a:win == 1
+    if empty(glob($HOME . '/vimfiles/autoload/plug.vim'))
+      silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs " importante tener curl
+            \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+      exec PlugInstall --sync | source $MYVIMRC
+      return
+    endif
+  endif
+  if empty(glob('~/.vim/autoload/plug.vim'))
+    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+          \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    exec PlugInstall --sync | source $MYVIMRC
+  endif
 endfunction
 
 command! InstallPlug call InstallPlug(has('win32'))
@@ -1499,12 +1509,12 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
   " nativo y básicamente permite añadir, substituir o eliminar caracteres a
   " los límites de cualquier sección de texto.
   " Uso:
-    " yssb    rodea linea de parentesis (yank substline brackets)
-    " ds"     elimina comillas de alrededor (delete surrounding ")
-    " cs"<q>  substituye comillas por <q> ( change surrounding " for <q> )
-    " ysiw]   rodeará una palabra de brackets ( yank substinnerword ] )
-    " S       en visual mode permite rodear con cualquier input
-    "
+  " yssb    rodea linea de parentesis (yank substline brackets)
+  " ds"     elimina comillas de alrededor (delete surrounding ")
+  " cs"<q>  substituye comillas por <q> ( change surrounding " for <q> )
+  " ysiw]   rodeará una palabra de brackets ( yank substinnerword ] )
+  " S       en visual mode permite rodear con cualquier input
+  "
   " También remarcar que se pueden usar objetos textuales más grandes que iw
   " como el párrafo, las comillas ('ysi")') o incluso la t de tags para xml...
   "
@@ -1648,15 +1658,15 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
 
   " }}}
 
-" {{{ 9. EXTRA PLUGINS MÁS ESPECÍFICOS
-""""""""""""""""""""""""""""""""""
+  " {{{ 9. EXTRA PLUGINS MÁS ESPECÍFICOS
+  """"""""""""""""""""""""""""""""""
 
-" COLORES
-" -------
-" Sobre todo para la versión GUI, me gusta establecer alguna combinación de
-" colores menos estridente y que distraiga menos. Si bien darkblue, desert y
-" koehler son relativamente legibles, prefiero un menor nivel de contraste
-" siempre que pueda:
+  " COLORES
+  " -------
+  " Sobre todo para la versión GUI, me gusta establecer alguna combinación de
+  " colores menos estridente y que distraiga menos. Si bien darkblue, desert y
+  " koehler son relativamente legibles, prefiero un menor nivel de contraste
+  " siempre que pueda:
   Plug 'dennougorilla/azuki.vim'
   Plug 'whatyouhide/vim-gotham'
   Plug 'mbbill/vim-seattle'
@@ -1664,48 +1674,44 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
   Plug 'nanotech/jellybeans.vim'
   Plug 'morhetz/gruvbox'
 
-  if has('gui_running')
-    color azuki " preferencia personal
-  endif
-
-" EMMET
-" -----
-"  Tener capacidad para trabajar con Emmet en Vim agiliza mucho el diseño web:
-"  permite escribir la mitad y conseguir los mismos o mejores resultados
-"  incluso. Google lo recomienda...
-"  A este magnífico plugin yo sólo le añadiría un mejor atajo de teclado para
-"  llamarlo, pues el que tiene por defecto (<C-Y>,) es demasiado complicado.
+  " EMMET
+  " -----
+  "  Tener capacidad para trabajar con Emmet en Vim agiliza mucho el diseño web:
+  "  permite escribir la mitad y conseguir los mismos o mejores resultados
+  "  incluso. Google lo recomienda...
+  "  A este magnífico plugin yo sólo le añadiría un mejor atajo de teclado para
+  "  llamarlo, pues el que tiene por defecto (<C-Y>,) es demasiado complicado.
 
   Plug 'mattn/emmet-vim'
   autocmd VimEnter * if exists(":Emmet") | exe "  inoremap <C-Space> <Esc>:call emmet#expandAbbr(3,'')<CR>i" | endif
 
-" FZF
-" ---
-"  Utilizo también el programa fzf en la consola... utilizar su plugin en vim es casi una obligación y convierte en absurdos la mayoría de mappings anteriores:
-Plug 'junegunn/fzf.vim'
-" Tamaño de la ventana y posición:
+  " FZF
+  " ---
+  "  Utilizo también el programa fzf en la consola... utilizar su plugin en vim es casi una obligación y convierte en absurdos la mayoría de mappings anteriores:
+  Plug 'junegunn/fzf.vim'
+  " Tamaño de la ventana y posición:
   let g:fzf_layout = { 'down': '~20%' }
   let g:fzf_colors =
-  \ { 'fg':      ['fg', 'Normal'],
-    \ 'bg':      ['bg', 'Clear'],
-    \ 'hl':      ['fg', 'String'],
-    \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-    \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
-    \ 'hl+':     ['fg', 'Statement'],
-    \ 'info':    ['fg', 'PreProc'],
-    \ 'prompt':  ['fg', 'Conditional'],
-    \ 'pointer': ['fg', 'Exception'],
-    \ 'marker':  ['fg', 'Keyword'],
-    \ 'spinner': ['fg', 'Label'],
-    \ 'header':  ['fg', 'Comment'] }
+        \ { 'fg':      ['fg', 'Normal'],
+        \ 'bg':      ['bg', 'Clear'],
+        \ 'hl':      ['fg', 'String'],
+        \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+        \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+        \ 'hl+':     ['fg', 'Statement'],
+        \ 'info':    ['fg', 'PreProc'],
+        \ 'prompt':  ['fg', 'Conditional'],
+        \ 'pointer': ['fg', 'Exception'],
+        \ 'marker':  ['fg', 'Keyword'],
+        \ 'spinner': ['fg', 'Label'],
+        \ 'header':  ['fg', 'Comment'] }
 
   " Un comando para llamar a fzf como grepper utilizando RG
   command! -bang -nargs=* Rg
-  \ call fzf#vim#grep(
-  \   'rg --column --line-number --hidden --smart-case --no-heading --color=always '.shellescape(<q-args>), 1,
-  \   <bang>0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'up:60%')
-  \           : fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'right:50%:hidden', '?'),
-  \   <bang>0)
+        \ call fzf#vim#grep(
+        \   'rg --column --line-number --hidden --smart-case --no-heading --color=always '.shellescape(<q-args>), 1,
+        \   <bang>0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'up:60%')
+        \           : fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'right:50%:hidden', '?'),
+        \   <bang>0)
 
   " Esta es quizá la única función para la que no venía preparado de serie fzf.vim
   " Ahora sobreescribo los mappeos anteriores por estos:
@@ -1713,7 +1719,37 @@ Plug 'junegunn/fzf.vim'
   " En el caso de no tener disponible fzf, nada de esto debería ser mappeado,
   " para que perduren las configuraciones anteriores:
 
-  if !&diff && exists(':FZF')
+  " ALE?
+  " ----
+  "  TODO: Aún no lo he probado
+  "
+
+  " }}}
+
+  " {{{ 10. DICCIONARIOS DE SINTAXIS
+  " El último apartado a tratar tiene que ver con los diccionarios de sintaxis
+  " que pueden ampliar las funciones de autocompletado de Vim. Existen realmente
+  " un enorme número de plugins que evalúan la sintaxis o que amplían el
+  " diccionario interno de Vim con mayor número de comandos. Podemos intentar
+  " escoger tan solo aquellos que necesitemos, pues generalmente un programador
+  " no trabaja en demasiados lenguajes distintos. No obstante, existe un
+  " empaquetado creado a partir de gran parte de los plugins de sintaxis que, si
+  " bien ocupa un poco de espacio en disco, es realmente impecable en su
+  " funcionamiento y no carga todos los plugins sino solo los que se necesiten
+  " según el tipo de archivo.
+  Plug 'sheerun/vim-polyglot'"
+
+  call plug#end()
+  " Al final de esta sección, cerramos el condicional que protege de errores por
+  " no poder instalar plugins:
+endif
+" }}}
+
+  if has('gui_running')
+    color azuki " preferencia personal
+  endif
+
+  if !&diff && exists(':Files')
     " NOTA: con <C-V> abrimos cualquier archivo o tag en un vsplit
     nnoremap <leader>b :Buffers<CR>
     nnoremap <leader>f :Files<CR>
@@ -1727,27 +1763,3 @@ Plug 'junegunn/fzf.vim'
   endif
 
 
-" ALE?
-" ----
-"  TODO: Aún no lo he probado
-"
-
-" }}}
-
-" {{{ 10. DICCIONARIOS DE SINTAXIS
-" El último apartado a tratar tiene que ver con los diccionarios de sintaxis
-" que pueden ampliar las funciones de autocompletado de Vim. Existen realmente
-" un enorme número de plugins que evalúan la sintaxis o que amplían el
-" diccionario interno de Vim con mayor número de comandos. Podemos intentar
-" escoger tan solo aquellos que necesitemos, pues generalmente un programador
-" no trabaja en demasiados lenguajes distintos. No obstante, existe un
-" empaquetado creado a partir de gran parte de los plugins de sintaxis que, si
-" bien ocupa un poco de espacio en disco, es realmente impecable en su
-" funcionamiento y no carga todos los plugins sino solo los que se necesiten
-" según el tipo de archivo.
-  Plug 'https://github.com/sheerun/vim-polyglot'"
-
-" Al final de esta sección, cerramos el condicional que protege de errores por
-" no poder instalar plugins:
-endif
-" }}}
