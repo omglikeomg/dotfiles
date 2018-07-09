@@ -243,31 +243,31 @@ set langmenu=es
 " esté el archivo que estamos editando, lo que acaba ocasionando que la carpeta
 " se llene de basura
 
-if has('persistent_undo')
-  if !isdirectory(g:vim_at_user_home.'/undo')
-    call mkdir(g:vim_at_user_home . '/undo', 'p', 0700)
-  endif
-  set undodir=g:vim_at_user_home/undo
-  set undofile
-endif
-if !isdirectory(g:vim_at_user_home.'/bks')
-  call mkdir(g:vim_at_user_home . '/bks', 'p', 0700)
-endif
-set backupdir=g:vim_at_user_home/bks
+" if has('persistent_undo')
+"   if !isdirectory(g:vim_at_user_home.'/undo')
+"     call mkdir(g:vim_at_user_home . '/undo', 'p', 0700)
+"   endif
+"   set undodir=g:vim_at_user_home/undo
+"   set undofile
+" endif
+" if !isdirectory(g:vim_at_user_home.'/bks')
+"   call mkdir(g:vim_at_user_home . '/bks', 'p', 0700)
+" endif
+" set backupdir=g:vim_at_user_home/bks
 
-if !isdirectory(g:vim_at_user_home.'/swap')
-  call mkdir(g:vim_at_user_home . '/swap', 'p', 0700)
-endif
-set directory=g:vim_at_user_home/swap
+" if !isdirectory(g:vim_at_user_home.'/swap')
+"   call mkdir(g:vim_at_user_home . '/swap', 'p', 0700)
+" endif
+" set directory=g:vim_at_user_home/swap
 
-" Uno más para hacer de los pliegues de nuestros archivos algo persistente
-if has('mksession')
-  if !isdirectory(g:vim_at_user_home.'/views')
-    call mkdir(g:vim_at_user_home . '/views', 'p', 0700)
-  endif
-  set viewdir=g:vim_at_user_home/views
-  " para guardar la configuración de pliegues, teclear :mkview
-endif
+" " Uno más para hacer de los pliegues de nuestros archivos algo persistente
+" if has('mksession')
+"   if !isdirectory(g:vim_at_user_home.'/views')
+"     call mkdir(g:vim_at_user_home . '/views', 'p', 0700)
+"   endif
+"   set viewdir=g:vim_at_user_home/views
+"   " para guardar la configuración de pliegues, teclear :mkview
+" endif
 
 " Realmente estos archivos me molestaban y terminé por desactivarlos: total la
 " mayoría de cosas están en un control de versiones o bien son archivos de
@@ -275,9 +275,9 @@ endif
 " vaya mal, he decidido empezar a usarlos. También es recomendable borrarlos
 " cada algún tiempo, para no ocupar espacio en exceso.
 " En el caso de que se quieran desactivar, substituir las líneas anteriores por estas:
-" set nowritebackup
-" set nobackup
-" set noswapfile
+set nowritebackup
+set nobackup
+set noswapfile
 
 " AL UNIR LÍNEAS, RESPETAR LA PUNTUACIÓN Y LOS ESPACIOS.
 set nojoinspaces
@@ -1664,7 +1664,7 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
   Plug 'nanotech/jellybeans.vim'
   Plug 'morhetz/gruvbox'
 
-  if has('gui')
+  if has('gui_running')
     color azuki " preferencia personal
   endif
 
@@ -1682,7 +1682,7 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
 " FZF
 " ---
 "  Utilizo también el programa fzf en la consola... utilizar su plugin en vim es casi una obligación y convierte en absurdos la mayoría de mappings anteriores:
-"
+Plug 'junegunn/fzf.vim'
 " Tamaño de la ventana y posición:
   let g:fzf_layout = { 'down': '~20%' }
   let g:fzf_colors =
