@@ -1691,6 +1691,7 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
   " FZF
   " ---
   "  Utilizo también el programa fzf en la consola... utilizar su plugin en vim es casi una obligación y convierte en absurdos la mayoría de mappings anteriores:
+  Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
   Plug 'junegunn/fzf.vim'
   " Tamaño de la ventana y posición:
   let g:fzf_layout = { 'down': '~20%' }
