@@ -1,8 +1,5 @@
 " Configuración VIM
 " 2018 Demian Molinari - demianmolinari@yahoo.com
-" TODO:
-" - config de plugins, después de plug#end()
-" - cambiar CTRL+ARROWS para mac a META+ARROWS
 
 " INDICE
 " ======
@@ -58,6 +55,9 @@
 " IGNORAR LOS ERRORS CUANDO SE CAMBIA DE BUFFER SIN GUARDAR
 set hidden
 
+" PERMITE USAR EL RATÓN EN LA CONSOLA
+set mouse=a
+
 " DEJA DE PITAR!!!!
 set noerrorbells visualbell t_vb=
 
@@ -92,9 +92,6 @@ set whichwrap+=<,>,[,] " ver :h whichwrap para más opciones
 " pero no a la h y la l
 set whichwrap-=h,l
 
-" Activar el ratón en la consola:
-set mouse=a
-
 " mostrar siempre statusline (con ruler)
 set ruler
 set laststatus=2
@@ -113,6 +110,19 @@ else
   let g:vim_at_user_home = $HOME."/.vim"
 endif
 
+" FOLLOW THE LEADER
+" Vim ofrece una tecla a la que llama leader, que sirve básicamente para crear
+" atajos de teclado. La tecla <leader> precede a la mayoría de atajos de
+" teclado configurados por el usuario. Vim recomienda trabajar de esta manera y
+" no encuentro realmente motivos para discrepar. Lo único que hace falta es
+" situarla en una posición accesible. Para mí, esta posición es el espacio.
+" Espacio, en modo normal, hace lo mismo que la l o la flecha a la derecha.
+" Completamente reemplazable. Además, la tecla por defecto para el <leader> en
+" Vim es \ ... prácticamente imposible de alcanzar.
+
+nnoremap <space> <Nop>
+let mapleader = " "
+let g:mapleader = "\<Space>"
 "}}}
 
 " {{{ 2. RELACIONADO CON LA BÚSQUEDA
@@ -136,18 +146,6 @@ nnoremap <leader><leader><leader> :noh<CR>
 
 " {{{ 3. PARA MAYOR COMODIDAD
 """"""""""""""""""""""""""""
-" FOLLOW THE LEADER
-" Vim ofrece una tecla a la que llama leader, que sirve básicamente para crear
-" atajos de teclado. La tecla <leader> precede a la mayoría de atajos de
-" teclado configurados por el usuario. Vim recomienda trabajar de esta manera y
-" no encuentro realmente motivos para discrepar. Lo único que hace falta es
-" situarla en una posición accesible. Para mí, esta posición es el espacio.
-" Espacio, en modo normal, hace lo mismo que la l o la flecha a la derecha.
-" Completamente reemplazable. Además, la tecla por defecto para el <leader> en
-" Vim es \ ... prácticamente imposible de alcanzar.
-
-let mapleader = "\<Space>"
-let g:mapleader = "\<Space>"
 
 " Una herramienta típica para organizar contenidos es el pliegue de texto.
 " Poder plegar fragmentos del texto y comprimirlos a una línea permite la
@@ -214,9 +212,9 @@ let &clipboard = has ('unnamedplus') ? 'unnamedplus' : 'unnamed'
 if !&scrolloff
   set scrolloff=3
 endif
-" Y 5 COLUMNAS AL AVANZAR EN HORIZONTAL
+" Y 3 COLUMNAS AL AVANZAR EN HORIZONTAL
 if !&sidescrolloff
-  set sidescrolloff=5
+  set sidescrolloff=3
 endif
 
 " AMPLIA EL ÁREA DE COMANDOS
@@ -322,7 +320,7 @@ if has("gui_running")
 endif
 
 " VICIOS VENIDOS DE OTROS EDITORES
-" <C-X> y <C-V> que se comporten como en windows
+" <C-X> y <C-C> que se comporten como en windows
 " solo en visual mode
 vnoremap <c-x> "+x
 vnoremap <c-c> "+y
@@ -401,6 +399,9 @@ augroup end
 " hay que tener en cuenta que para que esto funcione, la configuración usada
 " tiene que ser la misma que la mía: utilizar siempre tabs y que la medida
 " siempre sea la misma en tabstop, softtabstop y shiftwidth (en mi caso, 2)
+" TODO: Averiguar cómo ignorar este cambio al guardar y que al hacer 'u' justo
+" después de guardar no nos alerte de nºdelineas^2 cambios ... y tengamos que
+" hacer dos veces 'u' para realmente estar haciendo solo 1...
 
 " El motivo por el cual me gusta usar los tabuladores es porque Vim puede
 " mostrarlos y así servirnos de guía visual para la indentación correcta
@@ -834,10 +835,12 @@ nnoremap <S-Left> <C-W>H
 nnoremap <S-Right> <C-W>L
 nnoremap <S-Up> <C-W>K
 nnoremap <S-Down> <C-W>J
-nnoremap <C-Left> <C-W>h
-nnoremap <C-Right> <C-W>l
-nnoremap <C-Up> <C-W>k
-nnoremap <C-Down> <C-W>j
+nnoremap <M-Left> <C-W>h
+nnoremap <M-Right> <C-W>l
+nnoremap <M-Up> <C-W>k
+nnoremap <M-Down> <C-W>j
+nnoremap <C-S-Left> <C-W><
+nnoremap <C-S-Right> <C-W>>
 nnoremap <leader>O <C-W>o
 nnoremap <leader>= <C-W>=
 
@@ -921,7 +924,7 @@ nnoremap <leader>b :ls<CR>:buffer<space>
 " con el que podemos listar los buffers y dejarnos la lista allí, para poder
 " cambiar con un mero numeral y un enter.
 " Otra aproximación podría ser utilizando el autocompletado con Tab:
-nnoremap <leader>b :buffer<space><C-D>*
+nnoremap <leader>b :buffer<space>*
 " escribiendo cualquier fragmento del nombre del buffer después y volviendo a
 " apretar tab, Vim intentará autocompletar
 "
@@ -933,7 +936,9 @@ nnoremap <leader>vb :ls<CR>:vertical sb<Space>
 " (obviamente, el vertical es opcional)
 " en un split vertical (a la derecha)
 " otra opción sería algo así:
-cnoremap <C-S> <Home>vertical s<End>
+cnoremap <C-V> <Home>vertical s<End>
+" para maximizar compatibilidad con terminales y mappings, utilizo la
+" combinación <C-V> y luego la combinación de teclas. En este caso, <C-V> <C-V>
 " nos permitiría poner este texto al principio de manera dinámica y luego
 " podemos aún completar el nombre/número de buffer y apretar enter
 
@@ -942,6 +947,9 @@ cnoremap <C-S> <Home>vertical s<End>
 " horrible:
 
 nnoremap <leader>B :b#<CR>
+
+" El comando por defecto para esto es CTRL-6 ... no especialmente complicado,
+" pero prefiero tener otro mapping
 
 " SNIPPETS CON EL COMANDO :read TODO
 "
@@ -998,8 +1006,9 @@ nnoremap <leader>B :b#<CR>
 " configurar un poco la apariencia por defecto de netrw y crearle un acceso de
 " teclado adecuado...
 let g:netrw_banner=0 " desactivar el 'banner' informativo de la parte superior
-let g:netrw_browse_split=4 "abrirse siempre en split vertical
 let g:netrw_altv=1 " abrir los splits a la derecha siempre
+let g:netrw_browse_split = 0 " por defecto abrir netrw en la misma ventana y
+                             " abrir los archivos en la ventana donde estaba nt
 let g:netrw_liststyle=3 " tipo de vista por defecto -> Tree
 let g:netrw_list_hide=netrw_gitignore#Hide()
 let g:netrw_list_hide.=',\(^\\s\s\)\zs\.\S\+' "evitar archivos ocultos
@@ -1047,10 +1056,6 @@ set path+=**/* " con este parámetro de configuración, añadimos a la variable
 " directorios, buscaremos en todo lo que haya en su interior...
 " Cuidado con intentar después buscar estando en la carpeta
 " home y similares!!!
-" TODO: <leader>f ...
-
-
-" comando para buscar archivos, con <Tab> completion:
 nnoremap <leader>f :find *
 
 " A continuación, preparamos el menú de autocompletado a la mejor función
@@ -1079,7 +1084,7 @@ set wildignore+=*.sw? " Vim swap files
 set wildignore+=*.bmp,*.gif,*.ico,*.jpg,*.png,*.ico
 set wildignore+=*.pdf,*.psd
 " node modules y similar
-set wildignore+=node_modules/*,bower_components/*
+set wildignore+=*/node_modules/*,*/bower_components/*
 " git
 set wildignore+=.git/*
 
@@ -1134,7 +1139,7 @@ endif
 function! MySearch() abort
   let grep_term = input("Pattern: ")
   if !empty(grep_term)
-    execute 'silent grep!' grep_term | lopen
+    execute 'silent lgrep!' grep_term
     " silent sirve para que no nos muestre el primer mensaje de la consulta
   else
     echo "No pattern provided"
@@ -1534,26 +1539,6 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
   " para integrar el control de versiones a Vim y tener indicadores visuales
   " en la barra a la izquierda. Veamos un poco de configuración:
   " --------- fuGITive -----
-  if exists(":Gstatus")
-    nnoremap <Leader>gs :Gstatus<CR>
-    nnoremap <Leader>gr :Gremove<CR>
-    nnoremap <Leader>gl :Glog<CR>
-    nnoremap <Leader>gb :Gblame<CR>
-    nnoremap <Leader>gm :Gmove
-    nnoremap <Leader>gc :Gcommit<CR>
-    nnoremap <Leader>gp :Ggrep
-    nnoremap <Leader>gR :Gread<CR>
-    nnoremap <Leader>gg :Git
-    nnoremap <Leader>gd :Gdiff<CR>
-
-    "------  Git Gutter Options ------
-    "Disable <Leader>h* commands as they slow down movement
-    let g:gitgutter_map_keys = 0
-    let g:gitgutter_max_signs = 999
-    if executable("rg")
-      let g:gitgutter_grep = 'rg'
-    endif
-  endif
 
   Plug 'tpope/vim-abolish'
   " Pequeño plugin que permite corregir errores de escritura y mejora el
@@ -1686,42 +1671,15 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
   "  llamarlo, pues el que tiene por defecto (<C-Y>,) es demasiado complicado.
 
   Plug 'mattn/emmet-vim'
-  autocmd VimEnter * if exists(":Emmet") | exe "  inoremap <C-Space> <Esc>:call emmet#expandAbbr(3,'')<CR>i" | endif
 
   " FZF
   " ---
   "  Utilizo también el programa fzf en la consola... utilizar su plugin en vim es casi una obligación y convierte en absurdos la mayoría de mappings anteriores:
-  Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+  if has('mac')
+    Plug '/usr/local/opt/fzf' " necesario en mac indicarle donde está...
+  endif
   Plug 'junegunn/fzf.vim'
-  " Tamaño de la ventana y posición:
-  let g:fzf_layout = { 'down': '~20%' }
-  let g:fzf_colors =
-        \ { 'fg':      ['fg', 'Normal'],
-        \ 'bg':      ['bg', 'Clear'],
-        \ 'hl':      ['fg', 'String'],
-        \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-        \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
-        \ 'hl+':     ['fg', 'Statement'],
-        \ 'info':    ['fg', 'PreProc'],
-        \ 'prompt':  ['fg', 'Conditional'],
-        \ 'pointer': ['fg', 'Exception'],
-        \ 'marker':  ['fg', 'Keyword'],
-        \ 'spinner': ['fg', 'Label'],
-        \ 'header':  ['fg', 'Comment'] }
 
-  " Un comando para llamar a fzf como grepper utilizando RG
-  command! -bang -nargs=* Rg
-        \ call fzf#vim#grep(
-        \   'rg --column --line-number --hidden --smart-case --no-heading --color=always '.shellescape(<q-args>), 1,
-        \   <bang>0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'up:60%')
-        \           : fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'right:50%:hidden', '?'),
-        \   <bang>0)
-
-  " Esta es quizá la única función para la que no venía preparado de serie fzf.vim
-  " Ahora sobreescribo los mappeos anteriores por estos:
-  "
-  " En el caso de no tener disponible fzf, nada de esto debería ser mappeado,
-  " para que perduren las configuraciones anteriores:
 
   " ALE?
   " ----
@@ -1741,7 +1699,7 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
   " bien ocupa un poco de espacio en disco, es realmente impecable en su
   " funcionamiento y no carga todos los plugins sino solo los que se necesiten
   " según el tipo de archivo.
-  Plug 'sheerun/vim-polyglot'"
+  Plug 'sheerun/vim-polyglot'
 
   call plug#end()
   " Al final de esta sección, cerramos el condicional que protege de errores por
@@ -1749,21 +1707,78 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
 endif
 " }}}
 
-  if has('gui_running')
-    color azuki " preferencia personal
+" config de fugitive y gitgutter
+if exists(":Gstatus")
+  nnoremap <Leader>gs :Gstatus<CR>
+  nnoremap <Leader>gr :Gremove<CR>
+  nnoremap <Leader>gl :Glog<CR>
+  nnoremap <Leader>gb :Gblame<CR>
+  nnoremap <Leader>gm :Gmove
+  nnoremap <Leader>gc :Gcommit<CR>
+  nnoremap <Leader>gp :Ggrep
+  nnoremap <Leader>gR :Gread<CR>
+  nnoremap <Leader>gg :Git
+  nnoremap <Leader>gd :Gdiff<CR>
+
+  "------  Git Gutter Options ------
+  "Disable <Leader>h* commands as they slow down movement
+  let g:gitgutter_map_keys = 0
+  let g:gitgutter_max_signs = 999
+  if executable("rg")
+    let g:gitgutter_grep = 'rg'
   endif
+endif
 
-  if !&diff && exists(':Files')
-    " NOTA: con <C-V> abrimos cualquier archivo o tag en un vsplit
-    nnoremap <leader>b :Buffers<CR>
-    nnoremap <leader>f :Files<CR>
-    nnoremap º :Rg
-    nnoremap <leader>F :History
-    nnoremap <leader>ts :Tags
-    " añado un par más, que vienen muy bien:
-    nnoremap <leader><leader>k :Maps<CR>
-    nnoremap <leader><leader>c :Commands<CR>
-    nnoremap <leader><leader>ft :Filetypes<CR>
-  endif
+" config de emmet
+autocmd VimEnter * if exists(":Emmet") | exe "  inoremap <C-Space> <Esc>:call emmet#expandAbbr(3,'')<CR>i" | endif
 
+if has('gui_running')
+  color azuki " preferencia personal
+endif
+" Tamaño de la ventana y posición:
+let g:fzf_layout = { 'down': '~20%' }
+let g:fzf_colors =
+      \ { 'fg':      ['fg', 'Normal'],
+      \ 'bg':      ['bg', 'Clear'],
+      \ 'hl':      ['fg', 'String'],
+      \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+      \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+      \ 'hl+':     ['fg', 'Statement'],
+      \ 'info':    ['fg', 'PreProc'],
+      \ 'prompt':  ['fg', 'Conditional'],
+      \ 'pointer': ['fg', 'Exception'],
+      \ 'marker':  ['fg', 'Keyword'],
+      \ 'spinner': ['fg', 'Label'],
+      \ 'header':  ['fg', 'Comment'] }
 
+" Un comando para llamar a fzf como grepper utilizando RG
+command! -bang -nargs=* Rg
+      \ call fzf#vim#grep(
+      \   'rg --column --line-number --hidden --smart-case --no-heading --color=always '.shellescape(<q-args>), 1,
+      \   <bang>0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'up:60%')
+      \           : fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'right:50%:hidden', '?'),
+      \   <bang>0)
+
+" Esta es quizá la única función para la que no venía preparado de serie fzf.vim
+" Ahora sobreescribo los mappeos anteriores por estos:
+"
+" En el caso de no tener disponible fzf, nada de esto debería ser mappeado,
+" para que perduren las configuraciones anteriores:
+
+if exists(':FZF') == 2
+  " NOTA: con <C-V> abrimos cualquier archivo o tag en un vsplit
+  nnoremap <leader>b :Buffers<CR>
+  nnoremap <leader>f :Files<CR>
+  nnoremap º :Rg<space>
+  nnoremap <leader>F :History
+  nnoremap <leader>ts :Tags
+  " añado un par más, que vienen muy bien:
+  nnoremap <leader><leader>k :Maps<CR>
+  nnoremap <leader><leader>c :Commands<CR>
+  nnoremap <leader><leader>ft :Filetypes<CR>
+  nnoremap <leader>ts :Tags
+  " añado un par más, que vienen muy bien:
+  nnoremap <leader><leader>k :Maps<CR>
+  nnoremap <leader><leader>c :Commands<CR>
+  nnoremap <leader><leader>ft :Filetypes<CR>
+endif
