@@ -936,9 +936,9 @@ nnoremap <leader>vb :ls<CR>:vertical sb<Space>
 " (obviamente, el vertical es opcional)
 " en un split vertical (a la derecha)
 " otra opción sería algo así:
-cnoremap <C-V> <Home>vertical s<End>
+cnoremap <C-s> <Home>vertical s<End>
 " para maximizar compatibilidad con terminales y mappings, utilizo la
-" combinación <C-V> y luego la combinación de teclas. En este caso, <C-V> <C-V>
+" combinación <C-s> y luego la combinación de teclas. En este caso, <C-s> <C-s>
 " nos permitiría poner este texto al principio de manera dinámica y luego
 " podemos aún completar el nombre/número de buffer y apretar enter
 
@@ -1675,10 +1675,10 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
   " FZF
   " ---
   "  Utilizo también el programa fzf en la consola... utilizar su plugin en vim es casi una obligación y convierte en absurdos la mayoría de mappings anteriores:
-  if has('mac')
+  if executable('fzf')
     Plug '/usr/local/opt/fzf' " necesario en mac indicarle donde está...
+    Plug 'junegunn/fzf.vim'
   endif
-  Plug 'junegunn/fzf.vim'
 
 
   " ALE?
@@ -1708,7 +1708,7 @@ endif
 " }}}
 
 " config de fugitive y gitgutter
-if exists(":Gstatus")
+if exists(":Git")
   nnoremap <Leader>gs :Gstatus<CR>
   nnoremap <Leader>gr :Gremove<CR>
   nnoremap <Leader>gl :Glog<CR>
@@ -1733,7 +1733,7 @@ endif
 autocmd VimEnter * if exists(":Emmet") | exe "  inoremap <C-Space> <Esc>:call emmet#expandAbbr(3,'')<CR>i" | endif
 
 if has('gui_running')
-  color azuki " preferencia personal
+  color seattle " preferencia personal
 endif
 " Tamaño de la ventana y posición:
 let g:fzf_layout = { 'down': '~20%' }
@@ -1765,7 +1765,7 @@ command! -bang -nargs=* Rg
 " En el caso de no tener disponible fzf, nada de esto debería ser mappeado,
 " para que perduren las configuraciones anteriores:
 
-if exists(':FZF') == 2
+if exists(':FZF') == 2 && !&diff
   " NOTA: con <C-V> abrimos cualquier archivo o tag en un vsplit
   nnoremap <leader>b :Buffers<CR>
   nnoremap <leader>f :Files<CR>
