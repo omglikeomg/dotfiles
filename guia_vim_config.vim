@@ -313,7 +313,7 @@ if has("gui_running")
     " fuente por si acaso no tengo instalada la mía:
     set guifont=Courier\ Prime\ Code:h14,Lucida\ Console:h11
   elseif has('mac')
-    set guifont=Hermit:h16,Courier\ Prime\ Code:h16 " la de sistema es una buena alternativa
+    set guifont=Hermit:h14,Courier\ Prime\ Code:h14 " la de sistema es una buena alternativa
   else
     set guifont=Courier\ Prime\ Code\ 12 " la de sistema es suficiente sino
   endif
@@ -389,6 +389,7 @@ endfunction
 " y una serie de autocomandos que se encargan de guardar siempre como espacios
 augroup saving_text
   autocmd!
+  autocmd BufEnter * call Set_Tabs()
   autocmd BufWritePre * call Set_Spaces()
   autocmd BufWritePost * call Set_Tabs()
 augroup end
@@ -435,6 +436,7 @@ endif
 
 " alerta en la columna 80
 set colorcolumn=80
+hi ColorColumn ctermbg=3
 
 " máximo ancho de texto ??
 set textwidth=0 " tener un texto que se corta solo y se reformatea a 80
@@ -1534,6 +1536,7 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
   " exclamaciones gramaticalmente correctos
   let g:surround_{char2nr("¡")} = "¡\r!"
   let g:surround_{char2nr("¿")} = "¿\r?"
+  let g:surround_{char2nr("!")} = "<!-- \r -->"
 
   Plug 'tpope/vim-fugitive' | Plug 'airblade/vim-gitgutter'
   " para integrar el control de versiones a Vim y tener indicadores visuales
@@ -1676,7 +1679,7 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
   " ---
   "  Utilizo también el programa fzf en la consola... utilizar su plugin en vim es casi una obligación y convierte en absurdos la mayoría de mappings anteriores:
   if executable('fzf')
-    Plug '/usr/local/opt/fzf' " necesario en mac indicarle donde está...
+    Plug '/usr/local/opt/fzf'
     Plug 'junegunn/fzf.vim'
   endif
 
@@ -1733,7 +1736,10 @@ endif
 autocmd VimEnter * if exists(":Emmet") | exe "  inoremap <C-Space> <Esc>:call emmet#expandAbbr(3,'')<CR>i" | endif
 
 if has('gui_running')
-  color seattle " preferencia personal
+  color azuki " preferencia personal
+else
+  hi StatusLineNC ctermfg=8 ctermbg=0
+  hi StatusLine ctermfg=15 ctermbg=0
 endif
 " Tamaño de la ventana y posición:
 let g:fzf_layout = { 'down': '~20%' }
@@ -1765,7 +1771,7 @@ command! -bang -nargs=* Rg
 " En el caso de no tener disponible fzf, nada de esto debería ser mappeado,
 " para que perduren las configuraciones anteriores:
 
-if exists(':FZF') == 2 && !&diff
+if exists(':FZF')
   " NOTA: con <C-V> abrimos cualquier archivo o tag en un vsplit
   nnoremap <leader>b :Buffers<CR>
   nnoremap <leader>f :Files<CR>
@@ -1782,3 +1788,21 @@ if exists(':FZF') == 2 && !&diff
   nnoremap <leader><leader>c :Commands<CR>
   nnoremap <leader><leader>ft :Filetypes<CR>
 endif
+
+" prueba start {{{
+" Un comando para introducir folds en bloques de código (teniendo Commentary)
+function! FoldBlock()
+  let block_name = input("Name: ")
+  let curline = line(".")
+  if !empty(block_name)
+    execute 'normal {o'.block_name.' start {{{'
+    execute 'Commentary'
+    execute 'normal }O'.block_name.' end }}}'
+    execute 'Commentary'
+    execute curline
+  else
+    echo "No block name provided"
+  endif
+endfunction
+" prueba end }}}
+
