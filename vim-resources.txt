@@ -1,0 +1,6 @@
+http://of-vim-and-vigor.blogspot.com/
+https://sanctum.geek.nz/arabesque/
+ --> https://sanctum.geek.nz/arabesque/gracefully-degrading-vimrc/
+https://github.com/romainl/the-patient-vimmer/tree/gh-pages?files=1
+https://www.youtube.com/watch?v=XA2WjJbmmoM
+http://vimcasts.org/episodes/
