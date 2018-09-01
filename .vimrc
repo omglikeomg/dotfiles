@@ -1,177 +1,189 @@
-"STOP FUCKING BEEPING
+" .vimrc
+" By Demian Molinari - omglikeomg
+" Last changes done on Sept. 1, 2018
+"
+" BASIC {{{
+"""""""
+
+set hidden
+set mouse=a
 set noerrorbells visualbell t_vb=
-if has('gui')
-  set vb t_vb=
+
+if &history < 500
+  set history=500
 endif
 
-" remove all existing autocmds (so as not to augroup everything)
-autocmd!
-
-" Sets how many lines of history VIM has to remember
-set history=500
-
-" fix errors with the buffer switching without saving...
-set hidden
-
-" Enable filetype plugins
-filetype plugin on
-filetype indent on
-
-" Set to auto read when a file is changed from the outside
-set autoread
-
-" With a map leader it's possible to do extra key combinations
-" but it won't even work if you dont
 set encoding=utf-8
-" although that means ALT won't work in windows(gvim)
-let mapleader = "\<Space>"
-let g:mapleader = "\<Space>"
-
-"set scroll offset to 5 lines
-set scrolloff=3
-
-let $LANG='es'
-set langmenu=en
-
-" Set default omnicompletion
-set omnifunc=syntaxcomplete#Complete
-
-"Always show current position
-set ruler
-set number relativenumber    " toggle hybrid line numbers
-
-" Height of the command bar
-set cmdheight=2
-
-" Configure backspace so it acts as it should act
 set backspace=eol,start,indent
-set whichwrap+=<,>,h,l
+" [h] and [l] dont change line when moving, arrows do
+set whichwrap+=<,>,[,]
+set whichwrap-=h,l
+" }}}
 
-" Ignore case when searching
-set ignorecase
+" ANTIVIMHEAVIOR {{{
+""""""""""""""""
+set nowritebackup
+set nobackup
+set noswapfile
+set autoread
+if !empty(&viminfo)
+  set viminfo^=!
+endif
+" }}}
 
-" When searching try to be smart about cases
-set smartcase
+" CLIPBOARD-things {{{
+""""""""""""""""""
+let &clipboard = has ('unnamedplus') ? 'unnamedplus' : 'unnamed'
+set pastetoggle=<F2>
+" }}}
 
-" Highlight search results
-set hlsearch
-
-" Makes search act like search in modern browsers
+" SEARCH {{{
+""""""""
 set incsearch
+set ignorecase
+set smartcase
+" }}}
 
-" Don't redraw while executing macros (good performance config)
+" INTERFACE {{{
+"""""""""""
+set number relativenumber
+set hlsearch
+if !&scrolloff
+  set scrolloff=3
+endif
+if !&sidescrolloff
+  set sidescrolloff=1
+endif
+set cmdheight=2
+set cursorline
 set lazyredraw
 
-" Show matching brackets when text indicator is over them
-set showmatch
-" How many tenths of a second to blink when matching brackets
-set matchtime=2
+" statusbar
+set laststatus=2
+set statusline=%<\
+set statusline+=%-3.3n\                       " bufno
+set statusline+=%40F\                         " file+path
+set statusline+=%h%m%r%w                      " flags(mod,ro,etc)
+set statusline+=[%{strlen(&ft)?&ft:'none'},   " filetype
+set statusline+=%{strlen(&fenc)?&fenc:&enc},  " encoding
+set statusline+=%{&fileformat}]               " format (unix,dos)
+set statusline+=%=                            " right...
+" syntax-info
+set statusline+=%{synIDattr(synID(line('.'),col('.'),1),'name')}\
+set statusline+=[%04l,%04v]\                  " linecol
+set statusline+=(%L\ lines)                   " total
 
-" Enable matchit plugin to match .*ml tags
 packadd! matchit
 
-" Enable syntax highlighting
-syntax enable
-autocmd! Filetype twig set ft=html.twig
-
-set background=dark
-
-" Always show the status line
-set laststatus=2
-
-" New splits open to right and bottom
 set splitbelow
 set splitright
 
-" Set extra options when running in GUI mode
-if has("gui_running")
-  " Hides toolbar and scrollbars and File menu
-  set guioptions=gt
-  set t_Co=256
-  set guitablabel=%M\ %t
-  " Toggle fullscreen
-  nnoremap <silent> <leader>WW :set lines=200 columns=500<CR>
-  nnoremap <silent> <leader>ww :set lines=50 columns=90<CR>
-endif
+set foldmethod=marker
+" }}}
 
-" Highlights the current line background
-set cursorline
-
-" Open VIM in a decent window
-set lines=90 columns=200
-
-" make a mark for column 80
-set colorcolumn=80
-
-" set unix line endings
+" FORMAT OF STUFF {{{
+"""""""""""""""""
 set fileformat=unix
-
-" Use Unix as the standard file type
 set ffs=unix,dos,mac
 
-" save up to 100 marks, enable capital marks
-set viminfo=h,'100,f1
-
-" Return to last edit position when opening files
-au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-
-" Normally, Vim messes with iskeyword when you open a shell file. This can
-" leak out, polluting other file types even after a 'set ft=' change. This
-" variable prevents the iskeyword change so it can't hurt anyone.
-let g:sh_noisk=1
-" Insert only one space when joining lines that contain sentence-terminating
-" punctuation like `.`.
 set nojoinspaces
+set formatoptions+=j
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Files, backups and undo
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Turn backup off, since most stuff is in SVN, git et.c anyway...
-set nobackup
-set nowritebackup
-set noswapfile
+if has('syntax') && !exists('g:syntax_on')
+  syntax enable
+endif
+if has('autocmd')
+  filetype plugin on
+  filetype indent on
+endif
+set textwidth=0
+set linebreak
+set nowrap
 
-" Switch CWD to the directory of the open buffer
-nnoremap <leader>cd :cd %:p:h<cr>:pwd<cr>
+set shiftwidth=2 softtabstop=2
+set tabstop=2
+set smarttab
+set autoindent
+set noexpandtab
+set list
+set listchars=tab:\|\ ,eol:¬,extends:…,precedes:…,trail:.,nbsp:·
 
-" Enable recursive path search with ':find' or <C-x><C-f> autocompletion
-set path+=**
+augroup Saving_text
+  autocmd!
+  autocmd BufWritePre * call Set_Spaces()
+  autocmd BufWritePost * call Set_Tabs()
+augroup END
+" }}}
 
-" Enable enhanced command line completion.
-set wildmenu wildmode=list:full
+" GUI SETUP {{{
+"""""""""""
+if !exists('g:first_run')
+  let g:first_run = 1
+endif
+if has('gui_running')
+  set guioptions=gt
+  colorscheme desert
+  set columns=200
+  set lines=60
+  if (g:first_run != 0)
+    set guifont=*
+    g:first_run = 0
+  endif
+endif
+" }}}
 
-" Ignore these filenames during enhanced command line completion.
+" WEIRD PREVENTION {{{
+""""""""""""""""""
+" [O] timeouts
+set timeout timeoutlen=1000 ttimeoutlen=100
+" literally: Stop SQL language files from doing unholy things to the C-c key
+let g:omni_sql_no_default_maps = 1
+
+if has('win32')
+  let g:vim_at_user_home = $USERPROFILE."/vimfiles"
+else
+  let g:vim_at_user_home = $HOME."/.vim"
+endif
+" }}}
+
+" NETRW {{{
+"""""""
+let g:netrw_banner=0
+let g:netrw_altv=1
+let g:netrw_browse_split = 0
+let g:netrw_liststyle=3
+let g:netrw_list_hide=netrw_gitignore#Hide()
+let g:netrw_list_hide.=',\(^\\s\s\)\zs\.\S\+'
+let g:netrw_winsize = 35
+let g:netrw_localrmdir='rm -r'
+
+augroup netrw
+  autocmd!
+  autocmd FileType netrw setl bufhidden=wipe
+augroup END
+" }}}
+
+" COMPLETION {{{
+""""""""""""
+set omnifunc=syntaxcomplete#Complete
+set path=a.,,**
+set wildmenu wildmode=list:longest
+
 set wildignore+=*.aux,*.out,*.toc " LaTeX intermediate files
 set wildignore+=*.luac " Lua byte code
- " compiled object files
+" compiled object files
 set wildignore+=*.o,*.obj,*.exe,*.dll,*.manifest,*.dat,*.class,*.zip,*.rar,*.7z
 set wildignore+=*.pyc " Python byte code
 set wildignore+=*.spl " compiled spelling word lists
 set wildignore+=*.sw? " Vim swap files
-" Don't offer to open certain files/directories
+" images
 set wildignore+=*.bmp,*.gif,*.ico,*.jpg,*.png,*.ico
 set wildignore+=*.pdf,*.psd
-set wildignore+=node_modules/*,bower_components/*
+" node modules y similar
+set wildignore+=*/node_modules/*,*/bower_components/*
+" git
+set wildignore+=.git/*
 
-
-" remap - and _ to have a more accessible search as in english keyboard
-nnoremap - /
-nnoremap _ ?
-" ---- FILE WORKING RELATED ----
-" YANK PATHS TO CLIPBOARD
-" relative path (src/foo.txt)
-nnoremap <leader>pr :let @+=expand("%")<CR>
-
-" absolute path (/something/src/foo.txt)
-nnoremap <leader>pa :let @+=expand("%:p")<CR>
-
-" filename (foo.txt)
-nnoremap <leader>pf :let @+=expand("%:t")<CR>
-
-" directory name (/something/src)
-nnoremap <leader>pF :let @+=expand("%:p:h")<CR>
-
-" {{ SET RG as grep and use it wisely to find in files
 if executable("rg")
   set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
 
@@ -187,237 +199,53 @@ if executable("rg")
   " --color: Search color options
 
   set grepformat=%f:%l:%c:%m,%f:%l:%m
-elseif executable("ag")
+elseif executable("ag") " o si existe su hermano menor y más famoso Ag
   set grepprg=ag\ --nogroup\ --nocolor\ --smart-case\ --column
   set grepformat=%f:%l:%c:%m,%f:%l:%m
 endif
-" }}
+" }}}
 
-" bind \ (backward slash) to grep shortcut
-command! Search call MySearch()
-nnoremap º :Search<CR>
+" KEYS {{{
+""""""
+nnoremap <space> <Nop>
+let mapleader = " "
+let g:mapleader = "\<Space>"
+" MANDATORY ANTI <CTRL-U>
+inoremap <C-U> <C-G>u<C-U>
 
-function! MySearch() abort
-  let grep_term = input("Enter search term: ")
-  if !empty(grep_term)
-    execute 'silent grep!' grep_term | copen
-  else
-    echo "Empty search term"
-  endif
-  redraw!
-endfunction
+" STUPID SPANISH KEYBOARD SHITTY / MAPPING
+" nnoremap - /
+" nnoremap _ ?
+nnoremap - /\v
+nnoremap _ ?\v
+nnoremap gl <C-]>
 
-" simple fuzzyfind for filenames
-" nnoremap <Leader>f :find<Space>*
-" a command to navigate most recent files
-" nnoremap <Leader>F :bro<Space>ol<CR>
-" one to list all the tags available
-" nnoremap <Leader>ts :tselect<Space><C-D>
-" one to see the jumps done
-nnoremap <Leader>io :jumps<CR>
+" WRAP:
+nnoremap çli :set list! list?<CR>
+nnoremap çwr :set wrap! wrap?<CR>
+" nnoremap <Leader>wr :set wrap!<CR>:set list! wrap?<CR>
+nnoremap <expr>j expand(&l:wrap) == 1 ? "gj" : "j"
+nnoremap <expr>k expand(&l:wrap) == 1 ? "gk" : "k"
+nnoremap <expr>^ expand(&l:wrap) == 1 ? "g0" : "^"
+nnoremap <expr>$ expand(&l:wrap) == 1 ? "g$" : "$"
 
-" lets me add files with wildcards, like **/*.md for all markdown files, very useful.
-nnoremap <Leader>dd :argadd **/*
-" Maps c-a to add an argdo prefix to any command
-cnoremap <C-A> <Home>argdo<Space><End>
+" DONT JUMP WHEN JOINING LINES:
+nnoremap J mzJ`z
 
-" remaps ctrl-backspace to erase by word in cmdline
-cnoremap <C-BS> <C-W>
+" YOU WILL NEVER STOP, WON'T YOU?
+nnoremap <Leader>rc :tabnew $MYVIMRC<CR>
 
-" Renames current file
-
-function! RenameFile() abort
-  let old_name = expand('%')
-  let new_name = input('New file name: ', expand('%'), 'file')
-  if new_name != '' && new_name != old_name
-    exec ':saveas ' . new_name
-    exec ':silent !rm ' . old_name
-    redraw!
-  endif
-endfunction
-
-nnoremap <Leader>rn :call RenameFile()<cr>
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" QUICKFIX WINDOW MAPPINGS
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-" In the quickfix window, <CR> is used to jump to the error under the
-" cursor, so undefine the mapping there.
-autocmd BufReadPost quickfix nnoremap <buffer>
-
-nnoremap <silent> 'q :cnext<CR>
-nnoremap <silent> 'Q :cprev<CR>
-nnoremap <buffer> vs <CR>:vs<CR>:cw<CR>
-nnoremap <buffer> pe <CR>:ped<CR>:cw<CR>
-
-
-" toggles quickfix window (forced)
-" nnoremap <Leader><Leader> :QFix<CR>
-command! -bang -nargs=? QFix call QFixToggle(<bang>0)
-function! QFixToggle(forced) abort
-  if exists("g:qfix_win") && a:forced == 0
-    cclose
-    unlet g:qfix_win
-  else
-    copen 10
-    let g:qfix_win = bufnr("$")
-  endif
-endfunction
-
-" TAG JUMPING
-
-nnoremap <leader>tj :tjump<Space>*
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" TEXT FILES TREATMENT
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:autocmd! BufNewFile,BufRead * set nowrap "don't wrap in code
-:autocmd! BufNewFile,BufRead *.txt,*.mkd,*.md,*.tex set wrap
-:autocmd! BufNewFile,BufRead *.txt,*.mkd,*.md,*.tex set tw=0
-
-" Use Windows Clipboard
-let &clipboard = has ('unnamedplus') ? 'unnamedplus' : 'unnamed'
-
-" map c-x and c-v to work as they do in windows
-" only in insert mode and command mode
-vnoremap <c-x> "+x
-vnoremap <c-c> "+y
-cnoremap <c-v> <c-r>+
-exe 'ino <script> <C-V>' paste#paste_cmd['i']
-" map Ctrl+Backspace and Ctrl+Del to behave like windows
+" GUI IS A PRETTY COOL GUY BECAUSE OF THIS:
 inoremap <C-BS> <C-W>
 inoremap <C-Del> <C-O>dw
-" Ctrl-U saves in u register what erases (instead of just erasing the whole line)
-inoremap <C-U> <C-G>u<C-U>
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Text, tab and indent related
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-set expandtab " Use spaces instead of tabs
-set smarttab " Be smart when using tabs ;)
-set ai "Auto indent
+" alternates between eol, next line and current position in insert-mode
+" (works in gui mode only)
+inoremap <C-CR> <Esc>mmo
+inoremap <S-CR> <Esc>mmA
+inoremap <C-B> <Esc>'mi
 
-" 1 tab == 2 spaces
-set shiftwidth=2 softtabstop=2
-set tabstop=8
-
-" Linebreak is on, textwidth is infinite
-set linebreak
-set textwidth=0
-
-" F2 = Paste Toggle (in insert mode, pasting indented text behavior changes)
-set pastetoggle=<F2>
-
-""""""""""""""""""""""""""""""
-" => Visual mode & search related
-""""""""""""""""""""""""""""""
-" remap yy to yank line without <CR>
-nnoremap yy 0y$
-
-" Disable highlight when pressing ESC
-nnoremap <leader><leader><leader> :noh<CR>
-
-" Visual mode pressing * or # searches for the current selection
-vnoremap <silent> * "sy/<C-r>s
-vnoremap <silent> # "sy/<C-r>sNN
-
-" allow Tab and Shift+Tab to
-" tab selection in visual mode
-vnoremap <Tab> >gv
-vnoremap <S-Tab> <gv
-
-" When you press <leader>r you can search and replace the selected text
-vnoremap <silent> <leader>rp  "sy:%s/<C-r>s//g<Left><Left>
-" <leader>/ lets you search and have line numbers attached
-nnoremap <Leader>/ :il /
-
-"Improved * and # to allow instant meaningful jumps
-nnoremap <leader>* [I:
-nnoremap <leader># ]I:
-
-" select all mapping
-nnoremap <leader>a ggVG
-
-" find through files the word under cursor
-" nnoremap <Leader>* :Search<CR><C-R><C-w>
-" leader rw to replace word under cursor
-nnoremap <Leader>rw :%s/\<<C-R><C-W>\>//g<LEFT><LEFT>
-" leader rW to replace WORD under cursor
-nnoremap <Leader>rW :%s/\<<C-R><C-A>\>//g<LEFT><LEFT>
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Moving around, tabs, windows and buffers
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-" Useful mappings for managing tabs
-nnoremap <leader>tn :tabnew<cr>
-nnoremap <leader>to :tabonly<cr>
-nnoremap <leader>tc :tabclose<cr>
-nnoremap <leader>tm :tabmove
-nnoremap <leader>t<leader> :tabnext<CR>
-
-" Let 'tl' toggle between this and the last accessed tab
-let g:lasttab = 1
-nnoremap <Leader>tl :exe "tabn ".g:lasttab<CR>
-au TabLeave * let g:lasttab = tabpagenr()
-
-"------  Window Navigation  ------
-" <Leader>hljk = Move between windows
-nnoremap <Leader>h <C-w>h
-nnoremap <Leader>l <C-w>l
-nnoremap <Leader>j <C-w>j
-nnoremap <Leader>k <C-w>k
-
-nnoremap <Leader>H <C-w>H
-nnoremap <Leader>L <C-w>L
-nnoremap <Leader>J <C-w>J
-nnoremap <Leader>K <C-w>K
-nnoremap <Leader>O <C-w>o
-nnoremap <Leader>q <C-w>q
-
-"<Leader>= = Normalize window widths
-nnoremap <Leader>= :wincmd =<CR>
-
-" ---------- BUFFERS and whatnot  ------
-" a number based buffer list
-nnoremap <Leader>b :ls<CR>:buffer<Space>
-" jump to previous edited buffer
-nnoremap <Leader>B :b#<cr>
-" buffer list to open in vsplit
-nnoremap <Leader>vb :ls<CR>:vertical sb<Space>
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Functions for editing
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Clean trailing whitespace
-function! CleanExtraSpaces() abort
-  let save_cursor = getpos(".")
-  let old_query = getreg('/')
-  silent! %s/\s\+$//e
-  call setpos('.', save_cursor)
-  call setreg('/', old_query)
-endfunction
-
-" if has("autocmd")
-"   autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
-" endif
-nnoremap <leader>tw :call CleanExtraSpaces()<CR>
-
-" -- Toggle Line Wrap
-nnoremap <Leader>wr :set wrap! wrap?<CR>
-
-if has('win32')
-  set guifont=Hermit:h12,Lucida\ Console:h11
-elseif has('mac')
-  set guifont=Courier\ Prime\ Pro:h14,Menlo:h14
-else
-  set guifont=Hermit\ 12,Source\ Code\ Pro\ 12,Ubuntu\ Mono\ 12
-endif
-
-" Add a heading/subheading to current line
-nnoremap <leader>h1 yypVr=<Esc>==
-nnoremap <leader>h2 yypVr-<Esc>==
-
-" Remapping autocomplete functions to work as an IDE's
+" AUTOCOMPLETION:
+inoremap <C-F> <C-X><C-F>
 inoremap <expr> <Esc>      pumvisible() ? "\<C-e>" : "\<Esc>"
 inoremap <expr> <CR>       pumvisible() ? "\<C-y>" : "\<CR>"
 inoremap <expr> <Down>     pumvisible() ? "\<C-n>" : "\<Down>"
@@ -425,289 +253,292 @@ inoremap <expr> <Up>       pumvisible() ? "\<C-p>" : "\<Up>"
 inoremap <expr> <PageDown> pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<PageDown>"
 inoremap <expr> <PageUp>   pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<PageUp>"
 
-" remapping shift-enter to insert a new line and ctrl-enter to append at the end
-inoremap <C-CR> <Esc>o
-inoremap <S-CR> <Esc>A
+" HELP-SEARCH:
+nnoremap <leader>hs :vs g:vim_at_user_home/vimtips.txt<CR>
 
-""""""""""""""""""""""""""""""""""""""
-" Other
-""""""""""""""""""""""""""""""""""""""
-" -- Open Config File Fast
-nnoremap <Leader>rc :tabnew $MYVIMRC<CR>
+" Replace word under cursor:
+nnoremap <Leader>rw :%s/\<<C-R><C-W>\>//g<LEFT><LEFT>
+" Replace WORD under cursor:
+nnoremap <Leader>rW :%s/\<<C-R><C-A>\>//g<LEFT><LEFT>
 
-" Fix slow O inserts
-:set timeout timeoutlen=1000 ttimeoutlen=100
-" Stop SQL language files from doing unholy things to the C-c key
-let g:omni_sql_no_default_maps = 1
+" I <3 IL
+" nnoremap <leader>/ :il /
+" nnoremap <leader>* [I:
+" I have a better il that loads in loclist
+nnoremap <leader>/ :Tilist<space>
+nnoremap <leader>* :call Turbo_asterisk()<CR>"
 
-" STATUS LINE
-set statusline=%F%m%r%h%w[%L]%=(%{&ff})%y[%04l,%04v]
+" TAGS
+nnoremap <Leader>ts :tselect<Space><C-D>
+nnoremap <leader>tj :tjump<Space><C-D>*
 
-" Don't let x and c to spoil the yank register
+" DONT MESS UP MY REGISTER
 nnoremap x "_x
 nnoremap c "_c
-" Keep the cursor in place while joining lines
-nnoremap J mzJ`z
 
-" Remap j and k to behave as they should on text-wrapping
-nnoremap j gj
-nnoremap k gk
+" VISUAL:
+" Search selection in visual
+vnoremap <silent> * "sy/<C-r>s<CR>
+vnoremap <silent> # "sy?<C-r>s<CR>
+" Indent selection with TAB
+vnoremap <Tab> >gv
+vnoremap <S-Tab> <gv
+" windows like mappings for copy/cut
+vnoremap <c-x> "+d
+vnoremap <c-c> "+y
+" Select all mapping
+nnoremap <leader>a ggVG
 
-""""""""""""""""""""""""""""""""""""""
-" Vim-Plug Section
-""""""""""""""""""""""""""""""""""""""
-if filereadable($HOME . '/vimfiles/autoload/plug.vim') || filereadable($HOME . '/.vim/autoload/plug.vim')
+" SWAP TO LAST USED TAB
+nnoremap <Leader>t<Leader> :exe "tabn ".g:lasttab<CR>
+
+" LIST BUFFERS, OPEN BUFFERS
+nnoremap <leader>b :ls<CR>:b<space>
+nnoremap <leader>B :b #<CR>
+cnoremap <C-S> <Home>vertical s<End>
+
+" files
+nnoremap <leader>f :find *
+nnoremap <leader>e :Ex<CR>
+
+" Grep pattern
+nnoremap º :Search<CR>
+" GrepFind (word under cursor)
+nnoremap <Leader>gf :Search<CR><C-R><C-w><CR>
+" nnoremap <leader>F :oldfiles<CR>:e #<
+nnoremap <leader>F :MostRecent<CR>
+" }}}
+
+" HELPERS {{{
+"""""""""
+" remember last position on a file
+augroup Restorepos
+  autocmd!
+  autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+augroup END
+
+function! MakeTags() abort
+  let command='ctags -R'
+  let confirm = input(expand('%:h') . ' is this the correct path? y/n')
+  if confirm == 'y'
+    exec ':silent !' . command
+  elseif confirm == 'n'
+    echo 'please navigate to the correct directory'
+    return
+  endif
+  echo 'Tags generated.'
+endfunction
+
+command! Maketags call MakeTags()
+
+" remembers last tab number
+augroup Lasttab
+  autocmd!
+  autocmd TabLeave * let g:lasttab = tabpagenr()
+augroup END
+
+" FUNCTION TO SAVE AS SPACES AND SEE AS TABS
+function! Set_Tabs() abort
+  if(&l:expandtab) " if using spaces
+    set noexpandtab " disable
+    " and retab it
+    exec 'keepjumps %retab!'
+  endif
+endfunction
+
+" TODO: find out how not to write the changes to the changelist so you don't
+" have to undo twice after saving if you mess up.
+function! Set_Spaces() abort
+  if (!&l:expandtab) " if using tabs
+    set expandtab " use spaces
+    " and retab it
+    exec 'keepjumps %retab'
+  endif
+endfunction
+
+" Open list of oldfiles as something interactionable:
+command! MostRecent vnew +setl\ buftype=nofile | 0put =v:oldfiles
+      \| nnoremap <buffer> <CR> :e <C-r>=getline('.')<CR><CR>
+
+" il command improvements...
+function! Turbo_asterisk()
+  redir => output
+  silent! exec join(['ilist', expand('<cword>')], ' ')
+  redir END
+  let lines = split(output, '\n')
+  if lines[0] =~ '^Error detected'
+    echomsg 'Word not found'
+    return
+  endif
+  let [filename, line_info] = [lines[0], lines[1:-1]]
+  let loclist_entries = map(line_info, "{
+        \ 'filename': filename,
+        \ 'lnum': split(v:val)[1],
+        \ 'text': getline(split(v:val)[1])
+        \ }"
+        \ )
+  let win_number = winnr()
+  call setloclist(win_number, loclist_entries)
+  lwindow
+endfunction
+
+function! Turbo_il(pattern)
+  redir => output
+  silent! exec join(['ilist', a:pattern], ' ')
+  redir END
+  let lines = split(output, '\n')
+  if lines[0] =~ '^Error detected'
+    echomsg 'Word not found'
+    return
+  endif
+  let [filename, line_info] = [lines[0], lines[1:-1]]
+  let loclist_entries = map(line_info, "{
+        \ 'filename': filename,
+        \ 'lnum': split(v:val)[1],
+        \ 'text': getline(split(v:val)[1])
+        \}"
+        \)
+  let win_number = winnr()
+  call setloclist(win_number, loclist_entries)
+  lwindow
+endfunction
+
+" requires 1 argument so command is mandatory
+command! -nargs=1 Tilist exec printf('call Turbo_il(%s)', string(<q-args>))
+
+" Search for string in files
+function! MySearch() abort
+  let grep_term = input("Pattern: ")
+  if !empty(grep_term)
+    execute 'silent lgrep!' grep_term
+    " silent sirve para que no nos muestre el primer mensaje de la consulta
+  else
+    echo "No pattern provided"
+  endif
+  redraw!
+endfunction
+
+command! Search call MySearch()
+
+function! InstallPlug(win)
+  if a:win == 1
+    if empty(glob($HOME . '/vimfiles/autoload/plug.vim'))
+      if executable('curl')
+        silent !curl -fLo $HOME/vimfiles/autoload/plug.vim --create-dirs
+              \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+        exec PlugInstall --sync | source $MYVIMRC
+      else
+        echomsg 'Cannot install Vim-Plug. Install curl first'
+      endif
+    endif
+  endif
+  if empty(glob('~/.vim/autoload/plug.vim'))
+    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+          \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    exec PlugInstall --sync | source $MYVIMRC
+  endif
+endfunction
+
+command! InstallPlug call InstallPlug(has('win32'))
+" }}}
+
+" PLUGIN AND SO ON {{{
+""""""""""""""""""
+if filereadable($HOME . '/vimfiles/autoload/plug.vim') 
+      \|| filereadable($HOME . '/.vim/autoload/plug.vim')
   if has('win32')
     call plug#begin('$HOME/vimfiles/plugged')
   else
     call plug#begin('~/.vim/plugged')
   endif
 
-  " And now, install plugins
-
-  " the . command can repeat whatever you want!
-  Plug 'tpope/vim-repeat'
-  " comment automatically with gc<movement>
+  Plug 'tpope/vim-repeat' 
   Plug 'tpope/vim-commentary'
-  " probably the best plugin ever written
   Plug 'tpope/vim-surround'
-  " Usage:
-  " yssb rodea linea de parentesis (yank substline brackets)
-  " ds" elimina comillas de alrededor (delete surrounding ")
-  " cs"<q> substituye comillas por <q> change surrounding " for <q>
-  " ysiw] rodeará una palabra de brackets yank substinnerword ]
-  " S en visual mode permite rodear con cualquier
-  " input.
-  " ALSO personalizados:
-  " ! significa ¡! y ? significa ¿?
-
-  " wrapper for git and display git diff in the left gutter
+  " config:
+  let g:surround_{char2nr("¡")} = "¡\r!"
+  let g:surround_{char2nr("¿")} = "¿\r?"
+  " config END
   Plug 'tpope/vim-fugitive' | Plug 'airblade/vim-gitgutter'
-  " easily search, substitute and abbreviate multiple version of words
   Plug 'tpope/vim-abolish'
-  " Usage:
-  " :Abolish pattern-to-substitute substitution
-  " pattern might be composed like this
-  " :Abolish teh the
-  " :Abolish colour{,s,ed,ing} color{}
-  " :Abolish {hon,col}our{,s,ed,ing} {}or{}
-  " or in case of searches
-  " :S /{insert,visual,command}_mode
-  " matches INSERT_MODE, visual_mode & CommandMode
+  " Plug 'jiangmiao/auto-pairs' " <-- try to live w/o it
+  Plug 'justinmk/vim-sneak'
+  Plug 'godlygeek/tabular'
+  " config:
+  " A Tim Pope function for tables automatically realigning when using pipe for
+  " separations:
+  inoremap <silent> <Bar>   <Bar><Esc>:call <SID>align()<CR>a
 
-  " testing fzf and fzf.vim to replace the regular grepping with rg
+  function! s:align() abort
+    let p = '^\s*|\s.*\s|\s*$'
+    if exists(':Tabularize') && getline('.') =~# '^\s*|' && (getline(line('.')-1) =~# p || getline(line('.')+1) =~# p)
+      let column = strlen(substitute(getline('.')[0:col('.')],'[^|]','','g'))
+      let position = strlen(matchstr(getline('.')[0:col('.')],'.*|\s*\zs.*'))
+      Tabularize/|/l1
+      normal! 0
+      call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
+    endif
+  endfunction"
+  " config END
+
+  " UNNECESSARY COMMODITIES
+  Plug 'mattn/emmet-vim'
   Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
   Plug 'junegunn/fzf.vim'
-
-  " Extra Colorschemes ¿?
-  Plug 'noahfrederick/vim-noctu'
-  Plug 'dennougorilla/azuki.vim'
-  Plug 'aereal/vim-colors-japanesque'
-  Plug 'whatyouhide/vim-gotham'
-  Plug 'mbbill/vim-seattle'
-  Plug 'clinstid/eink.vim'
-  Plug 'nightsense/carbonized'
-
-  " Vim Autoclose for parenthesis and quotation
-  Plug 'jiangmiao/auto-pairs'
-
-  " markdown and tabular power for json/md <mappings later>
-  Plug 'godlygeek/tabular'
-  " The godly motion
-  Plug 'justinmk/vim-sneak'
-
-  " -- Web Development
-  Plug 'mattn/emmet-vim' " most vital for zen-coding
-  Plug 'groenewege/vim-less' " useful for understanding less-syntax
-  Plug 'ap/vim-css-color' " can print colors if put an hex or rgb code
-  Plug 'hail2u/vim-css3-syntax' " useful for understanding css regular syntax
-  Plug 'othree/html5.vim' " supposed to provide a better indent
-  Plug 'pangloss/vim-javascript' " syntax check for js
-  Plug 'elzr/vim-json' " useful for json reading
-  Plug 'shawncplus/phpcomplete.vim' " better php omnicompletion
-  Plug 'StanAngeloff/php.vim' " provides php syntax check
-  Plug 'OmniSharp/omnisharp-vim', { 'for': 'cs' } " trying to get Unity omnicompletion in Vim
-  Plug 'lumiliet/vim-twig'
-  " Initialize plugin system
-  call plug#end()
-endif
-
-" Tabular mappings
-" <SPC><Tab> + symbol tabularizes by symbol
-if exists(":Tabularize")
-  nnoremap <Leader><Tab>= :Tabularize /=<CR>
-  vnoremap <Leader><Tab>= :Tabularize /=<CR>
-  nnoremap <Leader><Tab>: Tabularize /:\zs<CR>
-  vnoremap <Leader><Tab>: Tabularize /:\zs<CR>
-endif
-" A Tim Pope function for tables automaticly realigning when using pipe for
-" separations:
-inoremap <silent> <Bar>   <Bar><Esc>:call <SID>align()<CR>a
-
-function! s:align() abort
-  let p = '^\s*|\s.*\s|\s*$'
-  if exists(':Tabularize') && getline('.') =~# '^\s*|' && (getline(line('.')-1) =~# p || getline(line('.')+1) =~# p)
-    let column = strlen(substitute(getline('.')[0:col('.')],'[^|]','','g'))
-    let position = strlen(matchstr(getline('.')[0:col('.')],'.*|\s*\zs.*'))
-    Tabularize/|/l1
-    normal! 0
-    call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
-  endif
-endfunction
-
-" --------- Surround Options -----
-"  let ! make a ¡! and ¿? surrounding for writing
-let g:surround_{char2nr("!")} = "¡\r!"
-let g:surround_{char2nr("?")} = "¿\r?"
-
-" --------- fuGITive -----
-if exists(":Gstatus")
-  nnoremap <Leader>gs :Gstatus<CR>
-  nnoremap <Leader>gr :Gremove<CR>
-  nnoremap <Leader>gl :Glog<CR>
-  nnoremap <Leader>gb :Gblame<CR>
-  nnoremap <Leader>gm :Gmove
-  nnoremap <Leader>gp :Ggrep
-  nnoremap <Leader>gR :Gread<CR>
-  nnoremap <Leader>gg :Git
-  nnoremap <Leader>gd :Gdiff<CR>
-
-  "------  Git Gutter Options ------
-  "Disable <Leader>h* commands as they slow down movement
-  let g:gitgutter_map_keys = 0
-  if executable("rg")
-    let g:gitgutter_grep = 'rg'
-  endif
-endif
-
-" ---- Emmet ----
-autocmd VimEnter * if exists(":Emmet") | exe "  inoremap <C-Space> <Esc>:call emmet#expandAbbr(3,'')<CR>i" | endif
-
-" ----- NETRW file manager -----
-let g:netrw_banner=0 " disable annoying banner
-let g:netrw_browse_split=4 "open in vsplit window
-let g:netrw_altv=1 " open splits to the right
-let g:netrw_liststyle=3 " tree view
-let g:netrw_list_hide=netrw_gitignore#Hide()
-let g:netrw_list_hide.=',\(^\\s\s\)\zs\.\S\+'
-let g:netrw_winsize = 35
-let g:netrw_localrmdir='rm -r' " permite borrar directorios no-vacíos
-
-" Toggle netrw with <Leader>nt
-nnoremap <Leader>nt :call ToggleNetrw()<CR>
-" Make sure netrw buffers dont remain hidden
-autocmd FileType netrw setl bufhidden=wipe
-
-" a function to avoid opening Netrw another time when it is already open
-let g:NetrwIsOpen=0
-
-function! ToggleNetrw() abort
-    if g:NetrwIsOpen
-        let i = bufnr("$")
-        while (i >= 1)
-            if (getbufvar(i, "&filetype") == "netrw")
-                silent exe "bwipeout " . i
-            endif
-            let i-=1
-        endwhile
-        let g:NetrwIsOpen=0
-    else
-        let g:NetrwIsOpen=1
-        silent Lexplore
-    endif
-endfunction
-
-
-"""""" OMNISHARP FEATURES
-let g:OmniSharp_server_path = 'C:\omnisharp.http-win-x64\OmniSharp.exe'
-let g:syntastic_cs_checkers = ['code_checker']
-let g:OmniSharp_server_type = 'roslyn'
-
-augroup omnisharp_commands
-if exists(":OmniSharpStartServer")
-  " Start the omnisharp server for the current solution
-  nnoremap <Leader>sts :OmniSharpStartServer<CR>
-  nnoremap <Leader>sps :OmniSharpStopServer<CR>
-
-  augroup omnisharp_commands
-    autocmd!
-    " Synchronous build (blocks Vim)
-    "autocmd FileType cs nnoremap <buffer> <F5> :wa!<CR>:OmniSharpBuild<CR>
-    " Builds can also run asynchronously with vim-dispatch installed
-    autocmd FileType cs nnoremap <buffer> <Leader>b :wa!<CR>:OmniSharpBuildAsync<CR>
-    " Automatic syntax check on events (TextChanged requires Vim 7.4)
-    autocmd BufEnter,TextChanged,InsertLeave *.cs SyntasticCheck
-    " Automatically add new cs files to the nearest project on save
-    autocmd BufWritePost *.cs call OmniSharp#AddToProject()
-    " Show type information automatically when the cursor stops moving
-    autocmd CursorHold *.cs call OmniSharp#TypeLookupWithoutDocumentation()
-    " The following commands are contextual, based on the cursor position.
-    autocmd FileType cs nnoremap <buffer> gd :OmniSharpGotoDefinition<CR>
-    autocmd FileType cs nnoremap <buffer> <Leader>fi :OmniSharpFindImplementations<CR>
-    autocmd FileType cs nnoremap <buffer> <Leader>fs :OmniSharpFindSymbol<CR>
-    autocmd FileType cs nnoremap <buffer> <Leader>fu :OmniSharpFindUsages<CR>
-    " Finds members in the current buffer
-    autocmd FileType cs nnoremap <buffer> <Leader>fm :OmniSharpFindMembers<CR>
-    " Cursor can be anywhere on the line containing an issue
-    autocmd FileType cs nnoremap <buffer> <Leader>x  :OmniSharpFixIssue<CR>
-    autocmd FileType cs nnoremap <buffer> <Leader>fx :OmniSharpFixUsings<CR>
-    autocmd FileType cs nnoremap <buffer> <Leader>tt :OmniSharpTypeLookup<CR>
-    autocmd FileType cs nnoremap <buffer> <Leader>dc :OmniSharpDocumentation<CR>
-    " Navigate up and down by method/property/field
-    autocmd FileType cs nnoremap <buffer> <C-k> :OmniSharpNavigateUp<CR>
-    autocmd FileType cs nnoremap <buffer> <C-j> :OmniSharpNavigateDown<CR>
-  augroup END
-endif
-
-" v0.1 colorschemes
-if has('gui_running')
-  colorscheme darkblue "puts something readable 
-  silent! colorscheme seattle "tries to improve it
-else
-  colorscheme default " best is default
-endif
-
-" test: make an access to fast read vimtips.txt for search tips
-if has('win32')
-  let $VIMHOME = $VIM."/vimfiles"
-else
-  let $VIMHOME = $HOME."/.vim"
-endif
-nnoremap <leader>hs :vs $VIMHOME/vimtips.txt<CR>
-
-" Fzf {{{  TAKEN FROM github.com/SidOfc
-  " use bottom positioned 20% height bottom split
+  " config:
   let g:fzf_layout = { 'down': '~20%' }
   let g:fzf_colors =
-  \ { 'fg':      ['fg', 'Normal'],
-    \ 'bg':      ['bg', 'Clear'],
-    \ 'hl':      ['fg', 'String'],
-    \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-    \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
-    \ 'hl+':     ['fg', 'Statement'],
-    \ 'info':    ['fg', 'PreProc'],
-    \ 'prompt':  ['fg', 'Conditional'],
-    \ 'pointer': ['fg', 'Exception'],
-    \ 'marker':  ['fg', 'Keyword'],
-    \ 'spinner': ['fg', 'Label'],
-    \ 'header':  ['fg', 'Comment'] }
-
+        \ { 'fg':      ['fg', 'Normal'],
+        \ 'bg':      ['bg', 'Clear'],
+        \ 'hl':      ['fg', 'String'],
+        \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+        \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+        \ 'hl+':     ['fg', 'Statement'],
+        \ 'info':    ['fg', 'PreProc'],
+        \ 'prompt':  ['fg', 'Conditional'],
+        \ 'pointer': ['fg', 'Exception'],
+        \ 'marker':  ['fg', 'Keyword'],
+        \ 'spinner': ['fg', 'Label'],
+        \ 'header':  ['fg', 'Comment'] }
 
   command! -bang -nargs=* Rg
-  \ call fzf#vim#grep(
-  \   'rg --column --line-number --hidden --smart-case --no-heading --color=always '.shellescape(<q-args>), 1,
-  \   <bang>0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'up:60%')
-  \           : fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'right:50%:hidden', '?'),
-  \   <bang>0)
+        \ call fzf#vim#grep(
+        \   'rg --column --line-number --hidden --smart-case --no-heading --color=always '.shellescape(<q-args>), 1,
+        \   <bang>0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'up:60%')
+        \           : fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'right:50%:hidden', '?'),
+        \   <bang>0)
 
-  " only use FZF shortcuts in non diff-mode
+  " SYNTAX
+  Plug 'sheerun/vim-polyglot'
+  Plug 'fatih/vim-go'
+
   if !&diff
-    nnoremap <leader>f :Files<Cr>
-    nnoremap º :Rg
-    nnoremap <leader><leader>h :Maps<CR>
-    nnoremap <leader><leader>c :Commands<CR>
-    nnoremap <leader><leader>ft :Filetypes<CR>
-    nnoremap <leader>F :History<CR>
-    nnoremap <leader>ts :Tags<CR>
+    augroup PluginMapping
+      autocmd!
+      autocmd VimEnter * call Maps_Plugins()
+    augroup end
   endif
+
+  function! Maps_Plugins()
+    if exists(":Emmet")
+      exec "inoremap <C-Space> <Esc>:call emmet#expandAbbr(3,'')<CR>i"
+    endif
+    if exists(":FZF")
+      exec 'nnoremap <leader>b :Buffers<CR>'
+      exec 'nnoremap <leader>f :Files<CR>'
+      exec 'nnoremap º :Rg<space>'
+      exec 'nnoremap <leader>F :History'
+      exec 'nnoremap <leader>ts :Tags'
+    endif
+    if exists(":Git")
+      let g:gitgutter_map_keys = 0
+      let g:gitgutter_max_signs = 999
+      if executable("rg")
+        let g:gitgutter_grep = 'rg'
+      endif
+    endif
+  endfunction
+
+  call plug#end()
+endif
 " }}}
