@@ -108,8 +108,10 @@ set noexpandtab
 set list
 set listchars=tab:\|\ ,eol:¬,extends:…,precedes:…,trail:.,nbsp:·
 
+" I like using listchars all the time
 augroup Saving_text
   autocmd!
+  autocmd BufReadPost * call Try_Retab()
   autocmd BufWritePre * call Set_Spaces()
   autocmd BufWritePost * call Set_Tabs()
 augroup END
@@ -117,18 +119,11 @@ augroup END
 
 " GUI SETUP {{{
 """""""""""
-if !exists('g:first_run')
-  let g:first_run = 1
-endif
 if has('gui_running')
   set guioptions=gt
   colorscheme desert
-  set columns=200
+  set columns=100
   set lines=60
-  if (g:first_run != 0)
-    set guifont=*
-    g:first_run = 0
-  endif
 endif
 " }}}
 
@@ -213,7 +208,9 @@ let g:mapleader = "\<Space>"
 " MANDATORY ANTI <CTRL-U>
 inoremap <C-U> <C-G>u<C-U>
 
-" STUPID SPANISH KEYBOARD SHITTY / MAPPING
+nnoremap <leader><leader><leader> :noh<CR>
+
+" STUPID SPANISH KEYBOARD
 " nnoremap - /
 " nnoremap _ ?
 nnoremap - /\v
@@ -239,6 +236,7 @@ nnoremap <Leader>rc :tabnew $MYVIMRC<CR>
 inoremap <C-BS> <C-W>
 inoremap <C-Del> <C-O>dw
 " alternates between eol, next line and current position in insert-mode
+" without that much finger acrobatics
 " (works in gui mode only)
 inoremap <C-CR> <Esc>mmo
 inoremap <S-CR> <Esc>mmA
@@ -356,12 +354,18 @@ function! Set_Spaces() abort
   endif
 endfunction
 
+function! Try_Retab() abort
+  if !&readonly && &buftype != 'nofile' && &buftype != 'quickfix'
+    exec 'keepjumps %retab!'
+  endif
+endfunction
+
 " Open list of oldfiles as something interactionable:
 command! MostRecent vnew +setl\ buftype=nofile | 0put =v:oldfiles
       \| nnoremap <buffer> <CR> :e <C-r>=getline('.')<CR><CR>
 
 " il command improvements...
-function! Turbo_asterisk()
+function! Turbo_asterisk() abort
   redir => output
   silent! exec join(['ilist', expand('<cword>')], ' ')
   redir END
@@ -382,7 +386,7 @@ function! Turbo_asterisk()
   lwindow
 endfunction
 
-function! Turbo_il(pattern)
+function! Turbo_il(pattern) abort
   redir => output
   silent! exec join(['ilist', a:pattern], ' ')
   redir END
@@ -420,7 +424,7 @@ endfunction
 
 command! Search call MySearch()
 
-function! InstallPlug(win)
+function! InstallPlug(win) abort
   if a:win == 1
     if empty(glob($HOME . '/vimfiles/autoload/plug.vim'))
       if executable('curl')
@@ -483,6 +487,7 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
 
   " UNNECESSARY COMMODITIES
   Plug 'mattn/emmet-vim'
+  let g:user_emmet_leader_key=','
   Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
   Plug 'junegunn/fzf.vim'
   " config:
@@ -519,10 +524,10 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
     augroup end
   endif
 
-  function! Maps_Plugins()
-    if exists(":Emmet")
-      exec "inoremap <C-Space> <Esc>:call emmet#expandAbbr(3,'')<CR>i"
-    endif
+  function! Maps_Plugins() abort
+    " if exists(":Emmet")
+    "   exec 'inoremap <C-Space> <Esc>:call emmet#expandAbbr(3,"")<CR>i'
+    " endif
     if exists(":FZF")
       exec 'nnoremap <leader>b :Buffers<CR>'
       exec 'nnoremap <leader>f :Files<CR>'
