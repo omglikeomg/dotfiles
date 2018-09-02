@@ -1,0 +1,116 @@
+! XTerm can set 256 colors by itself:
+Xterm.termName: xterm-256color
+UXterm.termName: xterm-256color
+
+! Start maximized
+xterm*maximized: true
+
+! Alt key sends escape
+XTerm.vt100.metaSendsEscape: true
+UXTerm.vt100.metaSendsEscape: true
+
+! Use a nice truetype font and size by default... 
+xterm*faceName: ProggyCleanTT
+xterm*faceSize: 11
+
+! Number of lines to save for scrolling
+XTerm.vt100.saveLines: 100000
+UXTerm.vt100.saveLines: 100000
+
+! Keyboard Shortcut to fake zoom:
+xterm*VT100.Translations: #override \
+    Ctrl <Key> minus: smaller-vt-font() \n\
+    Ctrl <Key> plus: larger-vt-font()
+
+! Every shell is a login shell by default (for inclusion of all necessary environment variables)
+xterm*loginshell: true
+
+! I like a LOT of scrollback...
+xterm*savelines: 16384
+
+! double-click to select whole URLs :D
+xterm*charClass: 33:48,36-47:48,58-59:48,61:48,63-64:48,95:48,126:48
+
+! stop output to terminal from jumping down to bottom of scroll again
+xterm*scrollTtyOutput: false
+
+! No scrollbar
+xterm*ScrollBar: false
+
+! DOS-box colours...
+! lychnobite
+! special
+! xterm*foreground:    #cdcdcd
+! xterm*background:    #121317
+! xterm*cursorColor:   #cdcdcd
+! 
+! black
+! xterm*color0:        #282a2e
+! xterm*color8:        #373b41
+! 
+! red
+! xterm*color1:        #922230
+! xterm*color9:        #923a45
+
+! green
+! xterm*color2:        #0f8c61
+! xterm*color10:       #198873
+! 
+! yellow
+! xterm*color3:        #ba883d
+! xterm*color11:       #ba9153
+! 
+! blue
+! xterm*color4:        #277896
+! xterm*color12:       #3c7e96
+! 
+! magenta
+! xterm*color5:        #4b4574
+! xterm*color13:       #53569b
+! 
+! cyan
+! xterm*color6:        #638b83
+! xterm*color14:       #7dbfb8
+! 
+! white
+! xterm*color7:        #cdcdcd
+! xterm*color15:       #cdcdcd
+
+! OPT - 2 - ELECTRIC WARLOCK
+! special
+xterm*foreground:   #efe9da
+xterm*background:   #0a090e
+xterm*cursorColor:  #efe9da
+!
+! black
+xterm*color0:       #272227
+xterm*color8:       #635f58
+!
+! red
+xterm*color1:       #ed191b
+xterm*color9:       #b83c28
+!
+! green
+xterm*color2:       #41a442
+xterm*color10:      #968e72
+!
+! yellow
+xterm*color3:       #d6cd3f
+xterm*color11:      #cec647
+!
+! blue
+xterm*color4:       #282c4f
+xterm*color12:      #4e628a
+!
+! magenta
+xterm*color5:       #ea2d93
+xterm*color13:      #b65097
+!
+! cyan
+xterm*color6:       #40aea5
+xterm*color14:      #46909b
+!
+! white
+xterm*color7:       #b8c5b4
+xterm*color15:      #efe9da
+

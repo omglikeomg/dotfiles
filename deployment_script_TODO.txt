@@ -1,0 +1,38 @@
+Pregunta por el gestor de paquetes a utilizar:
+1. dpkg
+2. pacman
+3. rpm
+
+Instala software básico
+- git
+- ruby
+- python2
+- python3
+- lua
+- perl
+
+minimo de paquetes que hay que comprobar si existen:
+aurman (solo arch)
+cmake
+curl
+dkms
+dos2unix
+ffmpeg
+fortune
+lxsplit
+unzip
+unrar
+ranger
+
+Pregunta para instalar rg
+
+Pregunta para instalar fzf
+
+Pregunta para instalar vim
+
+Pregunta para instalar i3
+
+Instala los archivos de configuración según se hayan instalado cosas
+- bashrc --> fzf funciones
+- vimrc
+- i3
