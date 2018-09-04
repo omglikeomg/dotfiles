@@ -10,7 +10,7 @@ XTerm.vt100.metaSendsEscape: true
 UXTerm.vt100.metaSendsEscape: true
 
 ! Use a nice truetype font and size by default... 
-xterm*faceName: ProggyCleanTT
+xterm*faceName: termsyn
 xterm*faceSize: 11
 
 ! Number of lines to save for scrolling

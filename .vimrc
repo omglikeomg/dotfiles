@@ -439,6 +439,7 @@ function! InstallPlug(win) abort
   if empty(glob('~/.vim/autoload/plug.vim'))
     silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
           \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    source $MYVIMRC
     exec PlugInstall --sync | source $MYVIMRC
   endif
 endfunction
@@ -544,6 +545,8 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
     endif
   endfunction
 
+  " For testing purposes:
+  Plug 'junegunn/vader.vim'
   call plug#end()
 endif
 " }}}

@@ -1,0 +1,14 @@
+
+alias ls="ls -ha --color=auto"
+alias ll="ls -lha --color=auto"
+# i hate cd-ing..
+alias ..="cd .."
+alias ...="cd ..; cd .."
+alias ....="cd ..; cd ..; cd .."
+alias .....="cd ..; cd ..; cd ..; cd .."
+# diskspace utilities
+alias folders='find . -maxdepth 1 -type d -print0 | xargs -0 du -sk | sort -rn'
+alias diskspace="du -S | sort -n -r |more"
+
+alias mkdir="mkdir -p"
+alias frak="fortune"
