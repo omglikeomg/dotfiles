@@ -10,8 +10,7 @@ XTerm.vt100.metaSendsEscape: true
 UXTerm.vt100.metaSendsEscape: true
 
 ! Use a nice truetype font and size by default... 
-xterm*faceName: termsyn
-xterm*faceSize: 11
+xterm*font: -misc-termsyn-medium-r-normal--12-87-100-100-c-70-iso8859-1
 
 ! Number of lines to save for scrolling
 XTerm.vt100.saveLines: 100000

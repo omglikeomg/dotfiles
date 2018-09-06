@@ -444,7 +444,7 @@ function! InstallPlug(win) abort
   endif
 endfunction
 
-command! InstallPlug call InstallPlug(has('win32'))
+command! -bar InstallPlug call InstallPlug(has('win32'))
 " }}}
 
 " PLUGIN AND SO ON {{{
