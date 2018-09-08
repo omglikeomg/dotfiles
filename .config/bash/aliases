@@ -12,3 +12,6 @@ alias diskspace="du -S | sort -n -r |more"
 
 alias mkdir="mkdir -p"
 alias frak="fortune"
+
+alias apt="sudo apt"
+alias ytd="youtube-dl"

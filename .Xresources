@@ -37,79 +37,40 @@ xterm*scrollTtyOutput: false
 xterm*ScrollBar: false
 
 ! DOS-box colours...
-! lychnobite
 ! special
-! xterm*foreground:    #cdcdcd
-! xterm*background:    #121317
-! xterm*cursorColor:   #cdcdcd
-! 
+*.foreground:   #a9ffff
+*.background:   #0b0c11
+*.cursorColor:  #a9ffff
+
 ! black
-! xterm*color0:        #282a2e
-! xterm*color8:        #373b41
-! 
+*.color0:       #110b1a
+*.color8:       #facefa
+
 ! red
-! xterm*color1:        #922230
-! xterm*color9:        #923a45
+*.color1:       #e693d1
+*.color9:       #9493e6
 
 ! green
-! xterm*color2:        #0f8c61
-! xterm*color10:       #198873
-! 
-! yellow
-! xterm*color3:        #ba883d
-! xterm*color11:       #ba9153
-! 
-! blue
-! xterm*color4:        #277896
-! xterm*color12:       #3c7e96
-! 
-! magenta
-! xterm*color5:        #4b4574
-! xterm*color13:       #53569b
-! 
-! cyan
-! xterm*color6:        #638b83
-! xterm*color14:       #7dbfb8
-! 
-! white
-! xterm*color7:        #cdcdcd
-! xterm*color15:       #cdcdcd
+*.color2:       #66f6eb
+*.color10:      #d666f6
 
-! OPT - 2 - ELECTRIC WARLOCK
-! special
-xterm*foreground:   #efe9da
-xterm*background:   #0a090e
-xterm*cursorColor:  #efe9da
-!
-! black
-xterm*color0:       #272227
-xterm*color8:       #635f58
-!
-! red
-xterm*color1:       #ed191b
-xterm*color9:       #b83c28
-!
-! green
-xterm*color2:       #41a442
-xterm*color10:      #968e72
-!
 ! yellow
-xterm*color3:       #d6cd3f
-xterm*color11:      #cec647
-!
+*.color3:       #f353f7
+*.color11:      #53a2ff
+
 ! blue
-xterm*color4:       #282c4f
-xterm*color12:      #4e628a
-!
+*.color4:       #696e93
+*.color12:      #1e3098
+
 ! magenta
-xterm*color5:       #ea2d93
-xterm*color13:      #b65097
-!
+*.color5:       #d364e9
+*.color13:      #fd28ff
+
 ! cyan
-xterm*color6:       #40aea5
-xterm*color14:      #46909b
-!
+*.color6:       #6afac2
+*.color14:      #00ffff
+
 ! white
-xterm*color7:       #b8c5b4
-xterm*color15:      #efe9da
+*.color7:       #689c9c
+*.color15:      #a9ffff
 

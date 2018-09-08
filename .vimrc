@@ -430,7 +430,6 @@ function! InstallPlug(win) abort
       if executable('curl')
         silent !curl -fLo $HOME/vimfiles/autoload/plug.vim --create-dirs
               \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-        exec PlugInstall --sync | source $MYVIMRC
       else
         echomsg 'Cannot install Vim-Plug. Install curl first'
       endif
@@ -439,8 +438,6 @@ function! InstallPlug(win) abort
   if empty(glob('~/.vim/autoload/plug.vim'))
     silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
           \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    source $MYVIMRC
-    exec PlugInstall --sync | source $MYVIMRC
   endif
 endfunction
 

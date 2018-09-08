@@ -46,6 +46,18 @@ if [ -e ~/.config/bash/.fzf_functions_common ]; then
   . ~/.config/bash/.fzf_functions_common
 fi
 
+# stuff for X
+if [ -f ~/.Xresources ]; then
+  xrdb -merge ~/.Xresources
+fi
+# disable screensaver
+xset -dpms
+xset s noblank
+xset s off
+xset b off
+
+# avoid annoying ctrl-s XOFF
+stty -ixon
 
 #set vi mode if possible
 set -o vi
