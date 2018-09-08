@@ -37,40 +37,78 @@ xterm*scrollTtyOutput: false
 xterm*ScrollBar: false
 
 ! DOS-box colours...
+! My citric colors
 ! special
-*.foreground:   #a9ffff
-*.background:   #0b0c11
-*.cursorColor:  #a9ffff
+*.foreground:   #efe0b8
+*.background:   #070905
+*.cursorColor:  #efe0b8
 
 ! black
-*.color0:       #110b1a
-*.color8:       #facefa
+*.color0:       #070905
+*.color8:       #090705
 
 ! red
-*.color1:       #e693d1
-*.color9:       #9493e6
+*.color1:       #79ae55
+*.color9:       #74d269
 
 ! green
-*.color2:       #66f6eb
-*.color10:      #d666f6
+*.color2:       #18650e
+*.color10:      #36951c
 
 ! yellow
-*.color3:       #f353f7
-*.color11:      #53a2ff
+*.color3:       #e86935
+*.color11:      #d4d22b
 
 ! blue
-*.color4:       #696e93
-*.color12:      #1e3098
+*.color4:       #ddb177
+*.color12:      #ffa553
 
 ! magenta
-*.color5:       #d364e9
-*.color13:      #fd28ff
+*.color5:       #799273
+*.color13:      #8cbc81
 
 ! cyan
-*.color6:       #6afac2
-*.color14:      #00ffff
+*.color6:       #54c489
+*.color14:      #41fdad
 
 ! white
-*.color7:       #689c9c
-*.color15:      #a9ffff
+*.color7:       #fda92c
+*.color15:      #f8fd2c
+! NEON ALT
+! special
+! *.foreground:   #a9ffff
+! *.background:   #0b0c11
+! *.cursorColor:  #a9ffff
+
+! ! black
+! *.color0:       #110b1a
+! *.color8:       #facefa
+
+! ! red
+! *.color1:       #e693d1
+! *.color9:       #9493e6
+
+! ! green
+! *.color2:       #66f6eb
+! *.color10:      #d666f6
+
+! ! yellow
+! *.color3:       #f353f7
+! *.color11:      #53a2ff
+
+! ! blue
+! *.color4:       #696e93
+! *.color12:      #1e3098
+
+! ! magenta
+! *.color5:       #d364e9
+! *.color13:      #fd28ff
+
+! ! cyan
+! *.color6:       #6afac2
+! *.color14:      #00ffff
+
+! ! white
+! *.color7:       #689c9c
+! *.color15:      #a9ffff
 
