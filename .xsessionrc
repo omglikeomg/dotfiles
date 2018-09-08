@@ -1,0 +1,12 @@
+
+# configure X defaults for profile
+xset -dpms
+xset s noblank
+xset s off
+xset b off
+xset fp+ /usr/local/share/fonts/bitmap
+if [ -f ~/.Xresources ]; then
+  xrdb -remove
+  xrdb -merge ~/.Xresources
+fi
+
