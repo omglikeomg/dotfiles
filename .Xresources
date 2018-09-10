@@ -112,3 +112,9 @@ xterm*ScrollBar: false
 ! *.color7:       #689c9c
 ! *.color15:      #a9ffff
 
+rofi.width: 100
+rofi.lines: 4
+rofi.columns: 2
+rofi.hide-scrollbar: true
+rofi.fullscreen: true
+rofi.font: FreePixel 12
