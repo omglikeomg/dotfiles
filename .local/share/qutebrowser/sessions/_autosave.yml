@@ -1,0 +1,22 @@
+windows:
+- active: true
+  geometry: !!binary |
+    AdnQywACAAAAAAAAAAAAIgAAA/8AAAL/AAAAAgAAACIAAAP9AAAC/QAAAAAAAAAABAA=
+  tabs:
+  - active: true
+    history:
+    - pinned: false
+      title: DuckDuckGo — Privacy, simplified.
+      url: https://start.duckduckgo.com/
+    - pinned: false
+      title: i3lock config at DuckDuckGo
+      url: https://duckduckgo.com/?q=i3lock+config&ia=software
+    - active: true
+      original-url: https://duckduckgo.com/?q=i3lock+config&ia=software
+      pinned: false
+      scroll-pos:
+        x: 0
+        y: 0
+      title: 'GitHub - i3/i3lock: improved screen locker'
+      url: https://github.com/i3/i3lock
+      zoom: 1.0

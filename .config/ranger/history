@@ -1,0 +1,6 @@
+
+feh 
+console feh %
+feh
+reload_cwd 
+search theme

@@ -42,9 +42,9 @@ bindsym $mod+Return exec i3-sensible-terminal
 bindsym $mod+Shift+q kill
 
 # start dmenu (a program launcher)
-bindsym $mod+d exec "rofi -show run -modi run -location 1 -width 100 -lines 2 -line-margin 0 -line-padding 1 - separator-style none -columns 9 -bw 0 -hide-scrollbar -matching fuzzy -levenshtein-sort"
+bindsym $mod+d exec "rofi -show drun -modi drun -display-drun '>_' -hide-scrollbar -matching fuzzy -levenshtein-sort"
 # use rofi to switch between all windows
-bindsym $mod+w exec "rofi -show window -modi window -matching fuzzy -levenshtein-sort"
+bindsym $mod+w exec "rofi -show window -modi window -display-window 'W' -matching fuzzy -levenshtein-sort"
 
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
@@ -127,8 +127,18 @@ bindsym $mod+Shift+5 move container to workspace $ws5
 bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
-# exit i3 (logs you out of your X session)
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+
+set $lock_screen_bg ~/Pictures/bgtemp.png
+set $Locker i3lock -i $lock_screen_bg && sleep 1
+set $mode_system System (l) lock, (e) logout, (r) reboot, (.) off
+mode "$mode_system" {
+  bindsym l exec --no-startup-id $Locker, mode "default"
+  bindsym e exec --no-startup-id i3-msg exit, mode "default"
+  bindsym period exec --no-startup-id systemctl poweroff -i, mode "default"
+  bindsym r exec --no-startup-id systemctl reboot, mode "default"
+}
+
+bindsym $mod+Shift+period mode "$mode_system"
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -162,13 +172,15 @@ bindsym $mod+r mode "resize"
 bar {
         status_command "i3status -c /home/megrim/.config/i3/i3status.conf"
         colors { 
-                background #050905
-                statusline #ddb177
-                separator #efe0b8
+                background #03030a
+                statusline #9cdfa9
+                separator #303030
                 #                   border   bg   txt
-                focused_workspace  #fda92c #efe0b8 #090705
-                active_workspace   #8cbc81 #799273 #8cbc81
+                focused_workspace  #9cdfa9 #03030a #9cdfa9
+                active_workspace   #03030a #03030a #f7f9ff
+                inactive_workspace   #03030a #03030a #f7f9ff
         }
         position top
 
 }
+
