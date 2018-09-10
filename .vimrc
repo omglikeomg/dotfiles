@@ -104,17 +104,18 @@ set shiftwidth=2 softtabstop=2
 set tabstop=2
 set smarttab
 set autoindent
-set noexpandtab
-set list
+set expandtab
+set nolist
 set listchars=tab:\|\ ,eol:¬,extends:…,precedes:…,trail:.,nbsp:·
 
 " I like using listchars all the time
-augroup Saving_text
-  autocmd!
-  autocmd BufReadPost * call Try_Retab()
-  autocmd BufWritePre * call Set_Spaces()
-  autocmd BufWritePost * call Set_Tabs()
-augroup END
+" augroup Saving_text
+"   autocmd!
+"   autocmd BufReadPost * call Try_Retab()
+"   autocmd BufWritePre * call Set_Spaces()
+"   autocmd BufWritePost * call Set_Tabs()
+" augroup END
+
 " }}}
 
 " GUI SETUP {{{
@@ -218,7 +219,7 @@ nnoremap _ ?\v
 nnoremap gl <C-]>
 
 " WRAP:
-nnoremap çli :set list! list?<CR>
+nnoremap <expr>çli expand(&g:list) == 1 ? ":call Set_Spaces()<CR>" : ":call Set_Tabs()<CR>"
 nnoremap çwr :set wrap! wrap?<CR>
 " nnoremap <Leader>wr :set wrap!<CR>:set list! wrap?<CR>
 nnoremap <expr>j expand(&l:wrap) == 1 ? "gj" : "j"
@@ -337,20 +338,24 @@ augroup END
 
 " FUNCTION TO SAVE AS SPACES AND SEE AS TABS
 function! Set_Tabs() abort
-  if(&l:expandtab) " if using spaces
+  if(&g:expandtab) " if using spaces
     set noexpandtab " disable
     " and retab it
     exec 'keepjumps %retab!'
+    " then show listchars
+    set list
   endif
 endfunction
 
 " TODO: find out how not to write the changes to the changelist so you don't
 " have to undo twice after saving if you mess up.
 function! Set_Spaces() abort
-  if (!&l:expandtab) " if using tabs
+  if (&g:expandtab == 0) " if using tabs
     set expandtab " use spaces
     " and retab it
     exec 'keepjumps %retab'
+    " then hide listchars
+    set nolist
   endif
 endfunction
 
