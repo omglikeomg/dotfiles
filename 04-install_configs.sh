@@ -2,6 +2,7 @@
 
 # Copiar los dotfiles incluidos
 cd ~/
+mkdir -p .vim/autoload
 cd dotfiles
 cp .bashrc ~/
 cp -dru .config/ ~/
