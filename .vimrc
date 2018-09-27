@@ -318,8 +318,8 @@ augroup END
 
 augroup CursorLine
   autocmd!
-  autocmd BufEnter * setlocal cursorline
-  autocmd BufLeave * setlocal nocursorline
+  autocmd WinEnter * setlocal cursorline
+  autocmd WinLeave * setlocal nocursorline
 augroup END
 
 function! MakeTags() abort
@@ -496,7 +496,13 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
 
   " UNNECESSARY COMMODITIES
   Plug 'mattn/emmet-vim'
-  let g:user_emmet_leader_key=','
+  " this trick has proven more useful than expected
+  augroup EmmetLeaderKey
+    autocmd!
+    autocmd InsertEnter * let g:user_emmet_leader_key=','
+    autocmd InsertLeave * let g:user_emmet_leader_key='ç'
+  augroup END
+
   if !has('win32')
     " If windows, install manually fzf binary and put it on system32
     Plug 'junegunn/fzf', { 'dir': $HOME.'/fzf', 'do': './install --all' }
@@ -529,6 +535,11 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
   Plug 'sheerun/vim-polyglot'
   Plug 'fatih/vim-go'
 
+  " SOME COLOUR
+  Plug 'robertmeta/nofrils'
+  Plug 'nightsense/strawberry'
+
+  " MAPPINGS
   if !&diff
     augroup PluginMapping
       autocmd!
