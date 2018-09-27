@@ -55,7 +55,7 @@ if !&sidescrolloff
   set sidescrolloff=1
 endif
 set cmdheight=2
-set cursorline
+set nocursorline
 set lazyredraw
 
 " statusbar
@@ -219,7 +219,7 @@ nnoremap _ ?\v
 nnoremap gl <C-]>
 
 " WRAP:
-nnoremap <expr>çli expand(&g:list) == 1 ? ":call Set_Spaces()<CR>" : ":call Set_Tabs()<CR>"
+nnoremap <expr>çli expand(&g:list) ? ":call Set_Spaces()<CR>" : ":call Set_Tabs()<CR>"
 nnoremap çwr :set wrap! wrap?<CR>
 " nnoremap <Leader>wr :set wrap!<CR>:set list! wrap?<CR>
 nnoremap <expr>j expand(&l:wrap) == 1 ? "gj" : "j"
@@ -314,6 +314,12 @@ nnoremap <leader>F :MostRecent<CR>
 augroup Restorepos
   autocmd!
   autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+augroup END
+
+augroup CursorLine
+  autocmd!
+  autocmd BufEnter * setlocal cursorline
+  autocmd BufLeave * setlocal nocursorline
 augroup END
 
 function! MakeTags() abort
@@ -491,7 +497,10 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
   " UNNECESSARY COMMODITIES
   Plug 'mattn/emmet-vim'
   let g:user_emmet_leader_key=','
-  Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+  if !has('win32')
+    " If windows, install manually fzf binary and put it on system32
+    Plug 'junegunn/fzf', { 'dir': $HOME.'/fzf', 'do': './install --all' }
+  endif
   Plug 'junegunn/fzf.vim'
   " config:
   let g:fzf_layout = { 'down': '~20%' }
