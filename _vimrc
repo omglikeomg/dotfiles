@@ -59,8 +59,33 @@ set nocursorline
 set lazyredraw
 
 " statusbar
+let g:currentmode={
+    \ 'n'      : 'N ',
+    \ 'no'     : 'N·Operator Pending ',
+    \ 'v'      : 'V ',
+    \ 'V'      : 'V·Line ',
+    \ ''     : 'V·Block ',
+    \ 'CTRL-V' : 'V·Block ',
+    \ 's'      : 'Select ',
+    \ 'S'      : 'S·Line ',
+    \ ''     : 'S·Block ',
+    \ 'CTRL-S' : 'S·Block ',
+    \ 'i'      : 'I ',
+    \ 'R'      : 'R ',
+    \ 'Rv'     : 'V·Replace ',
+    \ 'c'      : 'Command ',
+    \ 'cv'     : 'Vim Ex ',
+    \ 'ce'     : 'Ex ',
+    \ 'r'      : 'Prompt ',
+    \ 'rm'     : 'More ',
+    \ 'r?'     : 'Confirm ',
+    \ '!'      : 'Shell ',
+    \ 't'      : 'Terminal '
+    \}
+highlight! StatusLine ctermfg=0 ctermbg=8
 set laststatus=2
-set statusline=%<\
+set statusline=%{ChangeStatuslineColor()}
+set statusline+=%<\
 set statusline+=%-3.3n\                       " bufno
 set statusline+=%40F\                         " file+path
 set statusline+=%h%m%r%w                      " flags(mod,ro,etc)
@@ -123,6 +148,7 @@ set listchars=tab:\|\ ,eol:¬,extends:…,precedes:…,trail:.,nbsp:·
 if has('gui_running')
   set guioptions=gt
   colorscheme desert
+  highlight! StatusLine guibg=#EEEEEE guifg=#080002
   set columns=100
   set lines=60
 endif
@@ -336,6 +362,19 @@ endfunction
 
 command! Maketags call MakeTags()
 
+function! ChangeStatuslineColor()
+  if (mode() =~# '\v(n|no)')
+    exe 'hi! StatusLine ctermbg=8 guibg=#EEEEEE guifg=#080002'
+  elseif (mode() =~# '\v(v|V)' || g:currentmode[mode()] ==# 'V·Block' || get(g:currentmode, mode(), '') ==# 't')
+    exe 'hi! StatusLine ctermbg=3 guibg=#EAE27C guifg=#080002'
+  elseif (mode() ==# 'i')
+    exe 'hi! StatusLine ctermbg=1 guibg=#F08C46 guifg=#080002'
+  else
+    exe 'hi! StatusLine ctermbg=2 guibg=#EEEEEE guifg=#080002'
+  endif
+  return ''
+endfunction
+
 " remembers last tab number
 augroup Lasttab
   autocmd!
@@ -536,7 +575,9 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
   Plug 'fatih/vim-go'
 
   " SOME COLOUR
+  Plug 'RussellBradley/vim-nets-away'
   Plug 'robertmeta/nofrils'
+  Plug 'shattered/vimcolors'
   Plug 'nightsense/strawberry'
 
   " MAPPINGS
@@ -570,5 +611,7 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
   " For testing purposes:
   Plug 'junegunn/vader.vim'
   call plug#end()
+" Set a colorscheme if you have it:
 endif
 " }}}
+
