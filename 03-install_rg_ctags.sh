@@ -9,6 +9,9 @@ rm ripgrep_0.9.0_amd64.deb
 # install other console software which is nice:
 sudo apt install cmake dkms dos2unix ffmpeg fortune unzip unrar ranger
 
+# ranger image preview
+sudo apt install w3m-img -y
+
 # Instalar ctags
 sudo apt install automake autoconf autotools-dev
 cd ~/

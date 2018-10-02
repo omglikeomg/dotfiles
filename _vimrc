@@ -536,11 +536,7 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
   " UNNECESSARY COMMODITIES
   Plug 'mattn/emmet-vim'
   " this trick has proven more useful than expected
-  augroup EmmetLeaderKey
-    autocmd!
-    autocmd InsertEnter * let g:user_emmet_leader_key=','
-    autocmd InsertLeave * let g:user_emmet_leader_key='ç'
-  augroup END
+  imap ,, <plug>(emmet-expand-abbr)
 
   if !has('win32')
     " If windows, install manually fzf binary and put it on system32
