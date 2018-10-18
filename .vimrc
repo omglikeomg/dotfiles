@@ -79,6 +79,8 @@ set splitbelow
 set splitright
 
 set foldmethod=marker
+
+set background=dark
 " }}}
 
 " FORMAT OF STUFF {{{
@@ -201,7 +203,7 @@ elseif executable("ag") " o si existe su hermano menor y más famoso Ag
 endif
 " }}}
 
-" KEYS {{{
+" KEYS L{{
 """"""
 nnoremap <space> <Nop>
 let mapleader = " "
@@ -453,7 +455,7 @@ function! InstallPlug(win) abort
 endfunction
 
 command! -bar InstallPlug call InstallPlug(has('win32'))
-" }}}
+" }}L
 
 " PLUGIN AND SO ON {{{
 """"""""""""""""""
@@ -475,7 +477,6 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
   Plug 'tpope/vim-fugitive' | Plug 'airblade/vim-gitgutter'
   Plug 'tpope/vim-abolish'
   " Plug 'jiangmiao/auto-pairs' " <-- try to live w/o it
-  Plug 'justinmk/vim-sneak'
   Plug 'godlygeek/tabular'
   " config:
   " A Tim Pope function for tables automatically realigning when using pipe for
@@ -498,6 +499,22 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
   Plug 'mattn/emmet-vim'
   " this trick has proven more useful than expected
   imap ,, <plug>(emmet-expand-abbr)
+
+  let g:user_emmet_settings = {
+        \ 'php' : {
+        \   'snippets' : {
+        \     'ake' : "array_key_exists(|)",
+        \     'pm' : "preg_match(|)",
+        \     'ps' : "preg_replace(|)",
+        \     'fun' : "function | () {\r\r}",
+        \     'pf' : "public function | () {\r\r}",
+        \     'sf' : "static function | () {\r\r}",
+        \     'psf' : "public static function | () {\r\r}",
+        \     'for' : "for (\$i = 0; \$i < |; $i++) {\r\t|\r}",
+        \     'fore' : "foreach (\$${child} as \$${child}_element) {\r\t|\r}",
+        \    },
+        \ },
+        \ }
 
   if !has('win32')
     " If windows, install manually fzf binary and put it on system32
