@@ -1,6 +1,7 @@
-
+# files
 alias ls="ls -ha --color=auto"
 alias ll="ls -lha --color=auto"
+alias f="find . -iregex"
 # i hate cd-ing..
 alias ..="cd .."
 alias ...="cd ..; cd .."
