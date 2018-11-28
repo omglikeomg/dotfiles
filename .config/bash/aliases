@@ -2,6 +2,7 @@
 alias ls="ls -ha --color=auto"
 alias ll="ls -lha --color=auto"
 alias f="find . -iregex"
+alias vi="vim"
 # i hate cd-ing..
 alias ..="cd .."
 alias ...="cd ..; cd .."
