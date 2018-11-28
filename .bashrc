@@ -25,7 +25,6 @@ export PATH=$PATH:/usr/local/go/bin/
 export PATH=$PATH:~/bin/
 export GOPATH="$HOME/golang"
 export GOBIN="$GOPATH/bin"
-export GOPATH=$GOPATH:"$HOME/exercism/go/"
 
 # If id command returns zero, youve root access.
 if [ $(id -u) -eq 0 ];
@@ -45,11 +44,12 @@ fi
 if [ -e ~/.config/bash/.fzf_functions_common ]; then
   . ~/.config/bash/.fzf_functions_common
 fi
+export FZF_CTRL_T_OPTS="--preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
+export FZF_ALT_C_COMMAND="find"
+if [ -e /usr/local/bin/rg ]; then
+  export FZF_ALT_C_COMMAND="rg --files"
+fi
 
 # avoid annoying ctrl-s XOFF
 stty -ixon
-
-#set vi mode if possible
-set -o vi
-clear
 
