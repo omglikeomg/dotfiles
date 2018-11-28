@@ -50,9 +50,9 @@ if [ -x "$(command -v highlight)" ]; then
 else
   export FZF_CTRL_T_OPTS="--preview 'head -$LINES {}'"
 fi
-export FZF_ALT_C_COMMAND="find"
+export FZF_ALT_C_COMMAND="find ."
 if [ -x "$(command -v rg)" ]; then
-  export FZF_ALT_C_COMMAND="rg --files"
+  export FZF_ALT_C_COMMAND="rg --files ."
 fi
 
 # avoid annoying ctrl-s XOFF
