@@ -235,6 +235,7 @@ elseif executable("ag") " o si existe su hermano menor y más famoso Ag
   set grepformat=%f:%l:%c:%m,%f:%l:%m
 else
   set grepprg=egrep\ .\ -rne
+  set fileignorecase
 endif
 " }}}
 
@@ -331,12 +332,18 @@ nnoremap <Leader>t<Leader> :exe "tabn ".g:lasttab<CR>
 " LIST BUFFERS, OPEN BUFFERS
 nnoremap <leader>b :ls<CR>:b<space>
 nnoremap <leader>B :b #<CR>
-cnoremap <C-S> <Home>vertical s<End>
 
 " files
-nnoremap <leader>tf :tabfind *
 nnoremap <leader>f :find *
 nnoremap <leader>e :Ex<CR>
+
+" utilities to make splits on opening files/buffers
+" vertical split
+cnoremap <C-S> <Home>vertical s<End>
+" horizontal split
+cnoremap <C-X> <Home>s<End>
+" new tab
+cnoremap <C-T> <Home>tab<End>
 
 " Grep pattern
 nnoremap º :Search<CR>
@@ -487,8 +494,15 @@ command! -nargs=1 Tilist exec printf('call Turbo_il(%s)', string(<q-args>))
 function! MySearch() abort
   let grep_term = input("Pattern: ")
   if !empty(grep_term)
-    execute 'silent lgrep!' grep_term
-    " silent sirve para que no nos muestre el primer mensaje de la consulta
+    execute 'silent grep!' grep_term
+    " silent prevents from opening first result
+    " DO NOT USE LocList for this one !!
+    execute 'copen'
+    " remap Ctrl-T, Ctrl-X and Ctrl-V to open splits/tabs
+    nnoremap <buffer> <C-T> <C-W><CR><C-W>T
+    nnoremap <buffer> <C-X> <C-W><CR>
+    nnoremap <buffer> <C-V> <C-W><CR><C-W>L
+    nnoremap <buffer> <Esc> :cclose<CR>
   else
     echo "No pattern provided"
   endif
