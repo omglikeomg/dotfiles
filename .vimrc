@@ -391,6 +391,12 @@ endfunction
 
 command! Maketags call MakeTags()
 
+augroup QfRemaps
+  autocmd!
+  autocmd FileType qf if mapcheck('<esc>', 'n') ==# '' | nnoremap <buffer><silent> <esc> :cclose<bar>lclose<CR> | endif
+  autocmd FileType qf nnoremap <buffer><silent> <leader><CR> <C-w><CR>:cclose<CR>
+augroup END
+
 " remembers last tab number
 augroup Lasttab
   autocmd!
