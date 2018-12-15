@@ -337,6 +337,12 @@ nnoremap <leader>B :b #<CR>
 nnoremap <leader>f :find *
 nnoremap <leader>e :Ex<CR>
 
+" I mostly use preview window from netrw
+nnoremap <leader><leader>p <C-w>z
+" Shortcut to close quickfix window 
+" TODO: upgrade to closing latest lwindow if no qf is found
+nnoremap <leader><leader>q :cclose<CR>
+
 " utilities to make splits on opening files/buffers
 " vertical split
 cnoremap <C-S> <Home>vertical s<End>
