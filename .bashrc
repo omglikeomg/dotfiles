@@ -44,14 +44,6 @@ fi
 if [ -e ~/.config/bash/.fzf_functions_common ]; then
   . ~/.config/bash/.fzf_functions_common
 fi
-
-if [ -x "$(command -v highlight)" ]; then 
-  export FZF_CTRL_T_OPTS="--preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
-else
-  export FZF_CTRL_T_OPTS="--preview 'head -$LINES {}'"
-fi
-export FZF_ALT_C_COMMAND="find ."
-
 # avoid annoying ctrl-s XOFF
 stty -ixon
 

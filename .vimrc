@@ -88,7 +88,7 @@ let g:currentmode={
     \ '!'  : 'Shell ',
     \ 't'  : 'Terminal ',
     \}
-highlight! StatusLine ctermfg=0 ctermbg=8
+highlight! StatusLine ctermfg=0 ctermbg=15
 set laststatus=2
 set statusline=%{ChangeStatuslineColor()}
 set statusline+=%<\
@@ -441,13 +441,13 @@ endfunction
 " changes statusline color per mode
 function! ChangeStatuslineColor()
   if (mode() =~# '\v(n|no)')
-    exe 'hi! StatusLine ctermbg=8 guibg=#EEEEEE guifg=#080002'
+    exe 'hi! StatusLine ctermfg=15 ctermbg=0 guibg=#EEEEEE guifg=#080002'
   elseif (mode() =~# '\v(v|V)' || g:currentmode[mode()] ==# 'V·Block' || get(g:currentmode, mode(), '') ==# 't')
-    exe 'hi! StatusLine ctermbg=3 guibg=#EAE27C guifg=#080002'
+    exe 'hi! StatusLine ctermfg=3 ctermbg=0 guibg=#EAE27C guifg=#080002'
   elseif (mode() ==# 'i')
-    exe 'hi! StatusLine ctermbg=1 guibg=#F08C46 guifg=#080002'
+    exe 'hi! StatusLine ctermfg=1 ctermbg=0 guibg=#F08C46 guifg=#080002'
   else
-    exe 'hi! StatusLine ctermbg=2 guibg=#EEEEEE guifg=#080002'
+    exe 'hi! StatusLine ctermfg=2 ctermbg=0 guibg=#EEEEEE guifg=#080002'
   endif
   return ''
 endfunction
