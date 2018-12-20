@@ -8,8 +8,10 @@
 set hidden
 set mouse=a
 set noerrorbells visualbell t_vb=
-if &term!='xterm-256color'
-  set term=xterm-256color
+if !has('gui_running')
+  if &term!='xterm-256color'
+    set term=xterm-256color
+  endif
 endif
 if has('mouse_sgr')
   set ttymouse=sgr
@@ -183,7 +185,9 @@ let g:netrw_banner=0
 let g:netrw_altv=1
 let g:netrw_browse_split = 0
 let g:netrw_liststyle=3
-let g:netrw_list_hide=netrw_gitignore#Hide()
+if exists('*netrw_gitignore#Hide')
+  let g:netrw_list_hide=netrw_gitignore#Hide()
+endif
 let g:netrw_list_hide.=',\(^\\s\s\)\zs\.\S\+'
 let g:netrw_winsize = 35
 let g:netrw_localrmdir='rm -r'
@@ -197,8 +201,9 @@ augroup END
 " COMPLETION {{{
 """"""""""""
 set omnifunc=syntaxcomplete#Complete
-set path=a.,,**
+set path=.,,**
 set wildmenu wildmode=list:longest
+set fileignorecase
 
 set wildignore+=*.aux,*.out,*.toc " LaTeX intermediate files
 set wildignore+=*.luac " Lua byte code
@@ -247,13 +252,17 @@ let g:mapleader = "\<Space>"
 " MANDATORY ANTI <CTRL-U>
 inoremap <C-U> <C-G>u<C-U>
 
-nnoremap <leader><leader><leader> :noh<CR>
+nnoremap <expr> <leader><leader><leader> QfVisible() ? ':lclose<CR>:cclose<CR>' : ':noh<CR>'
 
 " STUPID SPANISH KEYBOARD
 " nnoremap - /
 " nnoremap _ ?
 nnoremap - /\v
-nnoremap _ ?\v
+onoremap - /\v
+xnoremap - /\v
+nnoremap <C--> ?\v
+onoremap <C--> ?\v
+xnoremap <C--> ?\v
 nnoremap gl <C-]>
 
 " WRAP:
@@ -336,6 +345,8 @@ nnoremap <leader>B :b #<CR>
 " files
 nnoremap <leader>f :find *
 nnoremap <leader>e :Ex<CR>
+" thanks Markzen
+xnoremap <silent> <Leader>gf y:pedit <C-r><C-r>"<cr>
 
 " I mostly use preview window from netrw
 nnoremap <leader><leader>p <C-w>z
@@ -371,17 +382,31 @@ augroup TwigIfNotTwig
   autocmd!
   autocmd Filetype twig set ft=html
 augroup END
-augroup DrupalFiles
+augroup PhpFiles
   autocmd!
-  autocmd Filetype theme,module set ft=php
+  autocmd BufReadPost *.theme,*.module set ft=php
+  autocmd FileType php compiler php
+  autocmd BufWritePost *.php,*.theme,*.module silent lmake! <afile> | lwindow | silent redraw!
+  autocmd Filetype php setlocal include=\\\(use\\\|\\\(require\\\|include\\\)\\\(_once\\\)\\\?\\\)
+  " autocmd Filetype php setlocal includeexpr=GetPhpFilePath(v:fname)
+  autocmd Filetype php setlocal define=\\\(_public\\\|protected\\\)\\\(_static\\\)\\\?function
+  autocmd Filetype php setlocal suffixesadd+=.php
 augroup END
+
+" function! GetPhpFilePath(fname) abort
+"   echom a:fname
+"   return substitute(substitute(a:fname,'\w\{-}\\','\0src\/','g'),'\\','\/','g')
+" endfunction
 
 augroup CursorLine
   autocmd!
-  autocmd VimEnter * setlocal cursorline
-  autocmd WinEnter * setlocal cursorline
-  autocmd WinLeave * setlocal nocursorline
+  autocmd BufEnter * setlocal cursorline
+  autocmd BufLeave * setlocal nocursorline
 augroup END
+
+function! QfVisible() abort
+  return len(filter(range(1,winnr('$')),'getwinvar(v:val, "&ft") == "qf"'))
+endfunction
 
 function! MakeTags() abort
   let command='ctags -R'
@@ -634,6 +659,14 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
 
   " SYNTAX
   Plug 'sheerun/vim-polyglot'
+  " config:
+  augroup JSLint
+    autocmd!
+    autocmd Filetype js compiler eslint
+    autocmd Filetype js setlocal suffixesadd+=.js
+    autocmd Filetype js setlocal include=^\\s*[^\/]\\+\\(from\\\|require(['\"]\\)
+  augroup END
+
   Plug 'fatih/vim-go'
 
   " SOME COLOUR
