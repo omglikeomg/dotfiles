@@ -126,6 +126,10 @@ set statusline+=%=                            " right...
 set statusline+=[%04l,%04v]\                  " linecol
 set statusline+=(%L\ lines)                   " total
 
+if !exists('g:loaded_matchparen') && findfile('plugin/matchparen.vim', &rtp) ==# ''
+  runtime! macros/matchparen.vim
+  DoMatchParen
+endif
 if !exists('g:loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
   runtime! macros/matchit.vim
 endif
@@ -189,9 +193,14 @@ nnoremap <expr> <leader><leader><leader> QfVisible() ? ":lclose<CR>:cclose<CR>" 
 
 " useful on spanish keyboard
 nnoremap gl <C-]>
+nnoremap ª _
 nnoremap - /\v
-nnoremap <C-->- ?\v
-"
+nnoremap _ ?\v
+xnoremap - /\v
+xnoremap _ ?\v
+onoremap - /\v
+onoremap _ ?\v
+
 " WRAP:
 nnoremap <expr>çli expand(&g:list) ? ":call Set_Spaces()<CR>" : ":call Set_Tabs()<CR>"
 nnoremap çwr :set wrap! wrap?<CR>
