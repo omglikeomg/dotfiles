@@ -12,7 +12,7 @@ if has('autocmd')
   filetype plugin on
   filetype indent on
 endif
-set bs=2
+set bs=2 " eol, start, indent
 set autoindent
 if has('smartindent')
   set smartindent
@@ -63,15 +63,22 @@ set laststatus=2
 " show position in status bar
 set ruler
 " set history length
-if &history < 1000
-  set history=1000
+if &history < 999
+  set history=999
 endif
 set scrolloff=3
 set cmdheight=2
 set lazyredraw
 set mouse=a
+" fix ttymouse problems on very large screen resolutions
+if has('mouse_sgr')
+  set ttymouse=sgr
+else
+  set ttymouse=xterm2
+endif
 let &clipboard = has ('unnamedplus') ? 'unnamedplus' : 'unnamed'
 set splitbelow splitright
+set hidden
 " }}}
 
 " EXTRA CUSTOMIZATION {{{
@@ -310,7 +317,7 @@ command! MostRecent vnew +setl\ buftype=nofile | 0put =v:oldfiles
 function! MySearch() abort
   let grep_term = input("Pattern: ")
   if !empty(grep_term)
-    execute 'silent grep!' grep_term
+    execute 'silent lgrep!' grep_term
     " silent prevents from opening first result
     execute 'lopen'
     " remap Ctrl-T, Ctrl-X and Ctrl-V to open splits/tabs
@@ -403,6 +410,7 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
   let g:surround_{char2nr("¡")} = "¡\r!"
   let g:surround_{char2nr("¿")} = "¿\r?"
   " Drupal Twig
+  let g:surround_{char2nr("c")} = "{# \r #}"
   let g:surround_{char2nr("T")} = "{% trans %}\r{% endtrans %}"
   let g:surround_{char2nr("V")} = "{{ \r }}"
   let g:surround_{char2nr("v")} = "{% \r %}"
