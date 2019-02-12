@@ -8,8 +8,10 @@
 set hidden
 set mouse=a
 set noerrorbells visualbell t_vb=
-if &term!='xterm-256color'
-  set term=xterm-256color
+if !has('gui_running')
+  if &term!='xterm-256color'
+    set term=xterm-256color
+  endif
 endif
 if has('mouse_sgr')
   set ttymouse=sgr
@@ -247,7 +249,7 @@ let g:mapleader = "\<Space>"
 " MANDATORY ANTI <CTRL-U>
 inoremap <C-U> <C-G>u<C-U>
 
-nnoremap <leader><leader><leader> :noh<CR>
+nnoremap <expr> <leader><leader><leader> QfVisible() ? ":lclose<CR>:cclose<CR>" : ":noh<CR>"
 
 " STUPID SPANISH KEYBOARD
 " nnoremap - /
@@ -373,14 +375,15 @@ augroup TwigIfNotTwig
 augroup END
 augroup DrupalFiles
   autocmd!
-  autocmd Filetype theme,module set ft=php
+  autocmd BufReadPost *.theme,*.module set ft=php
+  autocmd Filetype php compiler php
+  autocmd BufWritePost *.theme,*.module,*.php silent lmake! % | silent redraw! | lwindow
 augroup END
 
 augroup CursorLine
   autocmd!
-  autocmd VimEnter * setlocal cursorline
-  autocmd WinEnter * setlocal cursorline
-  autocmd WinLeave * setlocal nocursorline
+  autocmd BufEnter * setlocal cursorline
+  autocmd BufLeave * setlocal nocursorline
 augroup END
 
 function! MakeTags() abort
