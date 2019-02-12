@@ -193,6 +193,7 @@ nnoremap <expr> <leader><leader><leader> QfVisible() ? ":lclose<CR>:cclose<CR>" 
 
 " useful on spanish keyboard
 nnoremap gl <C-]>
+onoremap ª _
 nnoremap ª _
 nnoremap - /\v
 nnoremap _ ?\v
