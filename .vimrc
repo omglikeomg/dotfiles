@@ -185,7 +185,6 @@ let g:netrw_banner=0
 let g:netrw_altv=1
 let g:netrw_browse_split = 0
 let g:netrw_liststyle=3
-let g:netrw_list_hide=netrw_gitignore#Hide()
 let g:netrw_list_hide.=',\(^\\s\s\)\zs\.\S\+'
 let g:netrw_winsize = 35
 let g:netrw_localrmdir='rm -r'
@@ -201,6 +200,7 @@ augroup END
 set omnifunc=syntaxcomplete#Complete
 set path=a.,,**
 set wildmenu wildmode=list:longest
+set fileignorecase
 
 set wildignore+=*.aux,*.out,*.toc " LaTeX intermediate files
 set wildignore+=*.luac " Lua byte code
@@ -255,7 +255,12 @@ nnoremap <expr> <leader><leader><leader> QfVisible() ? ":lclose<CR>:cclose<CR>" 
 " nnoremap - /
 " nnoremap _ ?
 nnoremap - /\v
-nnoremap _ ?\v
+nnoremap <C--> ?\v
+onoremap - /\v
+xnoremap - /\v
+nnoremap <C--> ?\v
+onoremap <C--> ?\v
+xnoremap <C--> ?\v
 nnoremap gl <C-]>
 
 " WRAP:
