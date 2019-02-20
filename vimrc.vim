@@ -3,7 +3,7 @@
 " Last changes done on Jan 2019
 "
 " BASIC {{{
-" 
+set nocompatible "relevant only if the file name/location is not of the default rc file
 set bg=dark
 if has('syntax') && !exists('g:syntax_on')
   syntax enable
@@ -88,6 +88,10 @@ set fileignorecase
 set autoread
 set textwidth=0
 set listchars=tab:\ \|,eol:¬,extends:…,precedes:…,trail:.,nbsp:·
+" do not duplicate spaces after a join
+set nojoinspaces
+" removes comment 'leader' when joining lines
+set formatoptions+=j
 set linebreak
 set number relativenumber
 set foldmethod=marker
@@ -525,3 +529,12 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
 
 endif
 " }}}
+
+" Taken from the autoclose plugin:
+" this seems to solve an important issue for some:
+"the following simply creates an ambiguous mapping so vim fully
+"processes the escape sequence for terminal keys, see 'ttimeout' for a
+"rough explanation, this just forces it to work
+if &term[:4] == "xterm" || &term[:5] == 'screen' || &term[:3] == 'rxvt'
+  inoremap <silent> <C-[>OC <RIGHT>
+endif
