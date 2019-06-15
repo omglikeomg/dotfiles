@@ -17,7 +17,6 @@ set autoindent
 if has('smartindent')
   set smartindent
 endif
-set smartindent
 if has('wildmenu')
   set wildmenu
   set wildmode=list:longest
@@ -44,7 +43,7 @@ set incsearch
 set hlsearch
 set ignorecase
 set smartcase
-" set tab = 4 spaces
+" set tab = 2 spaces
 set expandtab
 set tabstop=2
 set shiftwidth=2
@@ -63,8 +62,8 @@ set laststatus=2
 " show position in status bar
 set ruler
 " set history length
-if &history < 999
-  set history=999
+if &history < 9999
+  set history=9999
 endif
 set scrolloff=3
 set cmdheight=2
@@ -180,7 +179,7 @@ if has('gui_running')
   colorscheme desert
   set columns=100
   set lines=60
-  set guifont=TerminusTTF:h18
+  set guifont=Input\ Regular:h18
 endif
 " }}}
 
@@ -196,15 +195,15 @@ inoremap <C-U> <C-G>u<C-U>
 nnoremap <expr> <leader><leader><leader> QfVisible() ? ":lclose<CR>:cclose<CR>" : ":noh<CR>"
 
 " useful on spanish keyboard
-nnoremap gl <C-]>
-onoremap ª _
-nnoremap ª _
-nnoremap - /\v
-nnoremap _ ?\v
-xnoremap - /\v
-xnoremap _ ?\v
-onoremap - /\v
-onoremap _ ?\v
+" nnoremap gl <C-]>
+" onoremap ª _
+" nnoremap ª _
+" nnoremap - /\v
+" nnoremap _ ?\v
+" xnoremap - /\v
+" xnoremap _ ?\v
+" onoremap - /\v
+" onoremap _ ?\v
 
 " WRAP:
 nnoremap <expr>çli expand(&g:list) ? ":call Set_Spaces()<CR>" : ":call Set_Tabs()<CR>"
@@ -530,11 +529,3 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
 endif
 " }}}
 
-" Taken from the autoclose plugin:
-" this seems to solve an important issue for some:
-"the following simply creates an ambiguous mapping so vim fully
-"processes the escape sequence for terminal keys, see 'ttimeout' for a
-"rough explanation, this just forces it to work
-if &term[:4] == "xterm" || &term[:5] == 'screen' || &term[:3] == 'rxvt'
-  inoremap <silent> <C-[>OC <RIGHT>
-endif
