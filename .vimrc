@@ -1,74 +1,89 @@
 " .vimrc
 " By Demian Molinari - omglikeomg
-" Last changes done on Sept. 1, 2018
+" Last changes done on Jan 2019
 "
 " BASIC {{{
-"""""""
-
-set hidden
-set mouse=a
-set noerrorbells visualbell t_vb=
-if !has('gui_running')
-  if &term!='xterm-256color'
-    set term=xterm-256color
-  endif
+" 
+if has('syntax') && !exists('g:syntax_on')
+  syntax enable
 endif
-if has('mouse_sgr')
-  set ttymouse=sgr
-else
-  set ttymouse=xterm2
+if has('autocmd')
+  filetype plugin on
+  filetype indent on
 endif
-
-if &history < 500
-  set history=500
+set bs=2
+set autoindent
+if has('smartindent')
+  set smartindent
 endif
-
-set encoding=utf-8
-set backspace=eol,start,indent
-" [h] and [l] dont change line when moving, arrows do
-set whichwrap+=<,>,[,]
-set whichwrap-=h,l
-" }}}
-
-" ANTIVIMHEAVIOR {{{
-""""""""""""""""
-set nowritebackup
-set nobackup
-set noswapfile
-set autoread
-if !empty(&viminfo)
-  set viminfo^=!
+set smartindent
+if has('wildmenu')
+  set wildmenu
+  set wildmode=list:longest
+  set wildignore+=*.aux,*.out,*.toc " LaTeX intermediate files
+  set wildignore+=*.luac " Lua byte code
+  " compiled object files
+  set wildignore+=*.o,*.obj,*.exe,*.dll,*.manifest,*.dat,*.class,*.zip,*.rar,*.7z,*.gz
+  set wildignore+=*.pyc " Python byte code
+  set wildignore+=*.spl " compiled spelling word lists
+  set wildignore+=*.sw? " Vim swap files
+  " images
+  set wildignore+=*.bmp,*.gif,*.ico,*.jpg,*.png,*.ico,*.svg
+  set wildignore+=*.pdf,*.psd,*.ai
+  " node modules y similar
+  set wildignore+=*/node_modules/*,*/bower_components/*
+  " git
+  set wildignore+=.git/*
 endif
-" }}}
-
-" CLIPBOARD-things {{{
-""""""""""""""""""
-let &clipboard = has ('unnamedplus') ? 'unnamedplus' : 'unnamed'
-set pastetoggle=<F2>
-" }}}
-
-" SEARCH {{{
-""""""""
+if has('autocmd') && exists('+omnifunc')
+  set omnifunc=syntaxcomplete#Complete
+endif
+" search parameters
 set incsearch
+set hlsearch
 set ignorecase
 set smartcase
+" set tab = 4 spaces
+set expandtab
+set tabstop=2
+set shiftwidth=2
+set smarttab
+" dont wrap text by default
+set nolist
+set nowrap
+" dont write extra files
+set nobackup
+set nowritebackup
+set noswapfile
+" display current position
+set cursorline
+" always show status bar
+set laststatus=2
+" show position in status bar
+set ruler
+" set history length
+if &history < 1000
+  set history=1000
+endif
+set scrolloff=3
+set cmdheight=2
+set lazyredraw
+set mouse=a
+let &clipboard = has ('unnamedplus') ? 'unnamedplus' : 'unnamed'
+set splitbelow splitright
 " }}}
 
-" INTERFACE {{{
-"""""""""""
-set number relativenumber
-set hlsearch
-if !&scrolloff
-  set scrolloff=3
-endif
-if !&sidescrolloff
-  set sidescrolloff=1
-endif
-set cmdheight=2
-set nocursorline
-set lazyredraw
-
-" statusbar
+" EXTRA CUSTOMIZATION {{{
+"""""""""""""""""""""
+set hidden
+set path=a.,,**
+set fileignorecase
+set autoread
+set textwidth=0
+set listchars=tab:\ \|,eol:¬,extends:…,precedes:…,trail:.,nbsp:·
+set linebreak
+" set number relativenumber
+set foldmethod=marker
 let g:currentmode={
     \ 'n'  : 'N ',
     \ 'no' : 'N·Operator Pending ',
@@ -90,132 +105,34 @@ let g:currentmode={
     \ '!'  : 'Shell ',
     \ 't'  : 'Terminal ',
     \}
-highlight! StatusLine ctermfg=0 ctermbg=15
-set laststatus=2
+hi! StatusLine ctermfg=15 ctermbg=0
+hi! StatusLineNC ctermfg=0 ctermbg=7
+" color statusline
 set statusline=%{ChangeStatuslineColor()}
-set statusline+=%<\
-set statusline+=%-3.3n\                       " bufno
-set statusline+=%40F\                         " file+path
-set statusline+=%h%m%r%w                      " flags(mod,ro,etc)
-set statusline+=[%{strlen(&ft)?&ft:'none'},   " filetype
-set statusline+=%{strlen(&fenc)?&fenc:&enc},  " encoding
-set statusline+=%{&fileformat}]               " format (unix,dos)
-set statusline+=%=                            " right...
-" syntax-info
-set statusline+=%{synIDattr(synID(line('.'),col('.'),1),'name')}\
-set statusline+=[%04l,%04v]\                  " linecol
-set statusline+=(%L\ lines)                   " total
+" bufno
+set statusline+=%-3.3n
+" file+path
+set statusline+=%F\ 
+" linecol
+set statusline+=[%04l,%04v]\ 
+" flags(mod,ro,etc)
+set statusline+=%<%h%m%r%w
+" filetype
+set statusline+=[%{strlen(&ft)?&ft:'none'},
+" encoding
+set statusline+=%{strlen(&fenc)?&fenc:&enc},
+" format (unix,dos)
+set statusline+=%{&fileformat}]
+" fugitive status line
+set statusline+=\ %{fugitive#statusline()}
+" right...
+set statusline+=%=
+" total
+set statusline+=(%L\ lines)
 
 if !exists('g:loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
   runtime! macros/matchit.vim
 endif
-
-set splitbelow
-set splitright
-
-set foldmethod=marker
-
-set background=dark
-" }}}
-
-" FORMAT OF STUFF {{{
-"""""""""""""""""
-set fileformat=unix
-set ffs=unix,dos,mac
-
-set nojoinspaces
-set formatoptions+=j
-
-if has('syntax') && !exists('g:syntax_on')
-  syntax enable
-endif
-if has('autocmd')
-  filetype plugin on
-  filetype indent on
-endif
-set textwidth=0
-set linebreak
-set nowrap
-
-set shiftwidth=2 softtabstop=2
-set tabstop=2
-set smarttab
-set autoindent
-set expandtab
-set nolist
-set listchars=tab:\|\ ,eol:¬,extends:…,precedes:…,trail:.,nbsp:·
-
-" I like using listchars all the time
-" augroup Saving_text
-"   autocmd!
-"   autocmd BufReadPost * call Try_Retab()
-"   autocmd BufWritePre * call Set_Spaces()
-"   autocmd BufWritePost * call Set_Tabs()
-" augroup END
-
-" }}}
-
-" GUI SETUP {{{
-"""""""""""
-if has('gui_running')
-  set guioptions=gt
-  colorscheme desert
-  set columns=100
-  set lines=60
-endif
-" }}}
-
-" WEIRD PREVENTION {{{
-""""""""""""""""""
-" [O] timeouts
-set timeout timeoutlen=1000 ttimeoutlen=100
-" literally: Stop SQL language files from doing unholy things to the C-c key
-let g:omni_sql_no_default_maps = 1
-
-if has('win32')
-  let g:vim_at_user_home = $USERPROFILE."/vimfiles"
-else
-  let g:vim_at_user_home = $HOME."/.vim"
-endif
-" }}}
-
-" NETRW {{{
-"""""""
-let g:netrw_banner=0
-let g:netrw_altv=1
-let g:netrw_browse_split = 0
-let g:netrw_liststyle=3
-let g:netrw_list_hide.=',\(^\\s\s\)\zs\.\S\+'
-let g:netrw_winsize = 35
-let g:netrw_localrmdir='rm -r'
-
-augroup netrw
-  autocmd!
-  autocmd FileType netrw setl bufhidden=wipe
-augroup END
-" }}}
-
-" COMPLETION {{{
-""""""""""""
-set omnifunc=syntaxcomplete#Complete
-set path=a.,,**
-set wildmenu wildmode=list:longest
-set fileignorecase
-
-set wildignore+=*.aux,*.out,*.toc " LaTeX intermediate files
-set wildignore+=*.luac " Lua byte code
-" compiled object files
-set wildignore+=*.o,*.obj,*.exe,*.dll,*.manifest,*.dat,*.class,*.zip,*.rar,*.7z
-set wildignore+=*.pyc " Python byte code
-set wildignore+=*.spl " compiled spelling word lists
-set wildignore+=*.sw? " Vim swap files
-" images
-set wildignore+=*.bmp,*.gif,*.ico,*.jpg,*.png,*.ico
-set wildignore+=*.pdf,*.psd
-" node modules y similar
-set wildignore+=*/node_modules/*,*/bower_components/*
-" git
-set wildignore+=.git/*
 
 if executable("rg")
   set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
@@ -232,41 +149,56 @@ if executable("rg")
   " --color: Search color options
 
   set grepformat=%f:%l:%c:%m,%f:%l:%m
-elseif executable("ag") " o si existe su hermano menor y más famoso Ag
+elseif executable("ag") 
   set grepprg=ag\ --nogroup\ --nocolor\ --smart-case\ --column
   set grepformat=%f:%l:%c:%m,%f:%l:%m
-else
-  set grepprg=egrep\ .\ -rne
-  set fileignorecase
+elseif executable("egrep")
+  let &grepprg='grep -n -R --exclude=' . shellescape(&wildignore) . ' $*'
+endif
+
+if has("patch-8.1.0360")
+    set diffopt+=internal,algorithm:patience
 endif
 " }}}
 
-" KEYS {{{
-""""""
+" NETRW{{{
+"""""""
+let g:netrw_banner=0
+let g:netrw_altv=1
+let g:netrw_browse_split = 0
+let g:netrw_liststyle=3
+augroup netrw
+  autocmd!
+  autocmd FileType netrw setl bufhidden=wipe
+augroup END
+" }}}
+
+" KEYMAPPING {{{
+""""""""""""
 nnoremap <space> <Nop>
 let mapleader = " "
 let g:mapleader = "\<Space>"
+
 " MANDATORY ANTI <CTRL-U>
 inoremap <C-U> <C-G>u<C-U>
-
+" Nohighlight
 nnoremap <expr> <leader><leader><leader> QfVisible() ? ":lclose<CR>:cclose<CR>" : ":noh<CR>"
 
-" STUPID SPANISH KEYBOARD
-" nnoremap - /
-" nnoremap _ ?
-nnoremap - /\v
-nnoremap <C--> ?\v
-onoremap - /\v
-xnoremap - /\v
-nnoremap <C--> ?\v
-onoremap <C--> ?\v
-xnoremap <C--> ?\v
+" useful on spanish keyboard
 nnoremap gl <C-]>
+" nnoremap ª _
+" nnoremap - /\v
+" nnoremap _ ?\v
+" xnoremap ª _
+" xnoremap - /\v
+" xnoremap _ ?\v
+" onoremap ª _
+" onoremap - /\v
+" onoremap _ ?\v
 
 " WRAP:
 nnoremap <expr>çli expand(&g:list) ? ":call Set_Spaces()<CR>" : ":call Set_Tabs()<CR>"
 nnoremap çwr :set wrap! wrap?<CR>
-" nnoremap <Leader>wr :set wrap!<CR>:set list! wrap?<CR>
 nnoremap <expr>j expand(&l:wrap) == 1 ? "gj" : "j"
 nnoremap <expr>k expand(&l:wrap) == 1 ? "gk" : "k"
 nnoremap <expr>^ expand(&l:wrap) == 1 ? "g0" : "^"
@@ -278,16 +210,6 @@ nnoremap J mzJ`z
 " YOU WILL NEVER STOP, WON'T YOU?
 nnoremap <Leader>rc :tabnew $MYVIMRC<CR>
 
-" GUI IS A PRETTY COOL GUY BECAUSE OF THIS:
-inoremap <C-BS> <C-W>
-inoremap <C-Del> <C-O>dw
-" alternates between eol, next line and current position in insert-mode
-" without that much finger acrobatics
-" (works in gui mode only)
-inoremap <C-CR> <Esc>mmo
-inoremap <S-CR> <Esc>mmA
-inoremap <C-B> <Esc>'mi
-
 " AUTOCOMPLETION:
 inoremap <C-F> <C-X><C-F>
 inoremap <expr> <Esc>      pumvisible() ? "\<C-e>" : "\<Esc>"
@@ -297,39 +219,14 @@ inoremap <expr> <Up>       pumvisible() ? "\<C-p>" : "\<Up>"
 inoremap <expr> <PageDown> pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<PageDown>"
 inoremap <expr> <PageUp>   pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<PageUp>"
 
-" HELP-SEARCH:
-nnoremap <leader>hs :vs g:vim_at_user_home/vimtips.txt<CR>
-
-" Replace word under cursor:
-nnoremap <Leader>rw :%s/\<<C-R><C-W>\>//g<LEFT><LEFT>
-" Replace WORD under cursor:
-nnoremap <Leader>rW :%s/\<<C-R><C-A>\>//g<LEFT><LEFT>
-
-" I <3 IL
-" nnoremap <leader>/ :il /
-" nnoremap <leader>* [I:
-" I have a better il that loads in loclist
-nnoremap <leader>/ :Tilist<space>
-nnoremap <leader>* :call Turbo_asterisk()<CR>"
-
-" TAGS
-nnoremap <Leader>ts :tselect<Space><C-D>
-nnoremap <leader>tj :tjump<Space><C-D>*
-
 " DONT MESS UP MY REGISTER
 nnoremap x "_x
 nnoremap c "_c
 
-" VISUAL:
-" Search selection in visual
-vnoremap <silent> * "sy/<C-r>s<CR>
-vnoremap <silent> # "sy?<C-r>s<CR>
 " Indent selection with TAB
 vnoremap <Tab> >gv
 vnoremap <S-Tab> <gv
-" windows like mappings for copy/cut
-vnoremap <c-x> "+d
-vnoremap <c-c> "+y
+
 " Select all mapping
 nnoremap <leader>a ggVG
 
@@ -344,12 +241,6 @@ nnoremap <leader>B :b #<CR>
 nnoremap <leader>f :find *
 nnoremap <leader>e :Ex<CR>
 
-" I mostly use preview window from netrw
-nnoremap <leader><leader>p <C-w>z
-" Shortcut to close quickfix window 
-" TODO: upgrade to closing latest lwindow if no qf is found
-nnoremap <leader><leader>q :cclose<CR>
-
 " utilities to make splits on opening files/buffers
 " vertical split
 cnoremap <C-S> <Home>vertical s<End>
@@ -358,12 +249,10 @@ cnoremap <C-X> <Home>s<End>
 " new tab
 cnoremap <C-T> <Home>tab<End>
 
+nnoremap <leader>wd :echo<space>expand('%:h')<CR>
+
 " Grep pattern
-nnoremap º :Search<CR>
-" GrepFind (word under cursor)
-nnoremap <Leader>gf :Search<CR><C-R><C-w><CR>
-" nnoremap <leader>F :oldfiles<CR>:e #<
-nnoremap <leader>F :MostRecent<CR>
+nnoremap ~ :Search<CR>
 " }}}
 
 " HELPERS {{{
@@ -385,37 +274,28 @@ augroup DrupalFiles
   autocmd BufWritePost *.theme,*.module,*.php silent lmake! % | silent redraw! | lwindow
 augroup END
 
-augroup CursorLine
-  autocmd!
-  autocmd BufEnter * setlocal cursorline
-  autocmd BufLeave * setlocal nocursorline
-augroup END
+" augroup TS
+"   autocmd!
+"   autocmd Filetype typescript,typescriptreact set makeprg=npm\ run\ --silent\ lint:compact
+"   autocmd Filetype typescript,typescriptreact set errorformat+=%f:\ line\ %l\\,\ col\ %c\\,\ %m,%-G%.%#
+"   " autocmd Filetype typescript,typescriptreact set errorformat+=%f:\ line\ %l\\,\ col\ %c\\,\ %trror\ -\ %m
+"   " autocmd Filetype typescript,typescriptreact set errorformat+=%f:\ line\ %l\\,\ col\ %c\\,\ %tarning\ -\ %m
+"   autocmd BufWritePost *.tsx,*.ts silent lmake! % | silent redraw! | lwindow
+" augroup END
 
-function! MakeTags() abort
-  let command='ctags -R'
-  let confirm = input(expand('%:h') . ' is this the correct path? y/n')
-  if confirm == 'y'
-    exec ':silent !' . command
-  elseif confirm == 'n'
-    echo 'please navigate to the correct directory'
-    return
-  endif
-  echo 'Tags generated.'
+" Verify if Quickfixlist or locationList are open
+function! QfVisible() abort
+  return len(filter(range(1,winnr('$')),'getwinvar(v:val, "&ft") == "qf"'))
 endfunction
 
-command! Maketags call MakeTags()
-
-augroup QfRemaps
+augroup DiffColors
   autocmd!
-  autocmd FileType qf if mapcheck('<esc>', 'n') ==# '' | nnoremap <buffer><silent> <esc> :cclose<bar>lclose<CR> | endif
-  autocmd FileType qf nnoremap <buffer><silent> <leader><CR> <C-w><CR>:cclose<CR>
+  autocmd FilterWritePre * if &diff | color apprentice | endif
 augroup END
 
-" remembers last tab number
-augroup Lasttab
-  autocmd!
-  autocmd TabLeave * let g:lasttab = tabpagenr()
-augroup END
+" Open list of oldfiles as something interactionable:
+command! MostRecent vnew +setl\ buftype=nofile | 0put =v:oldfiles
+      \| nnoremap <buffer> <CR> :e <C-r>=getline('.')<CR><CR>
 
 " FUNCTION TO SAVE AS SPACES AND SEE AS TABS
 function! Set_Tabs() abort
@@ -440,13 +320,6 @@ function! Set_Spaces() abort
   endif
 endfunction
 
-function! Try_Retab() abort
-  if !&readonly && &buftype != 'nofile' && &buftype != 'quickfix'
-    exec 'keepjumps %retab!'
-  endif
-endfunction
-
-" changes statusline color per mode
 function! ChangeStatuslineColor()
   if (mode() =~# '\v(n|no)')
     exe 'hi! StatusLine ctermfg=15 ctermbg=0 guibg=#EEEEEE guifg=#080002'
@@ -464,70 +337,63 @@ endfunction
 command! MostRecent vnew +setl\ buftype=nofile | 0put =v:oldfiles
       \| nnoremap <buffer> <CR> :e <C-r>=getline('.')<CR><CR>
 
-" il command improvements...
-function! Turbo_asterisk() abort
-  redir => output
-  silent! exec join(['ilist', expand('<cword>')], ' ')
-  redir END
-  let lines = split(output, '\n')
-  if lines[0] =~ '^Error detected'
-    echomsg 'Word not found'
-    return
-  endif
-  let [filename, line_info] = [lines[0], lines[1:-1]]
-  let loclist_entries = map(line_info, "{
-        \ 'filename': filename,
-        \ 'lnum': split(v:val)[1],
-        \ 'text': getline(split(v:val)[1])
-        \ }"
-        \ )
-  let win_number = winnr()
-  call setloclist(win_number, loclist_entries)
-  lwindow
-endfunction
-
-function! Turbo_il(pattern) abort
-  redir => output
-  silent! exec join(['ilist', a:pattern], ' ')
-  redir END
-  let lines = split(output, '\n')
-  if lines[0] =~ '^Error detected'
-    echomsg 'Word not found'
-    return
-  endif
-  let [filename, line_info] = [lines[0], lines[1:-1]]
-  let loclist_entries = map(line_info, "{
-        \ 'filename': filename,
-        \ 'lnum': split(v:val)[1],
-        \ 'text': getline(split(v:val)[1])
-        \}"
-        \)
-  let win_number = winnr()
-  call setloclist(win_number, loclist_entries)
-  lwindow
-endfunction
-
-" requires 1 argument so command is mandatory
-command! -nargs=1 Tilist exec printf('call Turbo_il(%s)', string(<q-args>))
-
 " Search for string in files
 function! MySearch() abort
   let grep_term = input("Pattern: ")
   if !empty(grep_term)
-    execute 'silent grep!' grep_term
+    execute 'silent lgrep!' grep_term
     " silent prevents from opening first result
-    " DO NOT USE LocList for this one !!
-    execute 'copen'
+    execute 'lopen'
     " remap Ctrl-T, Ctrl-X and Ctrl-V to open splits/tabs
     nnoremap <buffer> <C-T> <C-W><CR><C-W>T
     nnoremap <buffer> <C-X> <C-W><CR>
     nnoremap <buffer> <C-V> <C-W><CR><C-W>L
-    nnoremap <buffer> <Esc> :cclose<CR>
+    nnoremap <buffer> <Esc> :lclose<CR>
   else
     echo "No pattern provided"
   endif
   redraw!
 endfunction
+
+" Thanks romainl
+" make list-like commands more intuitive
+function! CCR()
+  let cmdline = getcmdline()
+  if cmdline =~ '\v\C^(ls|files|buffers)'
+    " like :ls but prompts for a buffer command
+    return "\<CR>:b"
+  elseif cmdline =~ '\v\C/(#|nu|num|numb|numbe|number)$'
+    " like :g//# but prompts for a command
+    return "\<CR>:"
+  elseif cmdline =~ '\v\C^(dli|il)'
+    " like :dlist or :ilist but prompts for a count for :djump or :ijump
+    return "\<CR>:" . cmdline[0] . "j  " . split(cmdline, " ")[1] . "\<S-Left>\<Left>"
+  elseif cmdline =~ '\v\C^(cli|lli)'
+    " like :clist or :llist but prompts for an error/location number
+    return "\<CR>:sil " . repeat(cmdline[0], 2) . "\<Space>"
+  elseif cmdline =~ '\C^old'
+    " like :oldfiles but prompts for an old file to edit
+    set nomore
+    return "\<CR>:sil se more|e #<"
+  elseif cmdline =~ '\C^changes'
+    " like :changes but prompts for a change to jump to
+    set nomore
+    return "\<CR>:sil se more|norm! g;\<S-Left>"
+  elseif cmdline =~ '\C^ju'
+    " like :jumps but prompts for a position to jump to
+    set nomore
+    return "\<CR>:sil se more|norm! \<C-o>\<S-Left>"
+  elseif cmdline =~ '\C^marks'
+    " like :marks but prompts for a mark to jump to
+    return "\<CR>:norm! `"
+  elseif cmdline =~ '\C^undol'
+    " like :undolist but prompts for a change to undo
+    return "\<CR>:u "
+  else
+    return "\<CR>"
+  endif
+endfunction
+cnoremap <expr> <CR> CCR()
 
 command! Search call MySearch()
 
@@ -543,18 +409,22 @@ function! InstallPlug(win) abort
     endif
   endif
   if empty(glob('~/.vim/autoload/plug.vim'))
-    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-          \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    if executable('curl')
+      silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+            \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    else
+      echomsg 'Cannot install Vim-Plug. Install curl first'
+    endif
   endif
 endfunction
 
 command! -bar InstallPlug call InstallPlug(has('win32'))
 " }}}
 
-" PLUGIN AND SO ON {{{
-""""""""""""""""""
+" PLUGINS {{{
+"""""""""
 if filereadable($HOME . '/vimfiles/autoload/plug.vim') 
-      \|| filereadable($HOME . '/.vim/autoload/plug.vim')
+        \|| filereadable($HOME . '/.vim/autoload/plug.vim')
   if has('win32')
     call plug#begin('$HOME/vimfiles/plugged')
   else
@@ -563,17 +433,25 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
 
   Plug 'tpope/vim-repeat' 
   Plug 'tpope/vim-commentary'
+  " config:
+  autocmd Filetype php setlocal commentstring=//\ %s
+  autocmd Filetype html.twig setlocal commentstring={#\ %s\ #}
   Plug 'tpope/vim-surround'
   " config:
   let g:surround_{char2nr("¡")} = "¡\r!"
   let g:surround_{char2nr("¿")} = "¿\r?"
-  " Drupal Twig translation surround
+  " Drupal Twig
   let g:surround_{char2nr("T")} = "{% trans %}\r{% endtrans %}"
+  let g:surround_{char2nr("V")} = "{{ \r }}"
+  let g:surround_{char2nr("v")} = "{% \r %}"
+  let g:surround_{char2nr("c")} = "{# \r #}"
   " config END
-  Plug 'tpope/vim-fugitive' | Plug 'airblade/vim-gitgutter'
+  Plug 'tpope/vim-unimpaired'
+  Plug 'tpope/vim-fugitive'
   Plug 'tpope/vim-abolish'
-  " Plug 'jiangmiao/auto-pairs' " <-- try to live w/o it
+  Plug 'tpope/vim-vinegar'
   Plug 'godlygeek/tabular'
+  Plug 'editorconfig/editorconfig-vim'
   " config:
   " A Tim Pope function for tables automatically realigning when using pipe for
   " separations:
@@ -591,8 +469,20 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
   endfunction"
   " config END
 
+  " VimWiki as a way to take notes
+  Plug 'vimwiki/vimwiki'
+
   " UNNECESSARY COMMODITIES
+  Plug 'kkoomen/vim-doge'
   Plug 'mattn/emmet-vim'
+  Plug 'SirVer/ultisnips'
+  Plug 'honza/vim-snippets'
+  let g:UltiSnipsExpandTrigger="<tab>"
+  let g:UltiSnipsJumpForwardTrigger="<c-b>"
+  let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+
+  " " If you want :UltiSnipsEdit to split your window.
+  let g:UltiSnipsEditSplit="vertical"
   " this trick has proven more useful than expected
   imap ,, <plug>(emmet-expand-abbr)
 
@@ -602,82 +492,164 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
         \     'ake' : "array_key_exists(|)",
         \     'pm' : "preg_match(|)",
         \     'ps' : "preg_replace(|)",
-        \     'fun' : "function | () {\r\r}",
-        \     'pf' : "public function | () {\r\r}",
-        \     'sf' : "static function | () {\r\r}",
-        \     'psf' : "public static function | () {\r\r}",
+        \     'fun' : "function ${child} (|) {\r\r}",
+        \     'puf' : "public function ${child} (|) {\r\r}",
+        \     'pusf' : "public static function ${child} (|) {\r\r}",
+        \     'psf' : "protected static function ${child} (|) {\r\r}",
+        \     'pf' : "protected function ${child} (|) {\r\r}",
+        \     'sf' : "static function ${child} (|) {\r\r}",
         \     'for' : "for (\$i = 0; \$i < |; $i++) {\r\t|\r}",
         \     'fore' : "foreach (\$${child} as \$${child}_element) {\r\t|\r}",
         \    },
         \ },
         \ }
 
-  if !has('win32')
-    " If windows, install manually fzf binary and put it on system32
-    Plug 'junegunn/fzf', { 'dir': $HOME.'/fzf', 'do': './install --all' }
-  endif
-  Plug 'junegunn/fzf.vim'
-  " config:
-  let g:fzf_layout = { 'down': '~20%' }
-  let g:fzf_colors =
-        \ { 'fg':      ['fg', 'Normal'],
-        \ 'bg':      ['bg', 'Clear'],
-        \ 'hl':      ['fg', 'String'],
-        \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-        \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
-        \ 'hl+':     ['fg', 'Statement'],
-        \ 'info':    ['fg', 'PreProc'],
-        \ 'prompt':  ['fg', 'Conditional'],
-        \ 'pointer': ['fg', 'Exception'],
-        \ 'marker':  ['fg', 'Keyword'],
-        \ 'spinner': ['fg', 'Label'],
-        \ 'header':  ['fg', 'Comment'] }
+  " if has fzf, use fzf
+  if executable('fzf')
+    Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+    Plug 'junegunn/fzf.vim'
+    " config:
+    let g:fzf_preview_window = ['up:50%', 'ctrl-/']
+    let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
+    let g:fzf_colors =
+          \ { 'fg':      ['fg', 'normal'],
+          \ 'bg':      ['bg', 'clear'],
+          \ 'hl':      ['fg', 'string'],
+          \ 'fg+':     ['fg', 'cursorline', 'cursorcolumn', 'normal'],
+          \ 'bg+':     ['bg', 'cursorline', 'cursorcolumn'],
+          \ 'hl+':     ['fg', 'statement'],
+          \ 'info':    ['fg', 'preproc'],
+          \ 'prompt':  ['fg', 'conditional'],
+          \ 'pointer': ['fg', 'exception'],
+          \ 'marker':  ['fg', 'keyword'],
+          \ 'spinner': ['fg', 'label'],
+          \ 'header':  ['fg', 'comment'] }
 
-  command! -bang -nargs=* Rg
-        \ call fzf#vim#grep(
-        \   'rg --column --line-number --hidden --smart-case --no-heading --color=always '.shellescape(<q-args>), 1,
-        \   <bang>0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'up:60%')
-        \           : fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'right:50%:hidden', '?'),
-        \   <bang>0)
-
-  " SYNTAX
-  Plug 'sheerun/vim-polyglot'
-  Plug 'fatih/vim-go'
-
-  " SOME COLOUR
-  Plug 'robertmeta/nofrils'
-  Plug 'nightsense/strawberry'
+    if executable('rg')
+      command! -bang -nargs=* Rg
+            \ call fzf#vim#grep(
+            \   'rg --column --line-number --no-heading --color=always --smart-case -- '.shellescape(<q-args>), 1,
+            \   fzf#vim#with_preview(), <bang>0)
+    endif
 
   " MAPPINGS
-  if !&diff
-    augroup PluginMapping
-      autocmd!
-      autocmd VimEnter * call Maps_Plugins()
-    augroup end
+    if !&diff
+      augroup PluginMapping
+        autocmd!
+        autocmd VimEnter * call Maps_Plugins()
+      augroup end
+    endif
+
+    function! Maps_Plugins() abort
+      if exists(":FZF")
+        exec 'nnoremap <leader>b :Buffers<CR>'
+        exec 'nnoremap <leader>f :Files<CR>'
+        if executable('rg')
+          exec 'nnoremap ~ :Rg<space>'
+        endif
+        exec 'nnoremap <leader>F :History<CR>'
+        exec 'nnoremap <leader>ts :Tags<CR>'
+        command! FZFMru call fzf#run({
+              \  'source':  v:oldfiles,
+              \  'sink':    'e',
+              \  'options': '-m -x +s',
+              \  'down':    '40%'})
+        let g:fzf_layout = { 'window': 'enew' }
+      endif
+    endfunction
   endif
 
-  function! Maps_Plugins() abort
-    " if exists(":Emmet")
-    "   exec 'inoremap <C-Space> <Esc>:call emmet#expandAbbr(3,"")<CR>i'
-    " endif
-    if exists(":FZF")
-      exec 'nnoremap <leader>b :Buffers<CR>'
-      exec 'nnoremap <leader>f :Files<CR>'
-      exec 'nnoremap º :Rg<space>'
-      exec 'nnoremap <leader>F :History'
-      exec 'nnoremap <leader>ts :Tags'
-    endif
-    if exists(":Git")
-      let g:gitgutter_map_keys = 0
-      let g:gitgutter_max_signs = 999
-      if executable("rg")
-        let g:gitgutter_grep = 'rg'
-      endif
-    endif
-  endfunction
+    " Colors for gui
+    Plug 'sainnhe/vim-color-forest-night'
+    Plug 'liuchengxu/space-vim-theme'
+    Plug 'vim-scripts/norwaytoday'
+    Plug 'romainl/Apprentice'
 
-  " For testing purposes:
-  Plug 'junegunn/vader.vim'
-  call plug#end()
+    " Language-specific utilities
+    Plug 'sheerun/vim-polyglot'
+    let g:polyglot_disabled = ['vue']
+    Plug 'fatih/vim-go'
+    Plug 'aklt/plantuml-syntax'
+
+    Plug 'junegunn/goyo.vim'
+    Plug 'junegunn/limelight.vim'
+    let g:limelight_conceal_ctermfg = 240
+    augroup GoyoStuff
+      autocmd!
+      autocmd User GoyoEnter Limelight
+      autocmd User GoyoLeave Limelight!
+    augroup END
+
+    " COC NVIM & config
+    Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': ['js', 'ts', 'javascript', 'typescript', 'tsx', 'jsx', 'typescriptreact', 'javascriptreact']}
+    " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
+    " delays and poor user experience.
+    set updatetime=300
+
+    " Don't pass messages to |ins-completion-menu|.
+    set shortmess+=c
+    " Use `[g` and `]g` to navigate diagnostics
+    " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+    if exists(':CocList')
+      nmap <silent> [g <Plug>(coc-diagnostic-prev)
+      nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+      " DO NOT FUCKING INTERRUPT MY FLOW WITH YOUR POPUPS
+      let b:coc_suggest_disable = 1
+
+      " " GoTo code navigation.
+      nmap <silent> <leader>gd :call CocAction('jumpDefinition', 'vsplit')<CR>
+      nmap <silent> <leader>gy <Plug>(coc-type-definition)
+      nmap <silent> <leader>gi <Plug>(coc-implementation)
+      nmap <silent> <leader>gr <Plug>(coc-references)
+      nmap <silent> <leader>gf <Plug>(coc-codeaction-cursor)
+
+      let g:coc_disable_startup_warning=1
+
+      " Add `:Format` command to format current buffer.
+      command! -nargs=0 Format :call CocAction('format')
+      " Mappings for CoCList
+      " Show all diagnostics.
+      nnoremap <silent><nowait> <space>D  :<C-u>CocList diagnostics<cr>
+      " Manage extensions.
+      nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>
+      " Show commands.
+      nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
+      " Find symbol of current document.
+      nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
+      " Search workspace symbols.
+      nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
+      " Do default action for next item.
+      nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
+      " Do default action for previous item.
+      nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
+      " Resume latest coc list.
+      nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
+    endif
+
+
+    augroup Vue
+      autocmd!
+      autocmd BufReadPost *.vue set ft=html
+    augroup END
+    call plug#end()
+
+    
+
+  endif
+  " }}}
+
+color peachpuff
+if &diff
+  color apprentice
 endif
-" }}}
+  " GUI SETUP {{{
+  """""""""""
+  if has('gui_running')
+    set guioptions=gt
+    colorscheme norwaytoday
+    set columns=140
+    set lines=70
+    set guifont=Input-Regular:h12
+  endif
+  " }}}
