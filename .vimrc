@@ -55,8 +55,6 @@ set nowrap
 set nobackup
 set nowritebackup
 set noswapfile
-" display current position
-set cursorline
 " always show status bar
 set laststatus=2
 " show position in status bar
@@ -112,23 +110,23 @@ set statusline=%{ChangeStatuslineColor()}
 " bufno
 set statusline+=%-3.3n
 " file+path
-set statusline+=%F\ 
-" linecol
-set statusline+=[%04l,%04v]\ 
+set statusline+=%f\ 
 " flags(mod,ro,etc)
-set statusline+=%<%h%m%r%w
-" filetype
-set statusline+=[%{strlen(&ft)?&ft:'none'},
+set statusline+=%h%m%r%w%<\
+" [filetype
+set statusline+=[%{strlen(&ft)?&ft:'none'}\|
 " encoding
-set statusline+=%{strlen(&fenc)?&fenc:&enc},
-" format (unix,dos)
+set statusline+=%{strlen(&fenc)?&fenc:&enc}\|
+" format (unix,dos)]
 set statusline+=%{&fileformat}]
-" fugitive status line
-set statusline+=\ %{fugitive#statusline()}
 " right...
 set statusline+=%=
+" fugitive status line
+set statusline+=\%{fugitive#statusline()}
+" linecol
+set statusline+=[%04l,%04v]\ 
 " total
-set statusline+=(%L\ lines)
+set statusline+=%L\ lines
 
 if !exists('g:loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
   runtime! macros/matchit.vim
@@ -261,6 +259,13 @@ nnoremap ~ :Search<CR>
 augroup Restorepos
   autocmd!
   autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+augroup END
+
+" display current on current buffer
+augroup Cursorline
+  autocmd!
+  autocmd BufEnter * setlocal cursorline
+  autocmd BufLeave * setlocal nocursorline
 augroup END
 
 augroup TwigIfNotTwig
@@ -564,6 +569,9 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
     Plug 'liuchengxu/space-vim-theme'
     Plug 'vim-scripts/norwaytoday'
     Plug 'romainl/Apprentice'
+    Plug 'termlimit/vim-color-forest-night'
+    Plug 'sainnhe/everforest'
+    Plug 'arcticicestudio/nord-vim'
 
     " Language-specific utilities
     Plug 'sheerun/vim-polyglot'
@@ -584,49 +592,78 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
     Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': ['js', 'ts', 'javascript', 'typescript', 'tsx', 'jsx', 'typescriptreact', 'javascriptreact']}
     " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
     " delays and poor user experience.
-    set updatetime=300
-
-    " Don't pass messages to |ins-completion-menu|.
-    set shortmess+=c
-    " Use `[g` and `]g` to navigate diagnostics
-    " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
-    if exists(':CocList')
+    function! SetCocStuff() abort
+      set updatetime=300
+      " Don't pass messages to |ins-completion-menu|.
+      set shortmess+=c
+      " Use `[g` and `]g` to navigate diagnostics
+      " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
       nmap <silent> [g <Plug>(coc-diagnostic-prev)
       nmap <silent> ]g <Plug>(coc-diagnostic-next)
-
-      " DO NOT FUCKING INTERRUPT MY FLOW WITH YOUR POPUPS
-      let b:coc_suggest_disable = 1
-
-      " " GoTo code navigation.
+      " GoTo code navigation.
       nmap <silent> <leader>gd :call CocAction('jumpDefinition', 'vsplit')<CR>
       nmap <silent> <leader>gy <Plug>(coc-type-definition)
       nmap <silent> <leader>gi <Plug>(coc-implementation)
       nmap <silent> <leader>gr <Plug>(coc-references)
       nmap <silent> <leader>gf <Plug>(coc-codeaction-cursor)
-
+      " Use c-e to see element description
+      inoremap <silent><expr> <C-e> coc#refresh()
+      nnoremap <silent><expr> <C-e> coc#refresh()
+      " No warns at startup
       let g:coc_disable_startup_warning=1
-
       " Add `:Format` command to format current buffer.
       command! -nargs=0 Format :call CocAction('format')
+      " Add `:OR` command for organize imports of the current buffer.
+      command! -nargs=0 OR   :call     CocActionAsync('runCommand', 'editor.action.organizeImport')
+      " Formatting selected code.
+      xmap <leader>f  <Plug>(coc-format-selected)
       " Mappings for CoCList
       " Show all diagnostics.
-      nnoremap <silent><nowait> <space>D  :<C-u>CocList diagnostics<cr>
+      nnoremap <silent><nowait> <space>cD  :<C-u>CocList diagnostics<cr>
       " Manage extensions.
-      nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>
+      nnoremap <silent><nowait> <space>ce  :<C-u>CocList extensions<cr>
       " Show commands.
-      nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
+      nnoremap <silent><nowait> <space>cc  :<C-u>CocList commands<cr>
       " Find symbol of current document.
-      nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
+      nnoremap <silent><nowait> <space>co  :<C-u>CocList outline<cr>
       " Search workspace symbols.
-      nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
+      nnoremap <silent><nowait> <space>cs  :<C-u>CocList -I symbols<cr>
       " Do default action for next item.
       nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
       " Do default action for previous item.
       nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
       " Resume latest coc list.
-      nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
-    endif
-
+      nnoremap <silent><nowait> <space>cp  :<C-u>CocListResume<CR>
+      " Use CodeLens
+      nnoremap <silent> <space>cl  <Plug>(coc-config-codeLens-enable)
+      " Symbol renaming.
+      nmap <leader>rn <Plug>(coc-rename)
+      " Remap keys for applying codeAction to the current buffer.
+      nmap <leader>ac  <Plug>(coc-codeaction)
+      " Apply AutoFix to problem on the current line.
+      nmap <leader>qf  <Plug>(coc-fix-current)
+      " Run the Code Lens action on the current line.
+      nmap <leader>cl  <Plug>(coc-codelens-action)
+      " Use K to show documentation in preview window.
+      nnoremap <silent> K :call ShowDocumentation()<CR>
+      " Highlight the symbol and its references when holding the cursor.
+    endfunction
+    " COC EXTRAS
+    augroup cocFormatGroup
+      autocmd!
+      " Setup formatexpr specified filetype(s).
+      autocmd FileType typescript,javascript,javascriptreact,typescriptreact,json setl formatexpr=CocAction('formatSelected')
+      " Update signature help on jump placeholder.
+      autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+      autocmd CursorHold * if count(['c','cpp','python'],&filetype) | silent call CocActionAsync('highlight') | endif
+    augroup end
+    function! ShowDocumentation()
+      if CocAction('hasProvider', 'hover')
+        call CocActionAsync('doHover')
+      else
+        call feedkeys('K', 'in')
+      endif
+    endfunction
 
     augroup Vue
       autocmd!
@@ -634,15 +671,16 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
     augroup END
     call plug#end()
 
-    
+    augroup CocEnabled
+      autocmd!
+      autocmd FileType typescript,javascript,javascriptreact,typescriptreact,json call SetCocStuff()
+    augroup END
+
 
   endif
   " }}}
 
-color peachpuff
-if &diff
-  color apprentice
-endif
+  color megrim
   " GUI SETUP {{{
   """""""""""
   if has('gui_running')
