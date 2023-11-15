@@ -112,7 +112,7 @@ set statusline+=%-3.3n
 " file+path
 set statusline+=%f\ 
 " flags(mod,ro,etc)
-set statusline+=%h%m%r%w%<\
+set statusline+=%h%m%r%w%<\ 
 " [filetype
 set statusline+=[%{strlen(&ft)?&ft:'none'}\|
 " encoding
@@ -482,31 +482,32 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
   Plug 'mattn/emmet-vim'
   Plug 'SirVer/ultisnips'
   Plug 'honza/vim-snippets'
-  let g:UltiSnipsExpandTrigger="<tab>"
+  let g:UltiSnipsExpandTrigger="<c-a>"
   let g:UltiSnipsJumpForwardTrigger="<c-b>"
   let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 
   " " If you want :UltiSnipsEdit to split your window.
   let g:UltiSnipsEditSplit="vertical"
+  let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/UltiSnips']
   " this trick has proven more useful than expected
   imap ,, <plug>(emmet-expand-abbr)
 
   let g:user_emmet_settings = {
-        \ 'php' : {
-        \   'snippets' : {
-        \     'ake' : "array_key_exists(|)",
-        \     'pm' : "preg_match(|)",
-        \     'ps' : "preg_replace(|)",
-        \     'fun' : "function ${child} (|) {\r\r}",
-        \     'puf' : "public function ${child} (|) {\r\r}",
-        \     'pusf' : "public static function ${child} (|) {\r\r}",
-        \     'psf' : "protected static function ${child} (|) {\r\r}",
-        \     'pf' : "protected function ${child} (|) {\r\r}",
-        \     'sf' : "static function ${child} (|) {\r\r}",
-        \     'for' : "for (\$i = 0; \$i < |; $i++) {\r\t|\r}",
-        \     'fore' : "foreach (\$${child} as \$${child}_element) {\r\t|\r}",
-        \    },
-        \ },
+        \   'php' : {
+        \     'snippets' : {
+        \       'ake' : "array_key_exists(|)",
+        \       'pm' : "preg_match(|)",
+        \       'ps' : "preg_replace(|)",
+        \       'fun' : "function ${child} (|) {\r\r}",
+        \       'puf' : "public function ${child} (|) {\r\r}",
+        \       'pusf' : "public static function ${child} (|) {\r\r}",
+        \       'psf' : "protected static function ${child} (|) {\r\r}",
+        \       'pf' : "protected function ${child} (|) {\r\r}",
+        \       'sf' : "static function ${child} (|) {\r\r}",
+        \       'for' : "for (\$i = 0; \$i < |; $i++) {\r\t|\r}",
+        \       'fore' : "foreach (\$${child} as \$${child}_element) {\r\t|\r}",
+        \      },
+        \   },
         \ }
 
   " if has fzf, use fzf
@@ -562,6 +563,14 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
         let g:fzf_layout = { 'window': 'enew' }
       endif
     endfunction
+
+    function! MapVimWiki() abort
+      if exists(":VimwikiVSplitLink")
+        exec 'nnoremap <leader>> <Plug>VimwikiVSplitLink'
+        exec 'nnoremap <leader>v <Plug>VimwikiSplitLink'
+      endif
+    endfunction
+
   endif
 
     " Colors for gui
@@ -588,8 +597,10 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
       autocmd User GoyoLeave Limelight!
     augroup END
 
+    Plug 'github/copilot.vim'
+
     " COC NVIM & config
-    Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': ['js', 'ts', 'javascript', 'typescript', 'tsx', 'jsx', 'typescriptreact', 'javascriptreact']}
+    Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': ['js', 'ts', 'javascript', 'typescript', 'tsx', 'jsx', 'typescriptreact', 'javascriptreact', 'php']}
     " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
     " delays and poor user experience.
     function! SetCocStuff() abort
@@ -601,7 +612,8 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
       nmap <silent> [g <Plug>(coc-diagnostic-prev)
       nmap <silent> ]g <Plug>(coc-diagnostic-next)
       " GoTo code navigation.
-      nmap <silent> <leader>gd :call CocAction('jumpDefinition', 'vsplit')<CR>
+      nmap <silent> <leader>gd :call CocAction('jumpDefinition')<CR>
+      nmap <silent> <leader>gD :call CocAction('jumpDefinition', 'vsplit')<CR>
       nmap <silent> <leader>gy <Plug>(coc-type-definition)
       nmap <silent> <leader>gi <Plug>(coc-implementation)
       nmap <silent> <leader>gr <Plug>(coc-references)
@@ -673,9 +685,15 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
 
     augroup CocEnabled
       autocmd!
-      autocmd FileType typescript,javascript,javascriptreact,typescriptreact,json call SetCocStuff()
+      autocmd FileType typescript,javascript,javascriptreact,typescriptreact,json,php call SetCocStuff()
     augroup END
 
+    augroup VimWikiSetHeaders
+      autocmd!
+      autocmd FileType vimwiki nnoremap <leader>h1 :r<space>!date<space>"+\%d<space>\%B<space>\%Y"<CR>I=<space><C-O>A<space>=<ESC>gUUo<ESC>
+      autocmd FileType vimwiki imap <buffer><silent><script><expr> <C-J> copilot#Accept("\<CR>")
+      autocmd FileType markdown imap <buffer><silent><script><expr> <C-J> copilot#Accept("\<CR>")
+    augroup END
 
   endif
   " }}}
