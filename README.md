@@ -83,3 +83,13 @@ It is specifically useful if we've populated the arglist before.
 
 Finally, I've also added a vimtips.txt file which includes many many regex patterns very useful.
 Must thank http://www.zzapper.co.uk
+
+
+## TODO:
+- Add Bash rc guide
+- Add explanation for other config files such as xsession, xresources
+- Add installation guide and/or script. Maybe use GNU Stow for this.
+- Also include installation for .vim/color and potential ftplugin, syntax...
+- Add an installation script to take care of fzf/ripgrep/ctags and other dependencies.
+- Consider adding a specific vim documentation file. Include coc.nvim as it's not going anywhere it seems.
+- Update all vimrc stuff
