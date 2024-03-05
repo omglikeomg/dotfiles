@@ -18,6 +18,7 @@ HISTCONTROL=ignoreboth
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 HISTSIZE=500000
 HISTFILESIZE=800000
+SAVEHIST=800000
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -133,8 +134,6 @@ alias .....="cd ../../../.."
 alias ......="cd ../../../../.."
 
 # ALIASES FOR LANDO
-alias lando-ww='lando drush -l weddingwire.com'
-alias lando-tk='lando drush -l theknot.com.paper'
 alias mysql-start='mysql.server start --sql-mode=""'
 
 if [ -f ~/add-ssh-keys ]; then
@@ -149,18 +148,9 @@ export PATH="$PATH:$HOME/.composer/vendor/bin"
 
 clear
 
-
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-export JENKINS_SECRET="114e1d1037d69fefe2adda12bb0bd50bd7"
-export JENKINS_USERNAME="dmolinari@bodas.net"
-export JENKINS_URL="https://pipelines.eng.theknotww.com"
-
-
-# FOR USING GITHUB REPOS W/PERMISSIONS
-export NPM_TOKEN=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
 
 alias drupalcs='phpcs --standard=Drupal -n --extensions=php,module,inc,install,test,profile,theme,info,scss,txt,md --ignore="*.css,node_modules"'
 alias drupalfix='phpcbf --standard=Drupal -n --extensions=php,module,inc,install,test,profile,theme,info,scss,txt,md --ignore="*.css,node_modules"'
@@ -168,3 +158,6 @@ alias drupalfix='phpcbf --standard=Drupal -n --extensions=php,module,inc,install
 alias ytdl-playlist='yt-dlp --extract-audio --audio-format mp3 -o "%(playlist_autonumber)s. %(title)s.%(ext)s"'
 alias ytdl-split-chapters='yt-dlp --extract-audio --audio-format mp3 --split-chapters -o "chapter:%(section_number)s. %(section_title)s.%(ext)s"'
 alias rename-trailing-zeroes='rename -e "s;^(\d)\.;0\$1;" *'
+
+alias dokcer-recreate='docker-compose up -d --force-recreate'
+alias mc='mc -b --nosubshell'

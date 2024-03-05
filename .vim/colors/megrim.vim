@@ -130,3 +130,4 @@ if s:t_Co >= 256
   unlet s:t_Co
   finish
 endif
+

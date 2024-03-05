@@ -1,6 +1,6 @@
 " .vimrc
 " By Demian Molinari - omglikeomg
-" Last changes done on Jan 2019
+" Last changes done on Feb 2024
 "
 " BASIC {{{
 " 
@@ -586,6 +586,7 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
     Plug 'sheerun/vim-polyglot'
     let g:polyglot_disabled = ['vue']
     Plug 'fatih/vim-go'
+    Plug 'chrisbra/csv.vim'
     Plug 'aklt/plantuml-syntax'
 
     Plug 'junegunn/goyo.vim'
@@ -703,7 +704,7 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
   """""""""""
   if has('gui_running')
     set guioptions=gt
-    colorscheme norwaytoday
+    colorscheme morning
     set columns=140
     set lines=70
     set guifont=Input-Regular:h12
