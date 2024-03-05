@@ -88,8 +88,16 @@ Must thank http://www.zzapper.co.uk
 ## TODO:
 - Add Bash rc guide
 - Add explanation for other config files such as xsession, xresources
-- Add installation guide and/or script. Maybe use GNU Stow for this.
+- Add installation guide and/or script. Maybe use GNU Stow for this. [Read here](https://venthur.de/2021-12-19-managing-dotfiles-with-stow.html)
 - Also include installation for .vim/color and potential ftplugin, syntax...
 - Add an installation script to take care of fzf/ripgrep/ctags and other dependencies.
 - Consider adding a specific vim documentation file. Include coc.nvim as it's not going anywhere it seems.
 - Update all vimrc stuff
+
+## Might want to try:
+- [bat as a replacement for cat](https://github.com/sharkdp/bat)
+- [dust as a replacement for du](https://github.com/bootandy/dust)
+- [btop > htop > top](https://github.com/aristocratos/btop)
+- [atuin to manage history](https://github.com/atuinsh/atuin)
+- [zellij as a terminal multiplexer](https://github.com/zellij-org/zellij)
+- [yazi as file manager (more like ranger than mc)](https://github.com/sxyazi/yazi)
