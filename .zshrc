@@ -155,8 +155,8 @@ export NVM_DIR="$HOME/.nvm"
 alias drupalcs='phpcs --standard=Drupal -n --extensions=php,module,inc,install,test,profile,theme,info,scss,txt,md --ignore="*.css,node_modules"'
 alias drupalfix='phpcbf --standard=Drupal -n --extensions=php,module,inc,install,test,profile,theme,info,scss,txt,md --ignore="*.css,node_modules"'
 
-alias ytdl-playlist='yt-dlp --extract-audio --audio-format mp3 -o "%(playlist_autonumber)s. %(title)s.%(ext)s"'
-alias ytdl-split-chapters='yt-dlp --extract-audio --audio-format mp3 --split-chapters -o "chapter:%(section_number)s. %(section_title)s.%(ext)s"'
+alias ytdl-playlist='yt-dlp --extract-audio --audio-format mp3 -o "%(playlist_autonumber)s. [%(channel)s] %(title)s.%(ext)s"'
+alias ytdl-split-chapters='yt-dlp --extract-audio --audio-format mp3 --split-chapters -o "chapter:%(section_number)s. [%(channel)s] %(section_title)s.%(ext)s"'
 alias rename-trailing-zeroes='rename -e "s;^(\d)\.;0\$1;" *'
 
 alias dokcer-recreate='docker-compose up -d --force-recreate'
