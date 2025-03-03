@@ -1,0 +1,8 @@
+if [  command -v phpcs 2>&1 >/dev/null ]; then
+  alias drupalcs='phpcs --standard=Drupal -n --extensions=php,module,inc,install,test,profile,theme,info,scss,txt,md --ignore="*.css,node_modules"'
+fi
+if [  command -v phpcbf 2>&1 >/dev/null ]; then
+  alias drupalfix='phpcbf --standard=Drupal -n --extensions=php,module,inc,install,test,profile,theme,info,scss,txt,md --ignore="*.css,node_modules"'
+fi
+
+# vim:ft=bash

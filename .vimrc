@@ -1,6 +1,6 @@
 " .vimrc
 " By Demian Molinari - omglikeomg
-" Last changes done on Feb 2024
+" Last changes done on Feb 2025
 "
 " BASIC {{{
 " 
@@ -201,6 +201,10 @@ nnoremap <expr>j expand(&l:wrap) == 1 ? "gj" : "j"
 nnoremap <expr>k expand(&l:wrap) == 1 ? "gk" : "k"
 nnoremap <expr>^ expand(&l:wrap) == 1 ? "g0" : "^"
 nnoremap <expr>$ expand(&l:wrap) == 1 ? "g$" : "$"
+vnoremap <expr>j expand(&l:wrap) == 1 ? "gj" : "j"
+vnoremap <expr>k expand(&l:wrap) == 1 ? "gk" : "k"
+vnoremap <expr>^ expand(&l:wrap) == 1 ? "g0" : "^"
+vnoremap <expr>$ expand(&l:wrap) == 1 ? "g$" : "$"
 
 " DONT JUMP WHEN JOINING LINES:
 nnoremap J mzJ`z
@@ -481,6 +485,8 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
   Plug 'kkoomen/vim-doge'
   Plug 'mattn/emmet-vim'
   Plug 'SirVer/ultisnips'
+  Plug 'inkarkat/vim-ingo-library'
+  Plug 'inkarkat/vim-mark'
   Plug 'honza/vim-snippets'
   let g:UltiSnipsExpandTrigger="<c-a>"
   let g:UltiSnipsJumpForwardTrigger="<c-b>"
@@ -700,13 +706,56 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
   " }}}
 
   color megrim
+
+  " VIMWIKI Session {{{
+  function! SetupVimwikiDiarySession() abort
+    if (exists('g:session_loaded'))
+      echomsg "Vimwiki diary already loaded"
+      return
+    endif
+    call PrepareVimwikiDiary()
+    call SetVimwikiFileType()
+    let g:session_loaded = 1
+  endfunction
+
+  function SetVimwikiFileType() abort
+    windo set ft=vimwiki
+    tabdo set ft=vimwiki
+  endfunction
+
+  function! PrepareVimwikiDiary() abort
+    echomsg "Preparing Vimwiki diary..."
+    "Step 0: if there are several tabs, go to last tab
+    if tabpagenr('$') > 1
+      execute 'tablast'
+    endif
+    " Step 1: create a vertical split & open vimwiki diary for today
+    execute 'vsplit | VimwikiMakeDiaryNote'
+    " Step 2: apply template for diary entry if entry is empty
+    if line('$') <= 1
+      execute 'set ft=vimwiki | normal aentry'
+    endif
+    " Step 3: Save the file so index can be updated
+    execute 'write'
+    " Step 4: create a horizontal split & open vimwiki diary for yesterday
+    execute 'split | VimwikiMakeYesterdayDiaryNote'
+    " Step 6: Go to first window (index) and update vimwiki diary index with `VimwikiDiaryGenerateLinks`
+    execute 'wincmd h | VimwikiDiaryGenerateLinks'
+    execute 'write'
+  endfunction
+
+  command! InitVimwikiDiary source ~/vimwiki/initial_session.vim | call SetupVimwikiDiarySession()
+  " }}}
+
   " GUI SETUP {{{
   """""""""""
   if has('gui_running')
     set guioptions=gt
-    colorscheme morning
-    set columns=140
+    colorscheme norwaytoday
+    set columns=160
     set lines=70
     set guifont=Input-Regular:h12
+    let g:copilot_node_command = '/Users/dmolinari/.nvm/versions/node/v20.16.0/bin/node'
   endif
   " }}}
+

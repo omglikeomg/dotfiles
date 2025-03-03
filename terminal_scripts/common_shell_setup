@@ -1,0 +1,27 @@
+# don't put duplicate lines or lines starting with space in the history.
+HISTCONTROL=ignoreboth
+HISTSIZE=500000
+SAVEHIST=800000
+HISTFILESIZE=800000
+
+export EDITOR=vim
+if [ -e ~/git-completion.zsh ]; then
+source ~/git-completion.zsh
+fi
+if [ -e ~/.git-prompt.sh ]; then
+source ~/.git-prompt.sh
+fi
+
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+[ -x /usr/bin/dircolors ] && eval "$(dircolors -b)"
+
+if type brew &>/dev/null; then
+FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
+autoload -Uz compinit
+compinit
+fi
+
+# AVOID PROBLEMS WITH CTRL-S ON TERMINAL AND VIM INPUT
+stty -ixon
+
+# vim:ft=bash
