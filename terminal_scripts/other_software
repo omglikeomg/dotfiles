@@ -1,0 +1,14 @@
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+export FZF_CTRL_T_OPTS="--preview 'head -$LINES {}'"
+
+eval $(thefuck --alias)
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+if [ -d ~/.composer/vendor/bin ]; then
+  export PATH="$PATH:$HOME/.composer/vendor/bin"
+fi
+
+# vim:ft=bash

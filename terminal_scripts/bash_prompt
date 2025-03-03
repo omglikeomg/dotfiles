@@ -1,0 +1,12 @@
+# set variable identifying the chroot you work in (used in the prompt below)
+if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
+  debian_chroot=$(cat /etc/debian_chroot)
+fi
+# the prompt:
+if [ $(id -u) -eq 0 ]; then # root has red color prompt
+  export PS1="\[\e[34m\][\[\e[m\]\[\e[33m\]\u\[\e[m\]\[\e[34m\]]\[\e[m\]-(\[\e[33m\]\W\[\e[m\])-:\n\\$ "
+else # regular
+  PS1='\n┌──[\[\e[01;49;39m\]\u\[\e[00m\]\[\e[01;49;39m\]@\H\[\e[00m\]]───[\[\e[1;49;34m\]\w\[\e[0m\]]───[\[\033[01;32m\]$(__git_ps1 "%s")\[\033[00m\]]\n└───[$] '
+fi
+
+# vim:ft=bash
