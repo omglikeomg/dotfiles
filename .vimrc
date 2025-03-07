@@ -1,6 +1,6 @@
 " .vimrc
 " By Demian Molinari - omglikeomg
-" Last changes done on Feb 2025
+" Last changes done on March 2025
 "
 " BASIC {{{
 " 
@@ -480,6 +480,7 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
 
   " VimWiki as a way to take notes
   Plug 'vimwiki/vimwiki'
+  let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': 'md'}]
 
   " UNNECESSARY COMMODITIES
   Plug 'kkoomen/vim-doge'
@@ -494,7 +495,7 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
 
   " " If you want :UltiSnipsEdit to split your window.
   let g:UltiSnipsEditSplit="vertical"
-  let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/UltiSnips']
+  let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/vim_ultisnips_snippets']
   " this trick has proven more useful than expected
   imap ,, <plug>(emmet-expand-abbr)
 
@@ -604,7 +605,10 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
       autocmd User GoyoLeave Limelight!
     augroup END
 
+    " Using Copilot
     Plug 'github/copilot.vim'
+    imap <silent><script><expr> <C-J> copilot#Accept("\<CR>")
+    let g:copilot_no_tab_map = v:true
 
     " COC NVIM & config
     Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': ['js', 'ts', 'javascript', 'typescript', 'tsx', 'jsx', 'typescriptreact', 'javascriptreact', 'php']}
@@ -698,8 +702,6 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
     augroup VimWikiSetHeaders
       autocmd!
       autocmd FileType vimwiki nnoremap <leader>h1 :r<space>!date<space>"+\%d<space>\%B<space>\%Y"<CR>I=<space><C-O>A<space>=<ESC>gUUo<ESC>
-      autocmd FileType vimwiki imap <buffer><silent><script><expr> <C-J> copilot#Accept("\<CR>")
-      autocmd FileType markdown imap <buffer><silent><script><expr> <C-J> copilot#Accept("\<CR>")
     augroup END
 
   endif
