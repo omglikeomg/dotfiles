@@ -11,14 +11,20 @@ zle -N edit-command-line
 bindkey '^xe' edit-command-line
 bindkey '^x^e' edit-command-line
 
+# git_ps1
+if [ ! -f ~/.git-prompt.sh ]; then
+  curl -o ~/.git-prompt.sh https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
+fi
+
 # prompt
 if [ -f ~/terminal_scripts/zsh_prompt ]; then
+  source ~/.git-prompt.sh
   source ~/terminal_scripts/zsh_prompt
 fi
 
 # my aliases
-if [ -f ~/terminal_scripts/bash_aliases ]; then
-  source ~/terminal_scripts/bash_aliases
+if [ -f ~/terminal_scripts/my_aliases ]; then
+  source ~/terminal_scripts/my_aliases
 fi
 
 # drupal-related aliases
@@ -45,3 +51,5 @@ fi
 if [ -f ~/.ssh/ssh_keys ]; then
   source ~/.ssh/ssh_keys
 fi
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

@@ -26,14 +26,19 @@ alias f='find . -iregex'
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
-if [ command -v yt-dlp 2>&1 >/dev/null ]; then
+YTDLP_EXISTS=`command -v yt-dlp &> /dev/null`
+if [ YTDLP_EXISTS ]; then
   alias ytdl-playlist='yt-dlp --extract-audio --audio-format mp3 -o "%(playlist_autonumber)s. [%(channel)s] %(title)s.%(ext)s"'
   alias ytdl-split-chapters='yt-dlp --extract-audio --audio-format mp3 --split-chapters -o "chapter:%(section_number)s. [%(channel)s] %(section_title)s.%(ext)s"'
 fi
-if [ command -v mc 2>&1 >/dev/null ]; then
+
+MIDNIGHT_COMMANDER_EXISTS=`command -v mc &> /dev/null`
+if [ MIDNIGHT_COMMANDER_EXISTS ]; then
   alias mc='mc -b --nosubshell'
 fi
-if [ command -v rename 2>&1 >/dev/null ]; then
+
+RENAME_EXISTS=`command -v rename &> /dev/null`
+if [ RENAME_EXISTS ]; then
   alias rename-trailing-zeroes='rename -e "s;^(\d)\.;0\$1;" *'
 fi
 

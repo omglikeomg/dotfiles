@@ -44,3 +44,5 @@ fi
 if [ -f ~/.ssh/ssh_keys ]; then
   source ~/.ssh/ssh_keys
 fi
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
