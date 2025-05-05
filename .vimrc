@@ -605,6 +605,7 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
     augroup END
 
     Plug 'github/copilot.vim'
+    inoremap <silent><script><expr> <C-J> copilot#Accept("\<CR>")
 
     " COC NVIM & config
     Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': ['js', 'ts', 'javascript', 'typescript', 'tsx', 'jsx', 'typescriptreact', 'javascriptreact', 'php']}
@@ -698,9 +699,8 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
     augroup VimWikiSetHeaders
       autocmd!
       autocmd FileType vimwiki nnoremap <leader>h1 :r<space>!date<space>"+\%d<space>\%B<space>\%Y"<CR>I=<space><C-O>A<space>=<ESC>gUUo<ESC>
-      autocmd FileType vimwiki imap <buffer><silent><script><expr> <C-J> copilot#Accept("\<CR>")
-      autocmd FileType markdown imap <buffer><silent><script><expr> <C-J> copilot#Accept("\<CR>")
     augroup END
+
 
   endif
   " }}}

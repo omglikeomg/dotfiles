@@ -53,3 +53,8 @@ if [ -f ~/.ssh/ssh_keys ]; then
 fi
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# download completion from: https://github.com/chrisands/zsh-yarn-completions
+if [ -f ~/.zsh-yarn-completions/zsh-yarn-completions.plugin.zsh ]; then 
+  source ~/.zsh-yarn-completions/zsh-yarn-completions.plugin.zsh
+fi
