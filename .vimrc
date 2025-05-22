@@ -210,7 +210,7 @@ vnoremap <expr>$ expand(&l:wrap) == 1 ? "g$" : "$"
 nnoremap J mzJ`z
 
 " YOU WILL NEVER STOP, WON'T YOU?
-nnoremap <Leader>rc :tabnew $MYVIMRC<CR>
+nnoremap <leader>rc :tabnew $MYVIMRC<CR>
 
 " AUTOCOMPLETION:
 inoremap <C-F> <C-X><C-F>
@@ -750,7 +750,6 @@ if filereadable($HOME . '/vimfiles/autoload/plug.vim')
   " GUI SETUP {{{
   """""""""""
   if has('gui_running')
-    set guioptions=gt
     colorscheme norwaytoday
     set columns=160
     set lines=70
